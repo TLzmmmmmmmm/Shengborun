@@ -1,35 +1,165 @@
-# Site Map
-- 首页 -- /
-    - 产品中心 -- /products
-        - 对讲机通信 -- /products/two-way-radio
-            - 产品 -- /products/two-way-radio/{product-slug}
-        
-        - 短波通信  -- /products/shortwave
-            - 产品 -- /products/shortwave/{product-slug}
+# 盛博润网站结构
 
-        - 自组网通信 -- /products/ad-hoc-network
-            - 产品 -- /products/ad-hoc-network/{product-slug}
+网站仅提供简体中文公开内容，不设访客登录、支付或信息提交功能。
 
-        - ICT集成 -- /products/ict
-            - 产品 -- /products/ict/{product-slug}
+## 顶部导航
 
-    - 解决方案 -- /solutions
-        - 行业1 -- /solutions/{industry-slug}
+```text
+首页  /
+├─ 产品中心  /products
+├─ 解决方案  /solutions
+├─ 技术支持  /support
+└─ 关于我们  /about
+```
 
-        - 行业2 -- /solutions/{industry-slug}
+- 顶部导航保留“首页、产品中心、解决方案、技术支持、关于我们”。
+- 点击“首页”返回首页。
+- Logo 不设置返回首页的链接。
+- 顶部导航不设置固定的“电话咨询”按钮。
+- “联系我们”放在“关于我们”页面和全站页脚中。
 
+## 完整页面层级
 
-    - 技术支持 -- /support
-        - 使用说明 -- /support/guides
-            - 产品类型 -- /support/guides/{category_slug}
+```text
+首页  /
 
-        - 问题排查 -- /support/troubleshooting
+产品中心  /products
+└─ 产品类别  /products/{category-slug}
+   └─ 产品详情  /products/{category-slug}/{product-slug}
 
-        - 售后服务 -- /support/after-sales
+解决方案  /solutions
+└─ 解决方案详情  /solutions/{solution-slug}
 
-    - 关于我们 -- /about
-        - 公司简介 -- /about/company
-        - 合规与诚信 -- /about/qualifications
-        - 联系我们 -- /contact
-        
-    
+技术支持  /support
+├─ 使用说明（/support 页面静态区块，不单独建立页面）
+│  └─ 产品类别资料页  /support/guides/{category-slug}
+│     └─ 具体文档  /support/guides/{category-slug}/{document-slug}
+├─ 常见问题（/support 页面展示前三个问题）
+│  └─ 全部常见问题  /support/faq
+└─ 售后服务（/support 页面底部静态区块，不单独建立页面）
+
+关于我们  /about
+├─ 公司简介（静态区块）
+├─ 合规与资质（静态区块）
+└─ 联系我们  /about#contact（静态区块和页面锚点）
+
+页脚辅助页面
+├─ 隐私政策  /privacy
+└─ 法律声明  /legal
+```
+
+## 首页 `/`
+
+首页负责让两类访客快速选择下一步：
+
+- 新访客可以进入产品中心查找产品；如果不清楚需要哪类产品，可以先查看解决方案。
+- 已购买产品的客户可以进入技术支持查找说明书、常见问题和售后信息。
+- 首页不承担完整产品筛选、文档阅读或联系信息全文展示。
+
+## 产品中心 `/products`
+
+产品中心是产品信息和产品筛选功能的唯一入口。
+
+### 产品类别 `/products/{category-slug}`
+
+- 按产品类别展示产品。
+- 上线时的类别以实际产品资料为准，可以包括对讲机通信、短波通信、自组网通信、ICT 集成等。
+- 允许按产品参数筛选；具体筛选参数等待产品负责人确认。
+- 不设置“应用场景”字段，也不提供应用场景筛选。
+- 暂不提供产品参数对比功能，保留后续增加的可能。
+
+### 产品详情 `/products/{category-slug}/{product-slug}`
+
+- 产品详情必须位于对应产品类别之下，不能与产品类别并列。
+- 名称与型号使用同一项内容。
+- 可以包含多项技术参数，并使用表格展示。
+- 关键功能可以有多个，在页面中以青绿色标签展示。
+- 产品特点用于完整文字说明。
+- 正文图片和系统结构图为选填内容。
+- 产品与解决方案不建立关联字段。
+- 如果产品已有使用说明，提供前往对应网页文档和 PDF 下载的入口。
+- 如果产品暂无资料，不创建空白文档页，也不在“使用说明”栏目中显示该产品。
+- 页面设置“联系我们”按钮，跳转到 `/about#contact`。
+
+## 解决方案 `/solutions`
+
+- 列表页展示所有已发布的解决方案。
+- 方案名称可以直接包含行业或使用场景，不单独设置行业或场景字段。
+- 消防、石油石化、应急指挥、军方、工地、酒店、大型事业单位、大型超市等仅是潜在覆盖范围，不代表最终上线分类。
+
+### 解决方案详情 `/solutions/{solution-slug}`
+
+- 内容可以包括列表摘要、核心需求、解决方案、方案特点和正文图片或系统结构图。
+- 不设置独立的“系统组成”字段；需要时将其作为“解决方案”正文中的可选小节。
+- 不设置关联产品编号或推荐产品字段。
+- 页面设置“联系我们”按钮，跳转到 `/about#contact`。
+
+## 技术支持 `/support`
+
+技术支持首页由“使用说明、常见问题、售后服务”三个内容区块组成。
+
+### 使用说明
+
+- “使用说明”是 `/support` 页面中的静态标题和说明，不建立 `/support/guides` 独立页面。
+- 标题下列出已有资料的产品类别，点击后进入 `/support/guides/{category-slug}`。
+
+#### 产品类别资料页 `/support/guides/{category-slug}`
+
+- 按产品分组展示该类别中已经发布的资料。
+- 没有资料的产品不显示。
+- 产品只有一份资料时，直接列出这一份。
+- 产品有多份资料时，在同一产品名下全部列出。
+- 文档类型和名称自由填写，不限定为快速入门、完整用户手册或安装说明。
+
+#### 具体文档 `/support/guides/{category-slug}/{document-slug}`
+
+- 每份资料都提供完整网页正文。
+- 每份资料都提供 PDF 下载。
+- PDF 作为网站文件直接上传，不依赖外部 URL。
+
+### 常见问题
+
+- `/support` 页面直接展示前三个常见问题及答案。
+- “常见问题”标题或区块可以点击，点击后进入 `/support/faq`。
+- 前三个问题下方设置“查看更多”按钮，同样进入 `/support/faq`。
+- FAQ 不分类、不分组，全部内容按顺序显示。
+- 售后服务信息不放入 FAQ。
+
+### 全部常见问题 `/support/faq`
+
+- 展示完整 FAQ 内容。
+- 不建立问题排查页或单篇排查文章页。
+
+### 售后服务
+
+- 售后服务是 `/support` 页面最下方的静态区块，不建立独立页面。
+- 售后服务区块包含前往联系信息的按钮，跳转到 `/about#contact`。
+
+## 关于我们 `/about`
+
+- 公司简介、合规与资质、联系我们均在同一页面展示全文，不建立各自的子页面。
+- 联系我们区块使用 `contact` 锚点，其他页面通过 `/about#contact` 自动定位。
+- 联系信息包括电话、邮箱、地址和工作时间。
+- 联系方式公开可见，不要求用户登录。
+
+## 页脚
+
+- 显示电话、邮箱、地址和工作时间。
+- 提供前往 `/about#contact` 的联系入口。
+- 提供隐私政策 `/privacy` 和法律声明 `/legal` 的链接。
+
+## 已取消或不再使用的旧路由
+
+以下路由不再建立页面：
+
+```text
+/contact
+/about/company
+/about/qualifications
+/support/guides
+/support/troubleshooting
+/support/troubleshooting/{article-slug}
+/support/after-sales
+```
+
+旧网站 URL 将根据最终的 URL 对照表设置跳转；无法匹配到新内容的旧地址可以跳转到新网站首页。
