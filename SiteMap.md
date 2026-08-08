@@ -13,7 +13,7 @@
         - ICT集成 -- /products/ict
             - 产品 -- /products/ict/{product-slug}
 
-    - 行业解决方案 -- /solutions
+    - 解决方案 -- /solutions
         - 行业1 -- /solutions/{industry-slug}
 
         - 行业2 -- /solutions/{industry-slug}
