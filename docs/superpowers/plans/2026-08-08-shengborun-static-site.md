@@ -71,6 +71,8 @@ Shengborun/
 
 ### Task 1: 静态工程基础与测试框架
 
+**当前状态（2026-08-09）：已完成。** 实际工程使用 pnpm 和电脑现有 Chrome；完成情况、提交记录及与原始命令的差异以 `docs/PROJECT_STATUS.md` 为准。下一步为 Task 2，开始前需得到用户确认。
+
 **Files:**
 - Create: `package.json`
 - Create: `astro.config.mjs`
