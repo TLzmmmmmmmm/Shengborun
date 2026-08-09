@@ -1,0 +1,23 @@
+{
+  "name": "shengborun-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "check": "astro check",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test": "pnpm run test:unit && pnpm run build && pnpm run test:e2e"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/sitemap": "^3.7.3",
+    "@playwright/test": "^1.62.1",
+    "astro": "^6.4.8",
+    "vitest": "^4.1.10"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
