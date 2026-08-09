@@ -1,1 +1,1 @@
-export const SITE_ORIGIN = 'https://www.bjlmks.com.cn';
+export const SITE_ORIGIN = 'https://www.shengborun.com';

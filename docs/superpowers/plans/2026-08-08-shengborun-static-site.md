@@ -111,7 +111,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://www.bjlmks.com.cn',
+  site: 'https://www.shengborun.com',
   output: 'static',
   build: { format: 'directory' },
   integrations: [sitemap()]
@@ -125,7 +125,7 @@ import { describe, expect, it } from 'vitest';
 
 describe('site foundation', () => {
   it('uses the public production origin', () => {
-    expect(new URL('https://www.bjlmks.com.cn').protocol).toBe('https:');
+    expect(new URL('https://www.shengborun.com').protocol).toBe('https:');
   });
 });
 ```
@@ -557,7 +557,7 @@ it('prefers manually edited SEO values', () => {
 
 - [ ] **Step 4: 实现 Privacy、Legal、SEO、robots 和 sitemap 发现链接**
 
-`robots.txt` 指向 `https://www.bjlmks.com.cn/sitemap-index.xml`；canonical 使用 HTTPS；SEO path 只接受以 `/` 开头的相对路径。
+`robots.txt` 指向 `https://www.shengborun.com/sitemap-index.xml`；canonical 使用 HTTPS；SEO path 只接受以 `/` 开头的相对路径。
 
 - [ ] **Step 5: 实现百度统计的可控注入**
 
