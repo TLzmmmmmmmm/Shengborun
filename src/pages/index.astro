@@ -1,18 +1,15 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
 const title = '盛博润';
+const description = '盛博润通信产品、解决方案与技术支持官方网站。';
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="description" content="盛博润企业网站正在建设中。" />
-    <title>{title}</title>
-  </head>
-  <body>
-    <main>
+<BaseLayout title={title} description={description} canonicalPath="/">
+  <section class="foundation-placeholder site-container">
+    <div>
       <h1>{title}</h1>
-    </main>
-  </body>
-</html>
+      <p>网站结构与品牌框架已就绪，正式首页内容将在后续阶段完成。</p>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,228 @@
+---
+import { getCollection } from 'astro:content';
+
+const [categories, solutions] = await Promise.all([
+  getCollection('productCategories', ({ data }) => data.published),
+  getCollection('solutions', ({ data }) => data.published),
+]);
+
+const sortedCategories = categories.sort(
+  (left, right) => left.data.sortOrder - right.data.sortOrder,
+);
+const sortedSolutions = solutions.sort(
+  (left, right) => left.data.sortOrder - right.data.sortOrder,
+);
+
+const footerGroups = [
+  {
+    title: '产品中心',
+    links: [
+      { label: '全部产品', href: '/products/' },
+      ...sortedCategories.map(({ data }) => ({
+        label: data.name,
+        href: `/products/${data.slug}/`,
+      })),
+    ],
+  },
+  {
+    title: '解决方案',
+    links: [
+      { label: '全部解决方案', href: '/solutions/' },
+      ...sortedSolutions.slice(0, 6).map(({ data }) => ({
+        label: data.name,
+        href: `/solutions/${data.slug}/`,
+      })),
+    ],
+  },
+  {
+    title: '技术支持',
+    links: [
+      { label: '使用说明', href: '/support#manuals' },
+      { label: '常见问题', href: '/support#faq' },
+      { label: '全部常见问题', href: '/support/faq/' },
+      { label: '售后服务', href: '/support#after-sales' },
+    ],
+  },
+  {
+    title: '关于我们',
+    links: [
+      { label: '公司简介', href: '/about#company' },
+      { label: '合规与资质', href: '/about#qualifications' },
+      { label: '联系我们', href: '/about#contact' },
+    ],
+  },
+  {
+    title: '法律信息',
+    links: [
+      { label: '隐私政策', href: '/privacy/' },
+      { label: '法律声明', href: '/legal/' },
+    ],
+  },
+] as const;
+---
+
+<footer class="site-footer">
+  <div class="footer-inner site-container">
+    <nav class="footer-navigation" aria-label="页脚导航">
+      {
+        footerGroups.map((group) => (
+          <details class="footer-group" open>
+            <summary>{group.title}</summary>
+            <ul>
+              {group.links.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ))
+      }
+    </nav>
+
+    <div class="footer-bottom">
+      <span class="footer-name">盛博润</span>
+      <span>© {new Date().getFullYear()} 盛博润。保留所有权利。</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const footerQuery = window.matchMedia('(max-width: 47.999rem)');
+  const groups = document.querySelectorAll<HTMLDetailsElement>('.footer-group');
+
+  const syncFooterGroups = (isMobile: boolean) => {
+    for (const group of groups) {
+      if (isMobile) group.removeAttribute('open');
+      else group.setAttribute('open', '');
+    }
+  };
+
+  syncFooterGroups(footerQuery.matches);
+  footerQuery.addEventListener('change', (event) => syncFooterGroups(event.matches));
+</script>
+
+<style>
+  .site-footer {
+    background: var(--surface-dark);
+    color: #f5f5f7;
+  }
+
+  .footer-inner {
+    padding-block: clamp(2.75rem, 6vw, 4.5rem) 1.5rem;
+  }
+
+  .footer-navigation {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+  }
+
+  .footer-group {
+    min-width: 0;
+  }
+
+  summary {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  ul {
+    display: grid;
+    gap: 0.65rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    color: #b8bec3;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  a:hover {
+    color: #ffffff;
+  }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #3a3a3c;
+    color: #9d9da3;
+    font-size: 0.75rem;
+  }
+
+  .footer-name {
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  @media (min-width: 48rem) {
+    summary {
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+
+  @media (max-width: 47.999rem) {
+    .footer-navigation {
+      display: block;
+    }
+
+    .footer-group {
+      border-bottom: 1px solid #3a3a3c;
+    }
+
+    summary {
+      position: relative;
+      padding-block: 1rem;
+      padding-right: 2rem;
+      cursor: pointer;
+    }
+
+    summary::after {
+      position: absolute;
+      top: 50%;
+      right: 0.25rem;
+      color: var(--brand-teal);
+      content: '+';
+      font-size: 1.25rem;
+      font-weight: 400;
+      transform: translateY(-50%);
+    }
+
+    details[open] summary::after {
+      content: '−';
+    }
+
+    ul {
+      margin: 0;
+      padding-bottom: 1.1rem;
+    }
+
+    a {
+      display: inline-flex;
+      min-height: 2.5rem;
+      align-items: center;
+    }
+
+    .footer-bottom {
+      align-items: flex-start;
+      flex-direction: column;
+      margin-top: 2rem;
+    }
+  }
+</style>
