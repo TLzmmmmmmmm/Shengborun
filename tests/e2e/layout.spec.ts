@@ -204,6 +204,38 @@ test('renders the approved light footer hierarchy', async ({ page }) => {
   await expect(footer.locator('input[type="search"]')).toHaveCount(0);
 });
 
+test('uses the final navigation border and matches mobile legal spacing', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto('/');
+
+  const footerGroups = page.locator('footer details');
+  const lastFooterGroup = footerGroups.last();
+  const legal = page.locator('.footer-legal');
+
+  await expect(lastFooterGroup).toHaveCSS('border-bottom-width', '1px');
+  await expect(lastFooterGroup).toHaveCSS(
+    'border-bottom-color',
+    'rgb(218, 218, 224)',
+  );
+  await expect(legal).toHaveCSS('border-top-width', '0px');
+
+  await page.setViewportSize({ width: 767, height: 900 });
+  const summaries = page.locator('footer summary');
+  const previousTitle = (await summaries.nth(3).boundingBox())!;
+  const finalTitle = (await summaries.nth(4).boundingBox())!;
+  const copyright = (await legal.locator(':scope > span').first().boundingBox())!;
+  const centerY = (box: { y: number; height: number }) => box.y + box.height / 2;
+  const titleStep = centerY(finalTitle) - centerY(previousTitle);
+  const legalStep = centerY(copyright) - centerY(finalTitle);
+  expect(Math.abs(legalStep - titleStep)).toBeLessThanOrEqual(2);
+
+  await page.setViewportSize({ width: 768, height: 900 });
+  await expect(legal).toHaveCSS('border-top-width', '1px');
+  await expect(legal).toHaveCSS('border-top-color', 'rgb(218, 218, 224)');
+});
+
 test('keeps navigation usable and avoids horizontal overflow', async ({ page }) => {
   for (const width of [320, 768, 1440, 1920, 2560]) {
     await page.setViewportSize({ width, height: 900 });
@@ -238,12 +270,7 @@ test('keeps navigation usable and avoids horizontal overflow', async ({ page }) 
       );
       await expect(firstFooterGroup).toHaveCSS('border-bottom-width', '1px');
 
-      const lastFooterGroup = page.locator('footer details').last();
-      await expect(lastFooterGroup).toHaveCSS('border-bottom-width', '0px');
-
       const legal = page.locator('.footer-legal');
-      await expect(legal).toHaveCSS('border-top-color', 'rgb(218, 218, 224)');
-      await expect(legal).toHaveCSS('border-top-width', '1px');
       await firstFooterSummary.focus();
       await page.keyboard.press('Enter');
       await expect(firstFooterGroup).toHaveAttribute('open', '');

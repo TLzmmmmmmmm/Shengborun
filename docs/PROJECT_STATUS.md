@@ -34,6 +34,8 @@
 - Footer 分隔线修订计划：`fd28990 docs: plan footer divider refinement`
 - 移动端 Footer 末栏分隔线规范：`dfb4a69 docs: specify mobile footer divider cleanup`
 - 移动端 Footer 末栏分隔线计划：`df7f82f docs: plan mobile footer divider cleanup`
+- 移动端 Footer 分隔与节奏纠正规范：`46ca6a4 docs: specify mobile footer rhythm correction`
+- 移动端 Footer 分隔与节奏纠正计划：`c8aa5d5 docs: plan mobile footer rhythm correction`
 
 每个阶段开始前必须运行 `git status --short --branch`，确认没有用户未提交修改。每个阶段均按“检查状态 → 测试先行 → 最小实现 → 完整验证 → git add → commit → push → 停下等待确认”的顺序执行。
 
@@ -72,7 +74,7 @@
 - Footer 保留五栏导航；移动端使用原生 `<details>`。
 - Footer 技术支持栏只保留一个“常见问题”入口，地址为 `/support/faq/`。
 - Footer 底部是三个左对齐的独立信息单元：版权声明、ICP 备案、公安联网备案。
-- 移动端 Footer 的最后一个“法律信息”栏目不显示下边框，只保留版权区上方用于分隔导航和法务信息的横线。
+- 移动端 Footer 由最后一个“法律信息”栏目的下边框分隔导航和版权区；版权区自身不再重复绘制上边框，且 copyright 与“法律信息”的间距匹配相邻标题节奏。
 - Footer 不显示搜索框、商城行、社交图标、电话、邮箱、地址或工作时间。
 
 ## 当前待补资料
@@ -112,6 +114,8 @@ Task 4 将建立产品查询 helper、产品卡片、功能标签、技术参数
 - `docs/superpowers/plans/2026-08-10-task3-footer-divider.md`：Footer 分隔线颜色修订实施计划。
 - `docs/superpowers/specs/2026-08-10-task3-mobile-footer-last-divider-design.md`：移动端 Footer 末栏冗余分隔线移除规范。
 - `docs/superpowers/plans/2026-08-10-task3-mobile-footer-last-divider.md`：移动端 Footer 末栏冗余分隔线移除计划。
+- `docs/superpowers/specs/2026-08-10-task3-mobile-footer-separator-rhythm-design.md`：移动端 Footer 唯一分隔线与垂直节奏纠正规范。
+- `docs/superpowers/plans/2026-08-10-task3-mobile-footer-separator-rhythm.md`：移动端 Footer 唯一分隔线与垂直节奏纠正计划。
 - `src/content.config.ts`：内容集合 schema。
 - `src/lib/content-rules.ts`：内容业务规则和跨集合校验。
 - `src/layouts/BaseLayout.astro`：全站页面框架。

@@ -195,15 +195,11 @@ const footerGroups = [
   @media (max-width: 47.999rem) {
     .footer-navigation {
       display: block;
-      padding-block: 1rem 2rem;
+      padding-block: 1rem 0;
     }
 
     .footer-group {
       border-bottom: 1px solid var(--footer-divider);
-    }
-
-    .footer-group:last-child {
-      border-bottom: 0;
     }
 
     summary {
@@ -243,6 +239,8 @@ const footerGroups = [
       flex-direction: column;
       align-items: flex-start;
       gap: 0.5rem;
+      padding-block: 1rem 1.25rem;
+      border-top: 0;
     }
   }
 </style>
