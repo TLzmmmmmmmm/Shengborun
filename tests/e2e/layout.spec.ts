@@ -44,10 +44,10 @@ test('header and footer follow the approved structure', async ({ page }) => {
     'href',
     '/support#manuals',
   );
-  await expect(footer.getByRole('link', { name: '常见问题', exact: true })).toHaveAttribute(
-    'href',
-    '/support#faq',
-  );
+  const faqLinks = footer.getByRole('link', { name: '常见问题', exact: true });
+  await expect(faqLinks).toHaveCount(1);
+  await expect(faqLinks).toHaveAttribute('href', '/support/faq/');
+  await expect(footer).not.toContainText('全部常见问题');
   await expect(footer.getByRole('link', { name: '售后服务' })).toHaveAttribute(
     'href',
     '/support#after-sales',
@@ -147,8 +147,13 @@ test('uses symmetric capped page gutters', async ({ page }) => {
 
       expect(Math.round(box.width)).toBe(width);
       expect(Math.abs(left - right)).toBeLessThanOrEqual(1);
-      expect(left).toBeLessThanOrEqual(121);
-      expect(right).toBeLessThanOrEqual(121);
+      expect(left).toBeLessThanOrEqual(145);
+      expect(right).toBeLessThanOrEqual(145);
+
+      if (width === 2560) {
+        expect(left).toBeGreaterThanOrEqual(143);
+        expect(right).toBeGreaterThanOrEqual(143);
+      }
     }
   }
 });
@@ -166,16 +171,25 @@ test('renders the approved light footer hierarchy', async ({ page }) => {
     'color',
     'rgb(0, 0, 0)',
   );
+  await expect(footer.locator('.footer-breadcrumb .breadcrumbs')).toHaveCSS(
+    'font-size',
+    '16px',
+  );
+  await expect(footer.locator('summary').first()).toHaveCSS('font-size', '16px');
   await expect(footerLinks.getByRole('link').first()).toHaveCSS(
     'color',
     'rgb(110, 110, 115)',
   );
+  await expect(footerLinks.getByRole('link').first()).toHaveCSS('font-size', '16px');
   await expect(breadcrumb).toHaveCSS('color', 'rgb(110, 110, 115)');
 
   const legal = footer.locator('.footer-legal');
+  await expect(legal).toHaveCSS('font-size', '14px');
+  await expect(legal).toHaveCSS('justify-content', 'flex-start');
+  await expect(legal).toHaveCSS('text-align', 'left');
   await expect(legal.locator(':scope > *')).toHaveCount(3);
   await expect(legal.locator(':scope > *').nth(0)).toHaveText(
-    '版权所有 © 2026 北京盛博润通信设备有限公司。',
+    '版权所有 © 2026 北京盛博润通信设备有限公司',
   );
   await expect(legal.locator(':scope > *').nth(1)).toHaveText('ICP备案（待确认）');
   await expect(legal.locator(':scope > *').nth(2)).toHaveText(
@@ -216,6 +230,10 @@ test('keeps navigation usable and avoids horizontal overflow', async ({ page }) 
       await firstFooterSummary.focus();
       await page.keyboard.press('Enter');
       await expect(firstFooterGroup).toHaveAttribute('open', '');
+
+      const legal = page.locator('.footer-legal');
+      await expect(legal).toHaveCSS('align-items', 'flex-start');
+      await expect(legal).toHaveCSS('text-align', 'left');
     }
 
     const hasHorizontalOverflow = await page.evaluate(

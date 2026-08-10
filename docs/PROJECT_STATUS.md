@@ -8,7 +8,7 @@
 
 - Task 1“静态工程基础与测试框架”已完成。
 - Task 2“内容集合、字段校验与示例数据”已完成。
-- Task 3“品牌样式、全站布局、顶部导航和页脚”已完成，并已完成 2026-08-10 的 Logo、Header、全站边距和 Footer 视觉调整。
+- Task 3“品牌样式、全站布局、顶部导航和页脚”已完成，并已完成 2026-08-10 的 Logo、Header、全站边距、Footer 视觉调整以及 Footer 字号与留白修订。
 - 下一阶段是 Task 4“产品中心、参数筛选和产品详情”。未经用户确认不得自动开始。
 - 当前只有首页占位页可浏览；产品、解决方案、技术支持、关于我们、隐私和法律页面将在后续 Task 中生成。
 - 当前只允许在本地开发和测试，不部署、不切换 DNS、不访问或测试正式域名。
@@ -28,6 +28,8 @@
 - Logo 尺寸调整提交：`e6fba29 fix: refine header logo sizing`
 - Task 3 视觉调整规范：`f76639a`、`e30c19e`、`a4edaa3`
 - Task 3 视觉调整计划：`0243b17 docs: plan task 3 layout refinements`
+- Footer 与留白修订规范：`41d21ee docs: specify footer and gutter adjustment`
+- Footer 与留白修订计划：`b7bafcb docs: plan footer and gutter adjustment`
 
 每个阶段开始前必须运行 `git status --short --branch`，确认没有用户未提交修改。每个阶段均按“检查状态 → 测试先行 → 最小实现 → 完整验证 → git add → commit → push → 停下等待确认”的顺序执行。
 
@@ -59,11 +61,13 @@
 - Logo 主体上下各 28px、左右各 28px 对称留白；深色为 `#1D1D1F`，三个节点为 `#00B7B5`。
 - Logo 桌面显示宽度 144px，移动端 120px。
 - Header 桌面高度 54px，移动端 48px，并使用粘性定位固定在视口顶部。
-- 全站容器使用 `clamp(1rem, 6.25vw, 7.5rem)` 对称边距，超宽屏单侧最多 120px。
+- 全站容器使用 `clamp(1rem, 7.5vw, 9rem)` 对称边距，超宽屏单侧最多 144px。
 - Footer 使用浅灰 `#F5F5F7` 背景、黑色栏目标题、深灰链接和两条 `#E8E8ED` 分隔线。
 - Footer 顶部显示动态 breadcrumb：首页为“首页”，未来内页为“首页 / 当前页面”。
+- Footer breadcrumb、栏目标题和导航链接字号为 16px；底部版权与备案字号为 14px。
 - Footer 保留五栏导航；移动端使用原生 `<details>`。
-- Footer 底部是三个独立信息单元：版权声明、ICP 备案、公安联网备案。
+- Footer 技术支持栏只保留一个“常见问题”入口，地址为 `/support/faq/`。
+- Footer 底部是三个左对齐的独立信息单元：版权声明、ICP 备案、公安联网备案。
 - Footer 不显示搜索框、商城行、社交图标、电话、邮箱、地址或工作时间。
 
 ## 当前待补资料
@@ -97,6 +101,8 @@ Task 4 将建立产品查询 helper、产品卡片、功能标签、技术参数
 - `docs/superpowers/specs/2026-08-10-task3-layout-refinement-design.md`：本轮 Task 3 视觉调整规范。
 - `docs/superpowers/plans/2026-08-08-shengborun-static-site.md`：完整分阶段计划。
 - `docs/superpowers/plans/2026-08-10-task3-layout-refinement.md`：本轮 Task 3 视觉调整实施计划。
+- `docs/superpowers/specs/2026-08-10-task3-footer-spacing-adjustment-design.md`：Footer 字号、FAQ、留白和法务区对齐修订规范。
+- `docs/superpowers/plans/2026-08-10-task3-footer-spacing-adjustment.md`：Footer 与留白修订实施计划。
 - `src/content.config.ts`：内容集合 schema。
 - `src/lib/content-rules.ts`：内容业务规则和跨集合校验。
 - `src/layouts/BaseLayout.astro`：全站页面框架。

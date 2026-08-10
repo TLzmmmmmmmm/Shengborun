@@ -46,8 +46,7 @@ const footerGroups = [
     title: '技术支持',
     links: [
       { label: '使用说明', href: '/support#manuals' },
-      { label: '常见问题', href: '/support#faq' },
-      { label: '全部常见问题', href: '/support/faq/' },
+      { label: '常见问题', href: '/support/faq/' },
       { label: '售后服务', href: '/support#after-sales' },
     ],
   },
@@ -93,7 +92,7 @@ const footerGroups = [
     </nav>
 
     <div class="footer-legal">
-      <span>版权所有 © 2026 北京盛博润通信设备有限公司。</span>
+      <span>版权所有 © 2026 北京盛博润通信设备有限公司</span>
       <span class="footer-filing" data-link-pending>ICP备案（待确认）</span>
       <span class="footer-filing" data-link-pending>公安联网备案（待确认）</span>
     </div>
@@ -143,7 +142,7 @@ const footerGroups = [
 
   summary {
     color: #000000;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 700;
     list-style: none;
   }
@@ -162,7 +161,7 @@ const footerGroups = [
 
   a {
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 1rem;
     text-decoration: none;
     transition: color var(--transition-fast);
   }
@@ -175,13 +174,13 @@ const footerGroups = [
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0.75rem 2rem;
     padding-block: 1.25rem;
     border-top: 1px solid var(--divider);
     color: var(--text-secondary);
-    font-size: 0.75rem;
-    text-align: center;
+    font-size: 0.875rem;
+    text-align: left;
   }
 
   @media (min-width: 48rem) {
@@ -236,6 +235,7 @@ const footerGroups = [
 
     .footer-legal {
       flex-direction: column;
+      align-items: flex-start;
       gap: 0.5rem;
     }
   }
