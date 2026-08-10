@@ -1,0 +1,8 @@
+{
+  "id": "two-way-radio",
+  "name": "对讲机通信",
+  "slug": "two-way-radio",
+  "shortDescription": "用于展示对讲机通信产品的示例类别。",
+  "sortOrder": 10,
+  "published": true
+}

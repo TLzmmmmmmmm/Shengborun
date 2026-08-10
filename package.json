@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build",
+    "build": "pnpm run validate:content && astro check && astro build",
     "check": "astro check",
+    "validate:content": "node scripts/validate-content.mjs",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test": "pnpm run test:unit && pnpm run build && pnpm run test:e2e"
@@ -18,6 +19,7 @@
     "vitest": "^4.1.10"
   },
   "devDependencies": {
+    "js-yaml": "4.3.1",
     "typescript": "^5.9.3"
   }
 }

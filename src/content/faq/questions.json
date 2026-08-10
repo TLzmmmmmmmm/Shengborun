@@ -1,0 +1,23 @@
+[
+  {
+    "id": "sample-power-on",
+    "question": "设备无法开机时应该先检查什么？",
+    "answer": "请先确认电池已正确安装并有足够电量，再按照正式产品说明进行检查。",
+    "sortOrder": 10,
+    "published": true
+  },
+  {
+    "id": "sample-manual-download",
+    "question": "在哪里可以下载产品使用说明？",
+    "answer": "进入技术支持中的对应产品类别，即可查看网页说明并下载 PDF 文件。",
+    "sortOrder": 20,
+    "published": true
+  },
+  {
+    "id": "sample-after-sales",
+    "question": "需要售后协助时如何联系？",
+    "answer": "请前往关于我们页面的联系我们区块获取公开联系方式。",
+    "sortOrder": 30,
+    "published": true
+  }
+]
