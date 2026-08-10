@@ -236,11 +236,18 @@ test('keeps navigation usable and avoids horizontal overflow', async ({ page }) 
         'border-bottom-color',
         'rgb(218, 218, 224)',
       );
+      await expect(firstFooterGroup).toHaveCSS('border-bottom-width', '1px');
+
+      const lastFooterGroup = page.locator('footer details').last();
+      await expect(lastFooterGroup).toHaveCSS('border-bottom-width', '0px');
+
+      const legal = page.locator('.footer-legal');
+      await expect(legal).toHaveCSS('border-top-color', 'rgb(218, 218, 224)');
+      await expect(legal).toHaveCSS('border-top-width', '1px');
       await firstFooterSummary.focus();
       await page.keyboard.press('Enter');
       await expect(firstFooterGroup).toHaveAttribute('open', '');
 
-      const legal = page.locator('.footer-legal');
       await expect(legal).toHaveCSS('align-items', 'flex-start');
       await expect(legal).toHaveCSS('text-align', 'left');
     }
