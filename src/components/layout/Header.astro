@@ -17,8 +17,8 @@ const isCurrent = (href: string) =>
     <div class="brand-mark" aria-label="盛博润">
       <img
         src="/brand/logo.png"
-        width="1122"
-        height="294"
+        width="1297"
+        height="336"
         alt="盛博润"
         decoding="async"
       />
@@ -97,26 +97,27 @@ const isCurrent = (href: string) =>
 
 <style>
   .site-header {
-    position: relative;
+    position: sticky;
     z-index: 100;
+    top: 0;
     background: rgb(255 255 255 / 96%);
     box-shadow: var(--shadow-header);
   }
 
   .header-inner {
     display: flex;
-    min-height: 4.75rem;
+    height: 3.375rem;
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
   }
 
   .brand-mark {
-    flex: 0 1 9.625rem;
+    flex: 0 0 9rem;
   }
 
   .brand-mark img {
-    width: min(9.625rem, 55vw);
+    width: 9rem;
     height: auto;
   }
 
@@ -199,7 +200,7 @@ const isCurrent = (href: string) =>
 
   @media (max-width: 47.999rem) {
     .header-inner {
-      min-height: 4.25rem;
+      height: 3rem;
       gap: 1rem;
     }
 
@@ -208,7 +209,7 @@ const isCurrent = (href: string) =>
     }
 
     .brand-mark img {
-      width: min(7.5rem, 58vw);
+      width: 7.5rem;
     }
 
     .menu-toggle {
@@ -233,7 +234,7 @@ const isCurrent = (href: string) =>
 
     .primary-navigation ul {
       display: grid;
-      width: min(100%, var(--content-width));
+      width: 100%;
       margin-inline: auto;
       gap: 0;
       padding: 0.5rem var(--page-gutter) 1rem;

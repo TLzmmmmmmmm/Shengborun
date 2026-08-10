@@ -54,7 +54,7 @@ a:hover {
 }
 
 .site-container {
-  width: min(100%, var(--content-width));
+  width: 100%;
   margin-inline: auto;
   padding-inline: var(--page-gutter);
 }

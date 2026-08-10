@@ -1,5 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
+import type { BreadcrumbItem } from '../../lib/breadcrumbs';
+import Breadcrumbs from './Breadcrumbs.astro';
+
+interface Props {
+  breadcrumbs: readonly BreadcrumbItem[];
+}
+
+const { breadcrumbs } = Astro.props;
 
 const [categories, solutions] = await Promise.all([
   getCollection('productCategories', ({ data }) => data.published),
@@ -63,6 +71,10 @@ const footerGroups = [
 
 <footer class="site-footer">
   <div class="footer-inner site-container">
+    <div class="footer-breadcrumb">
+      <Breadcrumbs items={breadcrumbs} />
+    </div>
+
     <nav class="footer-navigation" aria-label="页脚导航">
       {
         footerGroups.map((group) => (
@@ -80,9 +92,10 @@ const footerGroups = [
       }
     </nav>
 
-    <div class="footer-bottom">
-      <span class="footer-name">盛博润</span>
-      <span>© {new Date().getFullYear()} 盛博润。保留所有权利。</span>
+    <div class="footer-legal">
+      <span>版权所有 © 2026 北京盛博润通信设备有限公司。</span>
+      <span class="footer-filing" data-link-pending>ICP备案（待确认）</span>
+      <span class="footer-filing" data-link-pending>公安联网备案（待确认）</span>
     </div>
   </div>
 </footer>
@@ -104,18 +117,24 @@ const footerGroups = [
 
 <style>
   .site-footer {
-    background: var(--surface-dark);
-    color: #f5f5f7;
+    background: var(--surface-muted);
+    color: var(--text-secondary);
   }
 
   .footer-inner {
-    padding-block: clamp(2.75rem, 6vw, 4.5rem) 1.5rem;
+    padding-block: 0;
+  }
+
+  .footer-breadcrumb {
+    padding-block: 1.5rem 1.25rem;
+    border-bottom: 1px solid var(--divider);
   }
 
   .footer-navigation {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: clamp(1.25rem, 3vw, 2.5rem);
+    padding-block: 2.75rem 3.5rem;
   }
 
   .footer-group {
@@ -123,7 +142,7 @@ const footerGroups = [
   }
 
   summary {
-    color: #ffffff;
+    color: #000000;
     font-size: 0.9rem;
     font-weight: 700;
     list-style: none;
@@ -142,32 +161,27 @@ const footerGroups = [
   }
 
   a {
-    color: #b8bec3;
+    color: var(--text-secondary);
     font-size: 0.875rem;
     text-decoration: none;
     transition: color var(--transition-fast);
   }
 
   a:hover {
-    color: #ffffff;
+    color: var(--text-primary);
   }
 
-  .footer-bottom {
+  .footer-legal {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 3rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid #3a3a3c;
-    color: #9d9da3;
+    justify-content: center;
+    gap: 0.75rem 2rem;
+    padding-block: 1.25rem;
+    border-top: 1px solid var(--divider);
+    color: var(--text-secondary);
     font-size: 0.75rem;
-  }
-
-  .footer-name {
-    color: #ffffff;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    text-align: center;
   }
 
   @media (min-width: 48rem) {
@@ -180,10 +194,11 @@ const footerGroups = [
   @media (max-width: 47.999rem) {
     .footer-navigation {
       display: block;
+      padding-block: 1rem 2rem;
     }
 
     .footer-group {
-      border-bottom: 1px solid #3a3a3c;
+      border-bottom: 1px solid var(--divider);
     }
 
     summary {
@@ -219,10 +234,9 @@ const footerGroups = [
       align-items: center;
     }
 
-    .footer-bottom {
-      align-items: flex-start;
+    .footer-legal {
       flex-direction: column;
-      margin-top: 2rem;
+      gap: 0.5rem;
     }
   }
 </style>
