@@ -85,6 +85,34 @@ test('provides skip navigation and complete page metadata', async ({ page }) => 
   );
 });
 
+test('keeps the brand mark compact and aligned with desktop navigation', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+
+  const logoBox = await page.locator('.brand-mark img').boundingBox();
+  const homeLinkBox = await page
+    .getByRole('navigation', { name: '主导航' })
+    .getByRole('link', { name: '首页', exact: true })
+    .boundingBox();
+
+  expect(logoBox).not.toBeNull();
+  expect(homeLinkBox).not.toBeNull();
+  expect(logoBox!.width).toBeGreaterThanOrEqual(153);
+  expect(logoBox!.width).toBeLessThanOrEqual(155);
+
+  const logoCenter = logoBox!.y + logoBox!.height / 2;
+  const navigationCenter = homeLinkBox!.y + homeLinkBox!.height / 2;
+  expect(Math.abs(logoCenter - navigationCenter)).toBeLessThanOrEqual(1);
+
+  await page.setViewportSize({ width: 320, height: 900 });
+  const mobileLogoBox = await page.locator('.brand-mark img').boundingBox();
+  expect(mobileLogoBox).not.toBeNull();
+  expect(mobileLogoBox!.width).toBeGreaterThanOrEqual(119);
+  expect(mobileLogoBox!.width).toBeLessThanOrEqual(121);
+});
+
 test('keeps navigation usable and avoids horizontal overflow', async ({ page }) => {
   for (const width of [320, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
