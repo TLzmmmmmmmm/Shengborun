@@ -30,6 +30,8 @@
 - Task 3 视觉调整计划：`0243b17 docs: plan task 3 layout refinements`
 - Footer 与留白修订规范：`41d21ee docs: specify footer and gutter adjustment`
 - Footer 与留白修订计划：`b7bafcb docs: plan footer and gutter adjustment`
+- Footer 分隔线修订规范：`1a74486 docs: specify footer divider refinement`
+- Footer 分隔线修订计划：`fd28990 docs: plan footer divider refinement`
 
 每个阶段开始前必须运行 `git status --short --branch`，确认没有用户未提交修改。每个阶段均按“检查状态 → 测试先行 → 最小实现 → 完整验证 → git add → commit → push → 停下等待确认”的顺序执行。
 
@@ -62,7 +64,7 @@
 - Logo 桌面显示宽度 144px，移动端 120px。
 - Header 桌面高度 54px，移动端 48px，并使用粘性定位固定在视口顶部。
 - 全站容器使用 `clamp(1rem, 7.5vw, 9rem)` 对称边距，超宽屏单侧最多 144px。
-- Footer 使用浅灰 `#F5F5F7` 背景、黑色栏目标题、深灰链接和两条 `#E8E8ED` 分隔线。
+- Footer 使用浅灰 `#F5F5F7` 背景、黑色栏目标题、深灰链接和 Footer 专用的 `#DADAE0` 分隔线；全局 `#E8E8ED` 分隔线保持不变。
 - Footer 顶部显示动态 breadcrumb：首页为“首页”，未来内页为“首页 / 当前页面”。
 - Footer breadcrumb、栏目标题和导航链接字号为 16px；底部版权与备案字号为 14px。
 - Footer 保留五栏导航；移动端使用原生 `<details>`。
@@ -103,6 +105,8 @@ Task 4 将建立产品查询 helper、产品卡片、功能标签、技术参数
 - `docs/superpowers/plans/2026-08-10-task3-layout-refinement.md`：本轮 Task 3 视觉调整实施计划。
 - `docs/superpowers/specs/2026-08-10-task3-footer-spacing-adjustment-design.md`：Footer 字号、FAQ、留白和法务区对齐修订规范。
 - `docs/superpowers/plans/2026-08-10-task3-footer-spacing-adjustment.md`：Footer 与留白修订实施计划。
+- `docs/superpowers/specs/2026-08-10-task3-footer-divider-design.md`：Footer 分隔线颜色修订规范。
+- `docs/superpowers/plans/2026-08-10-task3-footer-divider.md`：Footer 分隔线颜色修订实施计划。
 - `src/content.config.ts`：内容集合 schema。
 - `src/lib/content-rules.ts`：内容业务规则和跨集合校验。
 - `src/layouts/BaseLayout.astro`：全站页面框架。

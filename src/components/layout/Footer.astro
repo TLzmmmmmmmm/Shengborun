@@ -116,6 +116,8 @@ const footerGroups = [
 
 <style>
   .site-footer {
+    --footer-divider: #dadae0;
+
     background: var(--surface-muted);
     color: var(--text-secondary);
   }
@@ -126,7 +128,7 @@ const footerGroups = [
 
   .footer-breadcrumb {
     padding-block: 1.5rem 1.25rem;
-    border-bottom: 1px solid var(--divider);
+    border-bottom: 1px solid var(--footer-divider);
   }
 
   .footer-navigation {
@@ -177,7 +179,7 @@ const footerGroups = [
     justify-content: flex-start;
     gap: 0.75rem 2rem;
     padding-block: 1.25rem;
-    border-top: 1px solid var(--divider);
+    border-top: 1px solid var(--footer-divider);
     color: var(--text-secondary);
     font-size: 0.875rem;
     text-align: left;
@@ -197,7 +199,7 @@ const footerGroups = [
     }
 
     .footer-group {
-      border-bottom: 1px solid var(--divider);
+      border-bottom: 1px solid var(--footer-divider);
     }
 
     summary {

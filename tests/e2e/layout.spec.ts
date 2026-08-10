@@ -167,6 +167,10 @@ test('renders the approved light footer hierarchy', async ({ page }) => {
 
   await expect(breadcrumb).toContainText('首页');
   await expect(footer).toHaveCSS('background-color', 'rgb(245, 245, 247)');
+  await expect(footer.locator('.footer-breadcrumb')).toHaveCSS(
+    'border-bottom-color',
+    'rgb(218, 218, 224)',
+  );
   await expect(footer.locator('summary').first()).toHaveCSS(
     'color',
     'rgb(0, 0, 0)',
@@ -184,6 +188,7 @@ test('renders the approved light footer hierarchy', async ({ page }) => {
   await expect(breadcrumb).toHaveCSS('color', 'rgb(110, 110, 115)');
 
   const legal = footer.locator('.footer-legal');
+  await expect(legal).toHaveCSS('border-top-color', 'rgb(218, 218, 224)');
   await expect(legal).toHaveCSS('font-size', '14px');
   await expect(legal).toHaveCSS('justify-content', 'flex-start');
   await expect(legal).toHaveCSS('text-align', 'left');
@@ -227,6 +232,10 @@ test('keeps navigation usable and avoids horizontal overflow', async ({ page }) 
       const firstFooterGroup = page.locator('footer details').first();
       const firstFooterSummary = firstFooterGroup.locator('summary');
       await expect(firstFooterGroup).not.toHaveAttribute('open', '');
+      await expect(firstFooterGroup).toHaveCSS(
+        'border-bottom-color',
+        'rgb(218, 218, 224)',
+      );
       await firstFooterSummary.focus();
       await page.keyboard.press('Enter');
       await expect(firstFooterGroup).toHaveAttribute('open', '');
