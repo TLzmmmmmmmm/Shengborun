@@ -14,6 +14,8 @@ Increase the mobile primary-navigation row spacing slightly while keeping it vis
 
 - Change only the mobile `.primary-navigation a` minimum height in `Header.astro`.
 - Update the existing Playwright expectation for the computed mobile minimum height.
+- Update `design-qa.md` so `43.2px` is the current tested height and the existing screenshot is clearly identified as pre-refinement historical evidence.
+- Do not generate, update, or delete a screenshot; the user explicitly does not require a new capture for this refinement.
 - Preserve the current single-divider implementation: inactive middle rows remain gray, hover and current rows remain teal, and the inactive final row remains transparent.
 - Preserve the mobile breakpoint, Header height, Logo size, navigation labels and URLs, accessibility behavior, desktop navigation, Footer, content, and routes.
 
@@ -23,6 +25,7 @@ Increase the mobile primary-navigation row spacing slightly while keeping it vis
 - Apply the one-value CSS change and verify the focused browser test passes.
 - Run unit tests, content validation, Astro check, static build, and the full browser suite against the local server.
 - Confirm there is no horizontal overflow and no change to divider behavior.
+- Confirm the QA report distinguishes current automated evidence from the unchanged historical screenshot.
 
 ## Constraints
 
