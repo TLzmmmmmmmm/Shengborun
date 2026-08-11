@@ -249,7 +249,7 @@ test('uses one compact border line for mobile navigation states', async ({ page 
   });
   const about = navigation.getByRole('link', { name: '关于我们', exact: true });
 
-  await expect(home).toHaveCSS('min-height', '38.4px');
+  await expect(home).toHaveCSS('min-height', '43.2px');
   await expect(home).toHaveCSS('border-bottom-width', '1px');
   await expect(home).toHaveCSS('border-bottom-color', 'rgb(0, 183, 181)');
   await expect(products).toHaveCSS('border-bottom-color', 'rgb(232, 232, 237)');

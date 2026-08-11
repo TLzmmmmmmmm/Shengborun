@@ -11,7 +11,8 @@
 **Evidence**
 
 - Source visual truth: `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-9b4a10cb-7cb7-4026-b020-a7df43430cb7.png`
-- Implementation screenshot: `D:\Shengborun\.worktrees\site-foundation\docs\superpowers\qa\2026-08-11-mobile-header-navigation.png`
+- Historical implementation screenshot (captured before the spacing refinement): `D:\Shengborun\.worktrees\site-foundation\docs\superpowers\qa\2026-08-11-mobile-header-navigation.png`
+- Screenshot decision: the user explicitly chose not to request a new screenshot for this spacing refinement.
 - Source dimensions: `214 × 473px` (measured from the local source file).
 - Implementation dimensions: `320 × 700px`.
 - Implementation CSS viewport: `320 × 700`; device scale factor: `1`; route: `/`; state: mobile menu open.
@@ -32,7 +33,7 @@ The source and implementation screenshots were opened together for comparison. B
 
 **Focused Divider And Spacing Comparison**
 
-The focused navigation region confirms the intended state model: the old desktop pseudo-element is not displayed on mobile, each row has a stable 1px border, and the last inactive row does not show a bottom divider. The automated regression verifies `min-height: 38.4px` (20% tighter than 48px), exact teal/gray/transparent colors, hover stability, and final-row current behavior. Typography, copy, and existing Header tokens remain component-owned and unchanged; no raster, vector, icon, or generated image asset is involved.
+The focused navigation region confirms the intended state model: the old desktop pseudo-element is not displayed on mobile, each row has a stable 1px border, and the last inactive row does not show a bottom divider. The automated regression verifies `min-height: 43.2px` (10% tighter than 48px), exact teal/gray/transparent colors, hover stability, and final-row current behavior. Typography, copy, and existing Header tokens remain component-owned and unchanged; no raster, vector, icon, or generated image asset is involved.
 
 **Comparison History**
 
