@@ -238,7 +238,39 @@ test('uses compact mobile footer detail hierarchy', async ({ page }) => {
   await expect(firstLink).toHaveCSS('font-size', '16px');
 });
 
-test('uses the final navigation border and matches mobile legal spacing', async ({
+test('uses a centered two-row mobile legal layout', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto('/');
+
+  const legal = page.locator('.footer-legal');
+  const parts = legal.locator(':scope > *');
+
+  await expect(legal).toHaveCSS('display', 'grid');
+  await expect(legal).toHaveCSS('justify-content', 'center');
+  await expect(legal).toHaveCSS('text-align', 'center');
+  await expect(legal).toHaveCSS('font-size', '12px');
+  await expect(legal).toHaveCSS('column-gap', '20px');
+
+  const legalBox = (await legal.boundingBox())!;
+  const copyright = (await parts.nth(0).boundingBox())!;
+  const icp = (await parts.nth(1).boundingBox())!;
+  const police = (await parts.nth(2).boundingBox())!;
+  const centerX = (box: { x: number; width: number }) => box.x + box.width / 2;
+  const centerY = (box: { y: number; height: number }) => box.y + box.height / 2;
+
+  expect(copyright.y + copyright.height).toBeLessThanOrEqual(icp.y);
+  expect(Math.abs(centerX(copyright) - centerX(legalBox))).toBeLessThanOrEqual(1);
+  expect(Math.abs(centerY(icp) - centerY(police))).toBeLessThanOrEqual(1);
+  expect(icp.x + icp.width).toBeLessThan(police.x);
+
+  await page.setViewportSize({ width: 768, height: 900 });
+  await expect(legal).toHaveCSS('display', 'flex');
+  await expect(legal).toHaveCSS('justify-content', 'flex-start');
+  await expect(legal).toHaveCSS('text-align', 'left');
+  await expect(legal).toHaveCSS('font-size', '14px');
+});
+
+test('uses the final navigation border and desktop legal separator', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 320, height: 900 });
@@ -254,16 +286,6 @@ test('uses the final navigation border and matches mobile legal spacing', async 
     'rgb(218, 218, 224)',
   );
   await expect(legal).toHaveCSS('border-top-width', '0px');
-
-  await page.setViewportSize({ width: 767, height: 900 });
-  const summaries = page.locator('footer summary');
-  const previousTitle = (await summaries.nth(3).boundingBox())!;
-  const finalTitle = (await summaries.nth(4).boundingBox())!;
-  const copyright = (await legal.locator(':scope > span').first().boundingBox())!;
-  const centerY = (box: { y: number; height: number }) => box.y + box.height / 2;
-  const titleStep = centerY(finalTitle) - centerY(previousTitle);
-  const legalStep = centerY(copyright) - centerY(finalTitle);
-  expect(Math.abs(legalStep - titleStep)).toBeLessThanOrEqual(2);
 
   await page.setViewportSize({ width: 768, height: 900 });
   await expect(legal).toHaveCSS('border-top-width', '1px');
@@ -342,13 +364,9 @@ test('keeps navigation usable and avoids horizontal overflow', async ({ page }) 
       );
       await expect(firstFooterGroup).toHaveCSS('border-bottom-width', '1px');
 
-      const legal = page.locator('.footer-legal');
       await firstFooterSummary.focus();
       await page.keyboard.press('Enter');
       await expect(firstFooterGroup).toHaveAttribute('open', '');
-
-      await expect(legal).toHaveCSS('align-items', 'flex-start');
-      await expect(legal).toHaveCSS('text-align', 'left');
     }
 
     const hasHorizontalOverflow = await page.evaluate(
