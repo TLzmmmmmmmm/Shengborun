@@ -236,6 +236,44 @@ test('uses the final navigation border and matches mobile legal spacing', async 
   await expect(legal).toHaveCSS('border-top-color', 'rgb(218, 218, 224)');
 });
 
+test('uses one compact border line for mobile navigation states', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 700 });
+  await page.goto('/');
+  await page.getByRole('button', { name: '打开主导航' }).click();
+
+  const navigation = page.getByRole('navigation', { name: '主导航' });
+  const home = navigation.getByRole('link', { name: '首页', exact: true });
+  const products = navigation.getByRole('link', {
+    name: '产品中心',
+    exact: true,
+  });
+  const about = navigation.getByRole('link', { name: '关于我们', exact: true });
+
+  await expect(home).toHaveCSS('min-height', '38.4px');
+  await expect(home).toHaveCSS('border-bottom-width', '1px');
+  await expect(home).toHaveCSS('border-bottom-color', 'rgb(0, 183, 181)');
+  await expect(products).toHaveCSS('border-bottom-color', 'rgb(232, 232, 237)');
+  expect(
+    await home.evaluate((element) => getComputedStyle(element, '::after').display),
+  ).toBe('none');
+
+  const productsBeforeHover = (await products.boundingBox())!;
+  await products.hover();
+  await expect(products).toHaveCSS('border-bottom-color', 'rgb(0, 183, 181)');
+  const productsAfterHover = (await products.boundingBox())!;
+  expect(productsAfterHover.height).toBeCloseTo(productsBeforeHover.height, 5);
+
+  await expect(about).toHaveCSS('border-bottom-width', '1px');
+  await expect(about).toHaveCSS('border-bottom-color', 'rgba(0, 0, 0, 0)');
+  await about.hover();
+  await expect(about).toHaveCSS('border-bottom-color', 'rgb(0, 183, 181)');
+
+  await page.mouse.move(0, 0);
+  await home.evaluate((element) => element.removeAttribute('aria-current'));
+  await about.evaluate((element) => element.setAttribute('aria-current', 'page'));
+  await expect(about).toHaveCSS('border-bottom-color', 'rgb(0, 183, 181)');
+});
+
 test('keeps navigation usable and avoids horizontal overflow', async ({ page }) => {
   for (const width of [320, 768, 1440, 1920, 2560]) {
     await page.setViewportSize({ width, height: 900 });
