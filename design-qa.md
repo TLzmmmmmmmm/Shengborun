@@ -1,4 +1,4 @@
-# Mobile Header Navigation Divider QA
+# Shengborun Visual QA
 
 **Findings**
 
@@ -54,5 +54,32 @@ The focused navigation region confirms the intended state model: the old desktop
 **Follow-up Polish**
 
 - Separately resolve `/favicon.ico` for a console-clean local development capture.
+
+## Mobile Footer Detail Density QA
+
+**Evidence**
+
+- Source visual truth: `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-880c456e-68a4-4d97-8cf6-14a1d436ff94.png` (`648 × 347px`).
+- Implementation screenshot: `C:\Users\Lenovo\AppData\Local\Temp\shengborun-mobile-footer-detail-density.png` (`647 × 316px`).
+- Same-input comparison evidence: `C:\Users\Lenovo\AppData\Local\Temp\shengborun-mobile-footer-detail-density-comparison.png`; the source and implementation were opened together before this result was recorded.
+- Route: `/`; CSS viewport: `647 × 900`; device scale factor: `1`; state: first two Footer detail groups open.
+- Density normalization: none. Both captures use one-device-pixel-per-CSS-pixel; the source is one pixel wider and naturally taller because it represents the pre-compaction link rhythm.
+
+**Computed And Interaction Checks**
+
+- Passed: expanded child links compute to `14px` font size and `36px` minimum height; child-list row gap computes to `9.36px`.
+- Preserved: Footer section titles compute to `16px` with `16px` block padding; child-list bottom padding remains `17.6px`.
+- Pointer and keyboard: a summary opens by pointer, closes with `Enter`, and reopens with `Space` in the focused browser regression.
+- Desktop preservation: at `768px`, the open state remains, child-list gap is `10.4px`, and child links retain their `16px` font size.
+- Overflow: the full browser suite passed its mobile through ultra-wide horizontal-overflow coverage.
+- Console: the capture emitted only the known `/favicon.ico` 404; it remains the accepted, out-of-scope P3 follow-up recorded above. No page runtime error was observed.
+
+**Visual Comparison**
+
+The same expanded Footer state shows a stronger title/link hierarchy through smaller child text and approximately 10% tighter link rhythm. The title typography and padding, muted link color, teal controls, and gray dividers remain stable. The following title moves upward naturally with the denser child rows. No actionable P0, P1, or P2 difference was found in the scoped mobile Footer detail hierarchy.
+
+**Focused Region Decision**
+
+The two expanded detail groups are the focused region because the acceptance criteria are link typography, row rhythm, title metrics, dividers, and the next-title movement; no additional asset-focused region is needed because this Footer surface contains no image assets.
 
 final result: passed

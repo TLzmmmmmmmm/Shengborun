@@ -204,6 +204,40 @@ test('renders the approved light footer hierarchy', async ({ page }) => {
   await expect(footer.locator('input[type="search"]')).toHaveCount(0);
 });
 
+test('uses compact mobile footer detail hierarchy', async ({ page }) => {
+  await page.setViewportSize({ width: 647, height: 900 });
+  await page.goto('/');
+
+  const groups = page.locator('footer details');
+  const firstGroup = groups.first();
+  const firstSummary = firstGroup.locator('summary');
+  const firstList = firstGroup.locator('ul');
+  const firstLink = firstList.getByRole('link').first();
+
+  await expect(firstGroup).not.toHaveAttribute('open', '');
+  await firstSummary.click();
+  await expect(firstGroup).toHaveAttribute('open', '');
+
+  await expect(firstSummary).toHaveCSS('font-size', '16px');
+  await expect(firstSummary).toHaveCSS('padding-top', '16px');
+  await expect(firstSummary).toHaveCSS('padding-bottom', '16px');
+  await expect(firstList).toHaveCSS('row-gap', '9.36px');
+  await expect(firstList).toHaveCSS('padding-bottom', '17.6px');
+  await expect(firstLink).toHaveCSS('font-size', '14px');
+  await expect(firstLink).toHaveCSS('min-height', '36px');
+
+  await firstSummary.focus();
+  await page.keyboard.press('Enter');
+  await expect(firstGroup).not.toHaveAttribute('open', '');
+  await page.keyboard.press('Space');
+  await expect(firstGroup).toHaveAttribute('open', '');
+
+  await page.setViewportSize({ width: 768, height: 900 });
+  await expect(firstGroup).toHaveAttribute('open', '');
+  await expect(firstList).toHaveCSS('row-gap', '10.4px');
+  await expect(firstLink).toHaveCSS('font-size', '16px');
+});
+
 test('uses the final navigation border and matches mobile legal spacing', async ({
   page,
 }) => {
