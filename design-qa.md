@@ -60,10 +60,10 @@ The focused navigation region confirms the intended state model: the old desktop
 **Evidence**
 
 - Source visual truth: `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-880c456e-68a4-4d97-8cf6-14a1d436ff94.png` (`648 × 347px`).
-- Implementation screenshot: `C:\Users\Lenovo\AppData\Local\Temp\shengborun-mobile-footer-detail-density.png` (`647 × 316px`).
+- Implementation screenshot: `C:\Users\Lenovo\AppData\Local\Temp\shengborun-mobile-footer-detail-density.png` (`647 × 315px`).
 - Same-input comparison evidence: `C:\Users\Lenovo\AppData\Local\Temp\shengborun-mobile-footer-detail-density-comparison.png`; the source and implementation were opened together before this result was recorded.
 - Route: `/`; CSS viewport: `647 × 900`; device scale factor: `1`; state: first two Footer detail groups open.
-- Density normalization: none. Both captures use one-device-pixel-per-CSS-pixel; the source is one pixel wider and naturally taller because it represents the pre-compaction link rhythm.
+- Density normalization: none. Both captures use one-device-pixel-per-CSS-pixel. The source is one pixel wider and includes a slight extra top framing band omitted by the implementation crop, so computed values—not total canvas height—establish the exact 10% compaction.
 
 **Computed And Interaction Checks**
 
