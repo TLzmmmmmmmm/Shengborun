@@ -39,7 +39,9 @@ At viewport widths of `48rem` and above, preserve the existing desktop navigatio
 
 ## Implementation Boundary
 
-Modify only the mobile navigation styles in `src/components/layout/Header.astro` and the relevant browser regression coverage in `tests/e2e/layout.spec.ts`.
+Modify production and test source only in the mobile navigation styles of `src/components/layout/Header.astro` and the relevant browser regression coverage in `tests/e2e/layout.spec.ts`.
+
+Create `design-qa.md` at the project root and one implementation screenshot under `docs/superpowers/qa/` as the required visual QA evidence. These evidence files document the approved mobile state; they do not expand the product implementation scope.
 
 Do not change component markup, JavaScript, navigation data, global tokens, Header height, Logo size, desktop styles, Footer, content schemas, routes, or page content.
 
