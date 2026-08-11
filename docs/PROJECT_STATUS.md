@@ -1,6 +1,6 @@
 # 盛博润网站项目进度
 
-最后更新：2026-08-10
+最后更新：2026-08-11
 
 本文档是跨对话交接的首要状态来源。新对话开始后，应先阅读本文档，再阅读 `SiteMap.md`、品牌配色规范、Task 3 视觉调整规范和完整实施计划。
 
@@ -56,6 +56,7 @@
 - `faq` 是技术支持类别保留 slug。
 - 产品文档通过稳定产品 ID 关联；不存在 `hasDocuments` 字段。
 - 产品标签颜色只允许品牌规范中的六组受控颜色。
+- 产品实体已移除 `shortDescription`；产品类别实体中独立的可选 `shortDescription` 保持不变。
 - 已加入最小示例内容，正式业务文字和产品资料仍待负责人提供。
 
 ### 3. 品牌布局、Header 和 Footer
@@ -96,6 +97,7 @@ Task 4 将建立产品查询 helper、产品卡片、功能标签、技术参数
 - 所有已发布产品都显示；是否有说明文档不能控制产品可见性。
 - 产品详情 URL 为 `/products/{category-slug}/{product-slug}/`。
 - 参数筛选只能从实际存在的参数字段生成，不预设负责人尚未确认的筛选项。
+- 产品卡片和搜索结果不显示简短介绍，也不从 `productFeatures` 截取替代摘要。
 - 不提供应用场景筛选或产品对比。
 - 产品与解决方案不建立关联字段。
 
@@ -105,6 +107,8 @@ Task 4 将建立产品查询 helper、产品卡片、功能标签、技术参数
 
 - `SiteMap.md`：最终确认的站点结构、路由和内容字段。
 - `docs/superpowers/specs/2026-08-08-brand-color-design.md`：品牌配色规范。
+- `docs/superpowers/specs/2026-08-11-product-short-description-removal-design.md`：产品简短说明字段删除规范。
+- `docs/superpowers/plans/2026-08-11-product-short-description-removal.md`：产品简短说明字段迁移计划。
 - `docs/superpowers/specs/2026-08-10-task3-layout-refinement-design.md`：本轮 Task 3 视觉调整规范。
 - `docs/superpowers/plans/2026-08-08-shengborun-static-site.md`：完整分阶段计划。
 - `docs/superpowers/plans/2026-08-10-task3-layout-refinement.md`：本轮 Task 3 视觉调整实施计划。

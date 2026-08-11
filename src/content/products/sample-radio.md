@@ -3,7 +3,6 @@ id: radio-sample
 name: 示例数字对讲机
 slug: sample-radio
 categoryId: two-way-radio
-shortDescription: 适用于日常调度与现场协作的示例数字对讲机，支持稳定清晰的语音通信。
 coverImage: /images/products/sample-radio.svg
 galleryImages: []
 keyFeatures:

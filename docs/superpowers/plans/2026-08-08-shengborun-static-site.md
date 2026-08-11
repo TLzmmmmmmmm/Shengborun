@@ -211,7 +211,6 @@ const product = defineCollection({
     name: z.string().min(1),
     slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
     categoryId: z.string().min(1),
-    shortDescription: z.string().min(30).max(80),
     coverImage: z.string().min(1),
     galleryImages: z.array(z.string()).default([]),
     keyFeatures: z.array(z.object({
@@ -383,7 +382,7 @@ export const selectVisibleProducts = (products: Product[], _documents: Document[
 
 - [ ] **Step 3: 实现产品列表和类别页面**
 
-要求：所有已发布产品显示；卡片使用 `shortDescription`；筛选参数只从实际内容生成；筛选无结果时显示明确提示和重置按钮。
+要求：所有已发布产品显示；卡片不显示简短介绍；筛选参数只从实际内容生成；筛选无结果时显示明确提示和重置按钮。
 
 - [ ] **Step 4: 实现产品详情页面**
 

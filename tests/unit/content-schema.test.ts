@@ -41,7 +41,6 @@ describe('content rules', () => {
       name: '示例数字对讲机',
       slug: 'sample-radio',
       categoryId: 'two-way-radio',
-      shortDescription: '适用于日常调度与现场协作的示例数字对讲机，支持稳定清晰的语音通信。',
       coverImage: '/images/products/sample-radio.svg',
       keyFeatures: [{ label: '数字通信', color: 'blue' }],
       published: true,
@@ -50,13 +49,35 @@ describe('content rules', () => {
     expect(result.success).toBe(true);
   });
 
+  it('rejects product shortDescription while preserving category summaries', () => {
+    const productResult = productSchema.safeParse({
+      id: 'radio-sample',
+      name: '示例数字对讲机',
+      slug: 'sample-radio',
+      categoryId: 'two-way-radio',
+      shortDescription:
+        '适用于日常调度与现场协作的示例数字对讲机，支持稳定清晰的语音通信。',
+      coverImage: '/images/products/sample-radio.svg',
+      published: true,
+    });
+    const categoryResult = productCategorySchema.safeParse({
+      id: 'two-way-radio',
+      name: '对讲机通信',
+      slug: 'two-way-radio',
+      shortDescription: '产品类别可以继续保留简介。',
+      published: true,
+    });
+
+    expect(productResult.success).toBe(false);
+    expect(categoryResult.success).toBe(true);
+  });
+
   it('rejects unapproved product fields and arbitrary tag colors', () => {
     const result = productSchema.safeParse({
       id: 'radio-sample',
       name: '示例数字对讲机',
       slug: 'sample-radio',
       categoryId: 'two-way-radio',
-      shortDescription: '适用于日常调度与现场协作的示例数字对讲机，支持稳定清晰的语音通信。',
       coverImage: '/images/products/sample-radio.svg',
       keyFeatures: [{ label: '数字通信', color: 'red' }],
       hasDocuments: true,

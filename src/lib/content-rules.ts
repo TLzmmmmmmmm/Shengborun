@@ -26,7 +26,6 @@ export const productSchema = z
     name: z.string().min(1),
     slug: slugSchema,
     categoryId: z.string().min(1),
-    shortDescription: z.string().min(30).max(80),
     coverImage: z.string().min(1),
     galleryImages: z.array(z.string().min(1)).default([]),
     keyFeatures: z
