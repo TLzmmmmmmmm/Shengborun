@@ -1,7 +1,5 @@
 import { z } from 'astro/zod';
 
-export const RESERVED_SUPPORT_SLUGS = ['faq'] as const;
-
 export const PRODUCT_TAG_COLORS = [
   'teal',
   'blue',
@@ -66,13 +64,7 @@ export const productCategorySchema = z
   .object({
     id: z.string().min(1),
     name: z.string().min(1),
-    slug: slugSchema.refine(
-      (slug) =>
-        !RESERVED_SUPPORT_SLUGS.includes(
-          slug as (typeof RESERVED_SUPPORT_SLUGS)[number],
-        ),
-      { message: 'This product category slug is reserved.' },
-    ),
+    slug: slugSchema,
     shortDescription: z.string().min(1).optional(),
     sortOrder: z.number().int().default(0),
     published: z.boolean(),
@@ -102,28 +94,6 @@ export const solutionSchema = z
   })
   .strict();
 
-export const documentSchema = z
-  .object({
-    productId: z.string().min(1),
-    documentName: z.string().min(1),
-    slug: slugSchema,
-    pdfFile: z.string().startsWith('/documents/'),
-    sortOrder: z.number().int().default(0),
-    published: z.boolean(),
-    ...seoFields,
-  })
-  .strict();
-
-export const faqSchema = z
-  .object({
-    id: z.string().min(1),
-    question: z.string().min(1),
-    answer: z.string().min(1),
-    sortOrder: z.number().int().default(0),
-    published: z.boolean(),
-  })
-  .strict();
-
 export const siteSettingsSchema = z
   .object({
     siteName: z.string().min(1),
@@ -140,17 +110,14 @@ interface ContentReferences {
     categoryId: string;
     keyFeatures?: Array<{ label: string; color: ProductTagColor }>;
   }>;
-  documents: Array<{ productId: string }>;
 }
 
 export function validateContentReferences({
   categories,
   products,
-  documents,
 }: ContentReferences): string[] {
   const errors: string[] = [];
   const categoryIds = new Set(categories.map((category) => category.id));
-  const productIds = new Set(products.map((product) => product.id));
 
   const seenCategoryIds = new Set<string>();
   const reportedCategoryIds = new Set<string>();
@@ -178,25 +145,9 @@ export function validateContentReferences({
     seenProductIds.add(product.id);
   }
 
-  for (const category of categories) {
-    if (
-      RESERVED_SUPPORT_SLUGS.includes(
-        category.slug as (typeof RESERVED_SUPPORT_SLUGS)[number],
-      )
-    ) {
-      errors.push(`Product category slug "${category.slug}" is reserved.`);
-    }
-  }
-
   for (const product of products) {
     if (!categoryIds.has(product.categoryId)) {
       errors.push(`Unknown categoryId: ${product.categoryId}`);
-    }
-  }
-
-  for (const document of documents) {
-    if (!productIds.has(document.productId)) {
-      errors.push(`Unknown productId: ${document.productId}`);
     }
   }
 

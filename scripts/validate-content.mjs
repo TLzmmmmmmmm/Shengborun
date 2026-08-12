@@ -65,15 +65,13 @@ async function readMarkdownDirectory(directoryName) {
 }
 
 async function main() {
-  const [categories, products, documents] = await Promise.all([
+  const [categories, products] = await Promise.all([
     readJsonDirectory('product-categories'),
     readMarkdownDirectory('products'),
-    readMarkdownDirectory('documents'),
   ]);
   const errors = validateContentReferences({
     categories,
     products,
-    documents,
   });
 
   if (errors.length > 0) {

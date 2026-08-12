@@ -12,9 +12,6 @@ import { describe, expect, it } from 'vitest';
 
 import {
   PRODUCT_TAG_COLORS,
-  RESERVED_SUPPORT_SLUGS,
-  documentSchema,
-  faqSchema,
   productCategorySchema,
   productSchema,
   siteSettingsSchema,
@@ -23,8 +20,7 @@ import {
 } from '../../src/lib/content-rules';
 
 describe('content rules', () => {
-  it('reserves FAQ and limits feature colors', () => {
-    expect(RESERVED_SUPPORT_SLUGS).toContain('faq');
+  it('limits feature colors', () => {
     expect(PRODUCT_TAG_COLORS).toEqual([
       'teal',
       'blue',
@@ -87,9 +83,9 @@ describe('content rules', () => {
     expect(result.success).toBe(false);
   });
 
-  it('reports reserved category slugs and broken content references', () => {
+  it('reports broken product category references', () => {
     const errors = validateContentReferences({
-      categories: [{ id: 'reserved-category', slug: 'faq' }],
+      categories: [{ id: 'two-way-radio', slug: 'two-way-radio' }],
       products: [
         {
           id: 'radio-sample',
@@ -97,13 +93,10 @@ describe('content rules', () => {
           keyFeatures: [],
         },
       ],
-      documents: [{ productId: 'missing-product' }],
     });
 
     expect(errors).toEqual([
-      'Product category slug "faq" is reserved.',
       'Unknown categoryId: missing-category',
-      'Unknown productId: missing-product',
     ]);
   });
 
@@ -122,7 +115,6 @@ describe('content rules', () => {
           keyFeatures: [{ label: '数字通信', color: 'teal' }],
         },
       ],
-      documents: [],
     });
 
     expect(errors).toEqual([
@@ -148,7 +140,6 @@ describe('content rules', () => {
           keyFeatures: [],
         },
       ],
-      documents: [{ productId: 'radio-sample' }],
     });
 
     expect(errors).toEqual([
@@ -157,7 +148,7 @@ describe('content rules', () => {
     ]);
   });
 
-  it('validates product categories in nested content directories', () => {
+  it('validates product references in nested content directories', () => {
     const fixtureRoot = mkdtempSync(path.join(tmpdir(), 'shengborun-content-'));
     const nestedCategoryDirectory = path.join(
       fixtureRoot,
@@ -168,10 +159,14 @@ describe('content rules', () => {
     try {
       mkdirSync(nestedCategoryDirectory, { recursive: true });
       mkdirSync(path.join(fixtureRoot, 'products'));
-      mkdirSync(path.join(fixtureRoot, 'documents'));
       writeFileSync(
-        path.join(nestedCategoryDirectory, 'reserved.json'),
-        JSON.stringify({ id: 'reserved', slug: 'faq' }),
+        path.join(nestedCategoryDirectory, 'two-way-radio.json'),
+        JSON.stringify({ id: 'two-way-radio', slug: 'two-way-radio' }),
+        'utf8',
+      );
+      writeFileSync(
+        path.join(fixtureRoot, 'products', 'broken.md'),
+        '---\nid: broken\ncategoryId: missing-category\n---\n',
         'utf8',
       );
 
@@ -186,23 +181,22 @@ describe('content rules', () => {
       });
 
       expect(result.status).toBe(1);
-      expect(result.stderr).toContain(
-        'Product category slug "faq" is reserved.',
-      );
+      expect(result.stderr).toContain('Unknown categoryId: missing-category');
     } finally {
       rmSync(fixtureRoot, { recursive: true, force: true });
     }
   });
 
-  it('rejects FAQ as a product category slug', () => {
+  it('accepts category slugs independently from legacy support routes', () => {
     const result = productCategorySchema.safeParse({
-      id: 'reserved-category',
-      name: '错误类别',
-      slug: 'faq',
+      id: 'shortwave-radio',
+      name: '短波通信',
+      slug: 'shortwave-radio',
+      sortOrder: 2,
       published: true,
     });
 
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
   });
 
   it('keeps solution visuals separate from product relationships', () => {
@@ -235,46 +229,6 @@ describe('content rules', () => {
 
     expect(validResult.success).toBe(true);
     expect(relatedProductResult.success).toBe(false);
-  });
-
-  it('requires documents to reference a product and provide a local PDF', () => {
-    const validResult = documentSchema.safeParse({
-      productId: 'radio-sample',
-      documentName: '示例数字对讲机使用说明',
-      slug: 'sample-radio-manual',
-      pdfFile: '/documents/sample-radio-manual.pdf',
-      published: true,
-    });
-    const missingPdfResult = documentSchema.safeParse({
-      productId: 'radio-sample',
-      documentName: '缺少 PDF 的说明',
-      slug: 'manual-without-pdf',
-      published: true,
-    });
-
-    expect(validResult.success).toBe(true);
-    expect(missingPdfResult.success).toBe(false);
-  });
-
-  it('models FAQ as ordered ungrouped questions', () => {
-    const validResult = faqSchema.safeParse({
-      id: 'power-on',
-      question: '设备无法开机时怎么办？',
-      answer: '请先确认电池已正确安装并有足够电量。',
-      sortOrder: 1,
-      published: true,
-    });
-    const groupedResult = faqSchema.safeParse({
-      id: 'grouped-question',
-      question: '这是分类问题吗？',
-      answer: 'FAQ 不建立分类。',
-      category: '设备使用',
-      sortOrder: 2,
-      published: true,
-    });
-
-    expect(validResult.success).toBe(true);
-    expect(groupedResult.success).toBe(false);
   });
 
   it('requires minimal global site settings', () => {
