@@ -1,0 +1,113 @@
+---
+import ProductCard from './ProductCard.astro';
+
+interface ProductItem {
+  name: string;
+  image: string;
+  imageAlt: string;
+  href: string;
+}
+
+interface Props {
+  id: string;
+  name: string;
+  description: string;
+  banner: string;
+  bannerAlt: string;
+  href: string;
+  products: ProductItem[];
+}
+
+const { id, name, description, banner, bannerAlt, href, products } = Astro.props;
+---
+
+<section class="category-section" data-category-section={id}>
+  <header class="category-heading">
+    <h2>{name}</h2>
+    <p data-category-description>{description}</p>
+  </header>
+
+  <img
+    class="category-banner"
+    data-category-banner
+    src={banner}
+    alt={bannerAlt}
+    width="1536"
+    height="512"
+    decoding="async"
+  />
+
+  <div class="product-grid" data-product-grid>
+    {products.map((product) => <ProductCard {...product} />)}
+  </div>
+
+  <a class="category-link" href={href} aria-label={`了解更多${name}产品`}>
+    了解更多
+  </a>
+</section>
+
+<style>
+  .category-section {
+    padding-block: clamp(2.5rem, 4vw, 3.75rem);
+  }
+
+  .category-heading {
+    margin-bottom: 1.75rem;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: clamp(1.65rem, 2.5vw, 2.25rem);
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0.65rem 0 0;
+    color: var(--text-secondary);
+  }
+
+  .category-banner {
+    width: 100%;
+    aspect-ratio: 3 / 1;
+    border-radius: var(--radius-small);
+    object-fit: cover;
+  }
+
+  .product-grid {
+    display: grid;
+    margin-top: 1.5rem;
+    gap: 1.5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .category-link {
+    display: flex;
+    width: fit-content;
+    min-width: 10rem;
+    min-height: 3rem;
+    margin: 2rem auto 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-small);
+    background: var(--brand-teal);
+    color: var(--text-primary);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+
+  .category-link:hover {
+    background: var(--brand-teal-hover);
+    color: var(--text-primary);
+  }
+
+  @media (max-width: 47.999rem) {
+    .category-banner {
+      aspect-ratio: 16 / 7;
+    }
+
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
