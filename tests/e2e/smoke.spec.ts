@@ -5,7 +5,9 @@ test('serves the initial Shengborun homepage', async ({ page }) => {
 
   expect(response?.status()).toBe(200);
   await expect(page).toHaveTitle('北京盛博润通讯设备有限公司');
-  await expect(page.getByRole('heading', { level: 1, name: '盛博润' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { level: 1, name: '产品中心' }),
+  ).toBeVisible();
 });
 
 test('serves the company mark favicon', async ({ page, request }) => {

@@ -1,31 +1,9 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
-
 import CategorySection from '../../components/products/CategorySection.astro';
-import { placeholderProductCategories } from '../../data/products-page-placeholders';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { selectPublishedProducts } from '../../lib/products';
+import { getProductPresentation } from '../../lib/product-presentation';
 
-const category = await getEntry('productCategories', 'two-way-radio');
-if (!category || !category.data.published) {
-  throw new Error('Published two-way-radio category is required.');
-}
-
-const productEntries = await getCollection('products');
-const products = selectPublishedProducts(
-  productEntries.map((entry) => entry.data),
-  category.data.id,
-  3,
-).map((product) => ({
-  name: product.name,
-  image: product.coverImage,
-  imageAlt:
-    product.id === 'ly198'
-      ? '润信达 LY198 模拟对讲机正面图'
-      : `${product.name}产品图`,
-  href: `/products/${category.data.slug}/${product.slug}/`,
-}));
-
+const categories = await getProductPresentation();
 const pageTitle = '产品中心 | 北京盛博润通讯设备有限公司';
 const pageDescription = '专业的通信设备与解决方案，助力客户高效连接世界';
 ---
@@ -42,50 +20,18 @@ const pageDescription = '专业的通信设备与解决方案，助力客户高�
         <h1>产品中心</h1>
         <p>{pageDescription}</p>
       </section>
-
-      <CategorySection
-        id={category.data.id}
-        name={category.data.name}
-        description="专业可靠的便携通信产品，满足消防稳定的现场联络需求"
-        banner="/images/products/two-way-radio-banner.png"
-        bannerAlt="对讲机通信产品与无线通信场景"
-        href={`/products/${category.data.slug}/`}
-        products={products}
-      />
-
-      {
-        placeholderProductCategories.map((placeholderCategory) => (
-          <CategorySection {...placeholderCategory} />
-        ))
-      }
+      {categories.map((category) => <CategorySection {...category} />)}
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .products-page {
-    background: var(--surface-muted);
-  }
-
-  .products-content {
-    max-width: 100rem;
-  }
-
+  .products-page { background: var(--surface-muted); }
+  .products-content { max-width: 100rem; }
   .products-intro {
     padding-block: 2rem clamp(2rem, 3.5vw, 3rem);
     border-bottom: 1px solid var(--divider);
   }
-
-  h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-  }
-
-  p {
-    margin: 1rem 0 0;
-    color: var(--text-secondary);
-    font-size: 1.1875rem;
-  }
+  h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; line-height: 1.1; }
+  p { margin: 1rem 0 0; color: var(--text-secondary); font-size: 1.1875rem; }
 </style>

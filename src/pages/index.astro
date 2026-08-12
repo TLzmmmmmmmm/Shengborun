@@ -1,15 +1,32 @@
 ---
+import CategorySection from '../components/products/CategorySection.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProductPresentation } from '../lib/product-presentation';
 
-const title = '北京盛博润通讯设备有限公司';
-const description = '盛博润通信产品、解决方案与技术支持官方网站。';
+const categories = await getProductPresentation();
+const pageTitle = '北京盛博润通讯设备有限公司';
+const pageDescription = '专业的通信设备与解决方案，助力客户高效连接世界';
 ---
 
-<BaseLayout title={title} description={description} canonicalPath="/">
-  <section class="foundation-placeholder site-container">
-    <div>
-      <h1>盛博润</h1>
-      <p>网站结构与品牌框架已就绪，正式首页内容将在后续阶段完成。</p>
+<BaseLayout title={pageTitle} description={pageDescription} canonicalPath="/">
+  <div class="products-page">
+    <div class="products-content site-container">
+      <section class="products-intro" data-products-intro>
+        <h1>产品中心</h1>
+        <p>{pageDescription}</p>
+      </section>
+      {categories.map((category) => <CategorySection {...category} />)}
     </div>
-  </section>
+  </div>
 </BaseLayout>
+
+<style>
+  .products-page { background: var(--surface-muted); }
+  .products-content { max-width: 100rem; }
+  .products-intro {
+    padding-block: 2rem clamp(2rem, 3.5vw, 3rem);
+    border-bottom: 1px solid var(--divider);
+  }
+  h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; line-height: 1.1; }
+  p { margin: 1rem 0 0; color: var(--text-secondary); font-size: 1.1875rem; }
+</style>

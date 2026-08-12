@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('products landing page', () => {
+for (const landingPath of ['/', '/products/']) {
+test.describe(`products presentation at ${landingPath}`, () => {
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1600 });
-    await page.goto('/products/');
+    await page.goto(landingPath);
   });
 
   test('uses the existing layout and approved introductory copy', async ({
@@ -11,13 +12,6 @@ test.describe('products landing page', () => {
   }) => {
     await expect(page.locator('header.site-header')).toBeVisible();
     await expect(page.locator('footer')).toBeVisible();
-    await expect(
-      page.getByRole('navigation', { name: '主导航' }).getByRole('link', {
-        name: '产品中心',
-        exact: true,
-      }),
-    ).toHaveAttribute('aria-current', 'page');
-
     await expect(
       page.getByRole('heading', { name: '产品中心', level: 1 }),
     ).toBeVisible();
@@ -59,15 +53,15 @@ test.describe('products landing page', () => {
 
     await expect(cards.nth(0).getByRole('link', { name: '了解更多' })).toHaveAttribute(
       'href',
-      '/products/two-way-radio/ly198/',
+      '/two-way-radio/ly198/',
     );
     await expect(cards.nth(1).getByRole('link', { name: '了解更多' })).toHaveAttribute(
       'href',
-      '/products/two-way-radio/sample-radio/',
+      '/two-way-radio/sample-radio/',
     );
     await expect(cards.nth(2).getByRole('link', { name: '了解更多' })).toHaveAttribute(
       'href',
-      '/products/two-way-radio/product-sample-03/',
+      '/two-way-radio/product-sample-03/',
     );
 
     await expect(section).not.toContainText('购买');
@@ -79,7 +73,7 @@ test.describe('products landing page', () => {
     });
     await expect(categoryLink).toHaveAttribute(
       'href',
-      '/products/two-way-radio/',
+      '/two-way-radio/',
     );
     await expect(categoryLink).toHaveCSS('background-color', 'rgb(0, 124, 123)');
     await expect(categoryLink).toHaveCSS('color', 'rgb(29, 29, 31)');
@@ -91,19 +85,19 @@ test.describe('products landing page', () => {
     const expectedSections = [
       {
         id: 'two-way-radio',
-        href: '/products/two-way-radio/',
+        href: '/two-way-radio/',
       },
       {
         id: 'shortwave-radio',
-        href: '/products/shortwave-radio/',
+        href: '/shortwave-radio/',
       },
       {
         id: 'mesh-network',
-        href: '/products/mesh-network/',
+        href: '/mesh-network/',
       },
       {
         id: 'ict-integration',
-        href: '/products/ict-integration/',
+        href: '/ict-integration/',
       },
     ];
 
@@ -269,3 +263,4 @@ test.describe('products landing page', () => {
     }
   });
 });
+}

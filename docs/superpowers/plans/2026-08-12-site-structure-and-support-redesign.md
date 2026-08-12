@@ -14,7 +14,7 @@
 - Header “产品中心” links to `/two-way-radio/`; `/products/` remains a temporary page but is absent from header and footer navigation.
 - Product category paths are `/{category-slug}/`; product detail paths are `/{category-slug}/{product-slug}/`; no nested `/products/{category-slug}/...` routes or links remain.
 - Category and product route generation only uses published content and verifies that every product belongs to its URL category.
-- Support cards are desktop 3 × 2 and mobile 2 × 3; services without a real `href` are not fake links.
+- `/support/` and six confirmed service paths use default `BaseLayout` placeholders; the supplied 3 × 2 / 2 × 3 card design is deferred.
 - Footer has four navigation groups. Only product-center group title is non-link text; the other titles link to `/solutions/`, `/support/`, and `/about/`.
 - Mobile footer title text navigation and row expansion are separate, non-overlapping controls: text only navigates; every non-text area in the row only toggles expansion.
 - Footer legal links are outside navigation. Desktop uses one `space-between` row; mobile puts copyright on row one and filings plus legal/privacy links in a centered second group.
@@ -179,10 +179,9 @@ git commit -m "feat: place product presentation on homepage"
 
 ---
 
-### Task 3: Generate top-level category and product-detail routes from shared templates
+### Task 3: Generate top-level category and product-detail placeholder routes
 
 **Files:**
-- Create: `src/components/products/CategorySwitcher.astro`
 - Create: `src/pages/[category]/index.astro`
 - Create: `src/pages/[category]/[product].astro`
 - Modify: `src/lib/products.ts`
@@ -191,7 +190,7 @@ git commit -m "feat: place product presentation on homepage"
 
 **Interfaces:**
 - Produces: `buildPublishedProductRoutes(categories, products)` returning validated category/detail route records.
-- Produces: `CategorySwitcher` with `categories: { name: string; slug: string }[]` and `currentSlug: string`.
+- Produces: default `BaseLayout` placeholders with valid metadata and no category/detail feature UI.
 
 - [ ] **Step 1: Write failing route-helper tests**
 
@@ -217,17 +216,17 @@ Expected: FAIL because `buildPublishedProductRoutes` does not exist.
 
 Add typed route selection to `src/lib/products.ts`. Both Astro route files use `getStaticPaths()` and only return explicit published category slugs, so reserved top-level pages are never captured accidentally. The category path passes one category plus all sorted categories. The detail path passes the validated product and owning category.
 
-- [ ] **Step 4: Build the shared category switcher and category template**
+- [ ] **Step 4: Build the category placeholder template**
 
-Render current category as non-link text with `aria-current="page"`; render the other three as `/${slug}/` links. The category page displays its title, description, switcher, and products. It must not duplicate hardcoded four-category arrays.
+Render only `BaseLayout` with the category name in the title, `/${category.slug}/` canonical, and one breadcrumb. Use the existing neutral foundation placeholder treatment for a short “页面将在后续阶段完成” message. Do not add category switchers, filters, product lists, or new visual page sections.
 
-- [ ] **Step 5: Build the shared product-detail template**
+- [ ] **Step 5: Build the product-detail placeholder template**
 
-Render product name, cover image, key-feature tags, complete product features, grouped technical parameters when present, and `/about/#contact` contact link. Breadcrumbs and canonical use `/${category.slug}/${product.slug}/`.
+Render only `BaseLayout` with the product name in the title, `/${category.slug}/${product.slug}/` canonical, category and product breadcrumbs, and the same neutral placeholder treatment. Do not render product images, tags, features, parameters, documents, or contact actions.
 
 - [ ] **Step 6: Add E2E route assertions**
 
-Verify `/two-way-radio/` shows current category plus three alternatives; `/two-way-radio/ly198/` shows LY198; generated page links omit `/products`; and build output lacks `dist/products/two-way-radio/index.html`.
+Verify `/two-way-radio/` and `/two-way-radio/ly198/` return 200 with the correct placeholder headings and canonicals; generated page links omit `/products`; no category switcher/product-detail UI is present; and build output lacks `dist/products/two-way-radio/index.html`.
 
 - [ ] **Step 7: Run route tests and build**
 
@@ -238,7 +237,7 @@ Expected: PASS; only new category/detail paths are generated.
 - [ ] **Step 8: Commit product routes**
 
 ```powershell
-git add src/components/products/CategorySwitcher.astro src/pages/[category] src/lib/products.ts tests/unit/product-routes.test.ts tests/e2e/product-routes.spec.ts
+git add src/pages/[category] src/lib/products.ts tests/unit/product-routes.test.ts tests/e2e/product-routes.spec.ts
 git commit -m "feat: add top-level product routes"
 ```
 
@@ -292,56 +291,52 @@ git commit -m "feat: route product navigation to first category"
 
 ---
 
-### Task 5: Build the new six-service support page from one service data source
+### Task 5: Build support and six service placeholder routes from one service data source
 
 **Files:**
 - Create: `src/data/support-services.ts`
-- Create: `src/components/support/ServiceCard.astro`
 - Create: `src/pages/support/index.astro`
-- Modify: `package.json`
-- Modify: `pnpm-lock.yaml`
+- Create: `src/pages/support/[service].astro`
 - Create: `tests/unit/support-services.test.ts`
 - Create: `tests/e2e/support.spec.ts`
 
 **Interfaces:**
 - Produces: `SupportService { id; name; description; icon; href?: string }` and ordered `supportServices` array of six items.
-- Consumes locally bundled `@iconify-json/mdi` outline icons through `astro-icon/components`.
+- Produces: six confirmed `href` values under `/support/` for footer use and future page development.
 
 - [ ] **Step 1: Write failing data and page tests**
 
-Unit test exact ordered names and assert every initial `href` is `undefined`. E2E test six cards, service-standards content, no FAQ/manual/after-sales copy, 3 columns at 1440px, and 2 columns at 320px.
+Unit test exact ordered names and hrefs. E2E test `/support/` plus all six service paths return 200, expose correct canonicals/headings, use `.foundation-placeholder`, and contain no FAQ/manual/after-sales or service-card UI.
 
 - [ ] **Step 2: Run tests and verify failure**
 
 Run: `pnpm vitest run tests/unit/support-services.test.ts && pnpm playwright test tests/e2e/support.spec.ts`
 
-Expected: FAIL because services and support route do not exist.
+Expected: FAIL because services and support routes do not exist.
 
-- [ ] **Step 3: Add a local icon package and service records**
+- [ ] **Step 3: Add the service records and confirmed paths**
 
-Run: `pnpm add astro-icon @iconify-json/mdi`
+Define the six exact names and confirmed slugs. Set each `href` to `/support/{slug}/`. Retain optional description/icon metadata only as future design inputs; no icon dependency is installed in this phase.
 
-Define the six exact names from the spec. Use matching outline icons for network/globe, engineering/tools, maintenance/account-cog, inspection/search, communications/hand-support, and training/school. Keep `href` omitted until a real target exists.
+- [ ] **Step 4: Implement the support index placeholder**
 
-- [ ] **Step 4: Implement `ServiceCard` with optional interaction**
+Render `BaseLayout` with title “技术支持”, canonical `/support/`, breadcrumb, and `.foundation-placeholder`. Do not render service cards or service standards.
 
-Render an `<a>` only when `href` exists; otherwise render `<article>`. Import `Icon` from `astro-icon/components` and render `<Icon name={`mdi:${icon}`} />`; do not hand-author SVG paths or use CSS drawings.
+- [ ] **Step 5: Implement one static service placeholder template**
 
-- [ ] **Step 5: Implement the responsive support page**
-
-Match the reference hierarchy: centered “全创服务” / “Full service”, light-gray cards, blue outline icons, and “服务准则” section. CSS uses `grid-template-columns: repeat(3, minmax(0, 1fr))` on desktop and `repeat(2, minmax(0, 1fr))` below 48rem. Use neutral placeholder descriptions and identify the four standards as unconfirmed presentation copy where applicable.
+Use `getStaticPaths()` over `supportServices` and render `BaseLayout` with service name, confirmed canonical, support/service breadcrumbs, and `.foundation-placeholder`. Do not add service-specific features or designs.
 
 - [ ] **Step 6: Run support tests**
 
 Run: `pnpm vitest run tests/unit/support-services.test.ts && pnpm playwright test tests/e2e/support.spec.ts`
 
-Expected: PASS with six non-link cards and no horizontal overflow at 320px.
+Expected: PASS for seven placeholder pages and no stale support content.
 
 - [ ] **Step 7: Commit support page**
 
 ```powershell
-git add package.json pnpm-lock.yaml src/data/support-services.ts src/components/support/ServiceCard.astro src/pages/support/index.astro tests/unit/support-services.test.ts tests/e2e/support.spec.ts
-git commit -m "feat: build six-service support page"
+git add src/data/support-services.ts src/pages/support/index.astro src/pages/support/[service].astro tests/unit/support-services.test.ts tests/e2e/support.spec.ts
+git commit -m "feat: add support service placeholders"
 ```
 
 ---
