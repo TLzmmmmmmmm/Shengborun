@@ -57,19 +57,21 @@ const { id, name, description, banner, bannerAlt, href, products } = Astro.props
 
   h2 {
     margin: 0;
-    font-size: clamp(1.65rem, 2.5vw, 2.25rem);
+    font-size: 1.25rem;
     line-height: 1.2;
   }
 
   p {
     margin: 0.65rem 0 0;
     color: var(--text-secondary);
+    font-size: 1rem;
   }
 
   .category-banner {
     width: 100%;
-    aspect-ratio: 3 / 1;
-    border-radius: var(--radius-small);
+    height: auto;
+    aspect-ratio: 15 / 4;
+    border-radius: 0.75rem;
     object-fit: cover;
   }
 
@@ -83,13 +85,13 @@ const { id, name, description, banner, bannerAlt, href, products } = Astro.props
   .category-link {
     display: flex;
     width: fit-content;
-    min-width: 10rem;
     min-height: 3rem;
     margin: 2rem auto 0;
+    padding-inline: 1.5rem;
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-small);
-    background: var(--brand-teal);
+    background: var(--brand-teal-mid);
     color: var(--text-primary);
     font-weight: 700;
     text-decoration: none;

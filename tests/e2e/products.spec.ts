@@ -81,20 +81,42 @@ test.describe('products landing page', () => {
       'href',
       '/products/two-way-radio/',
     );
-    await expect(categoryLink).toHaveCSS('background-color', 'rgb(0, 183, 181)');
+    await expect(categoryLink).toHaveCSS('background-color', 'rgb(0, 154, 152)');
     await expect(categoryLink).toHaveCSS('color', 'rgb(29, 29, 31)');
   });
 
   test('aligns the desktop banner and square product grid', async ({ page }) => {
     const section = page.locator('[data-category-section="two-way-radio"]');
+    const introTitle = page.getByRole('heading', { name: '产品中心', level: 1 });
+    const introDescription = page.locator('[data-products-intro] p');
+    const categoryTitle = section.getByRole('heading', {
+      name: '对讲机通信',
+      level: 2,
+    });
+    const categoryDescription = section.locator('[data-category-description]');
     const introBox = await page.locator('[data-products-intro]').boundingBox();
     const introTitleSize = Number.parseFloat(
-      await page
-        .getByRole('heading', { name: '产品中心', level: 1 })
-        .evaluate((heading) => getComputedStyle(heading).fontSize),
+      await introTitle.evaluate((heading) => getComputedStyle(heading).fontSize),
+    );
+    const introDescriptionSize = Number.parseFloat(
+      await introDescription.evaluate((description) =>
+        getComputedStyle(description).fontSize,
+      ),
+    );
+    const categoryTitleSize = Number.parseFloat(
+      await categoryTitle.evaluate((heading) => getComputedStyle(heading).fontSize),
+    );
+    const categoryDescriptionSize = Number.parseFloat(
+      await categoryDescription.evaluate((description) =>
+        getComputedStyle(description).fontSize,
+      ),
     );
     const bannerBox = await section.locator('[data-category-banner]').boundingBox();
     const gridBox = await section.locator('[data-product-grid]').boundingBox();
+    const categoryLink = section.getByRole('link', {
+      name: '了解更多对讲机通信产品',
+    });
+    const categoryLinkBox = await categoryLink.boundingBox();
     const cardBoxes = await section.locator('[data-product-card]').evaluateAll((cards) =>
       cards.map((card) => {
         const box = card.getBoundingClientRect();
@@ -104,11 +126,31 @@ test.describe('products landing page', () => {
 
     expect(introBox).not.toBeNull();
     expect(introBox?.height ?? Number.POSITIVE_INFINITY).toBeLessThan(250);
-    expect(introTitleSize).toBeLessThanOrEqual(48);
+    expect(introTitleSize).toBe(24);
+    expect(introDescriptionSize).toBe(19);
+    expect(categoryTitleSize).toBe(20);
+    expect(categoryDescriptionSize).toBe(16);
     expect(bannerBox).not.toBeNull();
     expect(gridBox).not.toBeNull();
+    expect(categoryLinkBox).not.toBeNull();
     expect(Math.abs((bannerBox?.x ?? 0) - (gridBox?.x ?? 0))).toBeLessThan(1);
     expect(Math.abs((bannerBox?.width ?? 0) - (gridBox?.width ?? 0))).toBeLessThan(1);
+    expect(
+      Math.abs((bannerBox?.width ?? 0) / (bannerBox?.height ?? 1) - 3.75),
+    ).toBeLessThan(0.02);
+    expect(categoryLinkBox?.width ?? Number.POSITIVE_INFINITY).toBeLessThan(130);
+    await expect(section.locator('[data-category-banner]')).toHaveCSS(
+      'border-radius',
+      '12px',
+    );
+    await expect(section.locator('[data-product-card]').first()).toHaveCSS(
+      'border-radius',
+      '12px',
+    );
+    await expect(categoryLink).toHaveCSS(
+      'background-color',
+      'rgb(0, 154, 152)',
+    );
 
     for (const box of cardBoxes) {
       expect(Math.abs(box.width - box.height)).toBeLessThan(1);
