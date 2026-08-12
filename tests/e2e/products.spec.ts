@@ -85,6 +85,75 @@ test.describe('products landing page', () => {
     await expect(categoryLink).toHaveCSS('color', 'rgb(29, 29, 31)');
   });
 
+  test('renders the remaining reusable category sections with page-only placeholders', async ({
+    page,
+  }) => {
+    const expectedSections = [
+      {
+        id: 'two-way-radio',
+        href: '/products/two-way-radio/',
+      },
+      {
+        id: 'shortwave-radio',
+        href: '/products/shortwave-radio/',
+      },
+      {
+        id: 'mesh-network',
+        href: '/products/mesh-network/',
+      },
+      {
+        id: 'ict-integration',
+        href: '/products/ict-integration/',
+      },
+    ];
+
+    const sections = page.locator('[data-category-section]');
+    await expect(sections).toHaveCount(4);
+    expect(
+      await sections.evaluateAll((items) =>
+        items.map((item) => item.getAttribute('data-category-section')),
+      ),
+    ).toEqual(expectedSections.map(({ id }) => id));
+
+    for (const { id, href } of expectedSections.slice(1)) {
+      const section = page.locator(`[data-category-section="${id}"]`);
+      const cards = section.locator('[data-product-card]');
+
+      await expect(cards).toHaveCount(3);
+      await expect(section.locator('[data-category-banner]')).toBeVisible();
+      await expect(
+        section.locator('[data-category-link]'),
+      ).toHaveAttribute('href', href);
+
+      for (const card of await cards.all()) {
+        await expect(card.getByRole('link')).toHaveAttribute('href', href);
+      }
+    }
+
+    for (let index = 1; index < expectedSections.length; index += 1) {
+      const previousSection = sections.nth(index - 1);
+      const currentSection = sections.nth(index);
+      const previousLinkBox = await previousSection
+        .locator('[data-category-link]')
+        .boundingBox();
+      const currentSectionBox = await currentSection.boundingBox();
+      const currentHeadingBox = await currentSection
+        .getByRole('heading', { level: 2 })
+        .boundingBox();
+
+      expect(previousLinkBox).not.toBeNull();
+      expect(currentSectionBox).not.toBeNull();
+      expect(currentHeadingBox).not.toBeNull();
+      expect(
+        Math.abs(
+          (currentSectionBox?.y ?? 0) -
+            ((previousLinkBox?.y ?? 0) + (previousLinkBox?.height ?? 0)) -
+            ((currentHeadingBox?.y ?? 0) - (currentSectionBox?.y ?? 0)),
+        ),
+      ).toBeLessThan(1);
+    }
+  });
+
   test('aligns the desktop banner and square product grid', async ({ page }) => {
     const section = page.locator('[data-category-section="two-way-radio"]');
     const introTitle = page.getByRole('heading', { name: '产品中心', level: 1 });

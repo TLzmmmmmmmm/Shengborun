@@ -41,14 +41,28 @@ const { id, name, description, banner, bannerAlt, href, products } = Astro.props
     {products.map((product) => <ProductCard {...product} />)}
   </div>
 
-  <a class="category-link" href={href} aria-label={`了解更多${name}产品`}>
+  <a
+    class="category-link"
+    data-category-link
+    href={href}
+    aria-label={`了解更多${name}产品`}
+  >
     了解更多
   </a>
 </section>
 
 <style>
   .category-section {
-    padding-block: 2rem clamp(2.5rem, 4vw, 3.75rem);
+    position: relative;
+    padding-block: 2rem;
+  }
+
+  .category-section + .category-section::before {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--divider);
+    content: '';
   }
 
   .category-heading {

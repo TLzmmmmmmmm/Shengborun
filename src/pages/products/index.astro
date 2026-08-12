@@ -2,6 +2,7 @@
 import { getCollection, getEntry } from 'astro:content';
 
 import CategorySection from '../../components/products/CategorySection.astro';
+import { placeholderProductCategories } from '../../data/products-page-placeholders';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { selectPublishedProducts } from '../../lib/products';
 
@@ -51,6 +52,12 @@ const pageDescription = '专业的通信设备与解决方案，助力客户高�
         href={`/products/${category.data.slug}/`}
         products={products}
       />
+
+      {
+        placeholderProductCategories.map((placeholderCategory) => (
+          <CategorySection {...placeholderCategory} />
+        ))
+      }
     </div>
   </div>
 </BaseLayout>
