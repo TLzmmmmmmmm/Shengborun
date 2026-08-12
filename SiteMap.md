@@ -1,220 +1,74 @@
-# 盛博润网站结构
+# 盛博润网站现行结构
 
-网站仅提供简体中文公开内容，不设访客登录、支付或信息提交功能。
+最后更新：2026-08-12
+
+本文件只描述当前有效的信息架构。历史设计和实施计划若与本文件冲突，以本文件及 `docs/superpowers/specs/2026-08-12-site-structure-and-support-redesign.md` 为准。
 
 ## 顶部导航
 
 ```text
-首页  /
-├─ 产品中心  /products
-├─ 解决方案  /solutions
-├─ 技术支持  /support
-└─ 关于我们  /about
+首页      /
+产品中心  /two-way-radio/
+解决方案  /solutions/
+技术支持  /support/
+关于我们  /about/
 ```
 
-- 顶部导航保留“首页、产品中心、解决方案、技术支持、关于我们”。
-- 点击“首页”返回首页。
-- Logo 不设置返回首页的链接。
-- 顶部导航不设置固定的“电话咨询”按钮。
-- “联系我们”放在“关于我们”页面和全站页脚中。
+`/products/` 继续保留为临时占位产品中心页面，但不作为顶部或页脚入口。
 
-## 完整页面层级
+## 页面与路由
 
 ```text
 首页  /
+临时产品中心  /products/
 
-产品中心  /products
-└─ 产品类别  /products/{category-slug}
-   └─ 产品详情  /products/{category-slug}/{product-slug}
+产品类别  /{category-slug}/
+└─ 产品详情  /{category-slug}/{product-slug}/
 
-解决方案  /solutions
-└─ 解决方案详情  /solutions/{solution-slug}
+解决方案  /solutions/
+└─ 方案详情  /solutions/{solution-slug}/
 
-技术支持  /support
-├─ 使用说明（/support 页面静态区块，不单独建立页面）
-│  └─ 产品类别资料页  /support/{category-slug}
-│     └─ 具体文档  /support/{category-slug}/{document-slug}
-├─ 常见问题（/support 页面展示前三个问题）
-│  └─ 全部常见问题  /support/faq
-└─ 售后服务（/support 页面底部静态区块，不单独建立页面）
+技术支持  /support/
+├─ 网络规划服务  /support/network-planning/
+├─ 系统工程建设服务  /support/system-engineering/
+├─ 维护保障服务  /support/maintenance-support/
+├─ 设备巡检服务  /support/equipment-inspection/
+├─ 通讯保障服务  /support/communication-support/
+└─ 技术培训服务  /support/technical-training/
 
-关于我们  /about
-├─ 公司简介（静态区块）
-├─ 合规与资质（静态区块）
-└─ 联系我们  /about#contact（静态区块和页面锚点）
+关于我们  /about/
+├─ 公司简介  /about/#company
+├─ 合规与资质  /about/#qualifications
+└─ 联系我们  /about/#contact
 
-页脚辅助页面
-├─ 隐私政策  /privacy
-└─ 法律声明  /legal
+法律声明  /legal/
+隐私政策  /privacy/
 ```
 
-## 首页 `/`
+四个产品类别为 `/two-way-radio/`、`/shortwave-radio/`、`/mesh-network/`、`/ict-integration/`。不得建立带 `/products/` 前缀的类别或详情路由。
 
-首页负责让两类访客快速选择下一步：
+## 当前页面状态
 
-- 新访客可以进入产品中心查找产品；如果不清楚需要哪类产品，可以先查看解决方案。
-- 已购买产品的客户可以进入技术支持查找说明书、常见问题和售后信息。
-- 首页不承担完整产品筛选、文档阅读或联系信息全文展示。
-
-## 产品中心 `/products`
-
-产品中心是产品信息和产品筛选功能的唯一入口。
-
-### 产品类别 `/products/{category-slug}`
-
-- 按产品类别展示产品。
-- 上线时的类别以实际产品资料为准，可以包括对讲机通信、短波通信、自组网通信、ICT 集成等。
-- 允许按产品参数筛选；具体筛选参数等待产品负责人确认。
-- 不设置“应用场景”字段，也不提供应用场景筛选。
-- 暂不提供产品参数对比功能，保留后续增加的可能。
-
-### 产品详情 `/products/{category-slug}/{product-slug}`
-
-- 产品详情必须位于对应产品类别之下，不能与产品类别并列。
-- 名称与型号使用同一项内容。
-- 可以包含多项技术参数，并使用表格展示。
-- 关键功能可以有多个；不同标签可以使用不同颜色，但只能从品牌规范定义的受控颜色中选择。
-- 产品特点用于完整文字说明。
-- 产品与解决方案不建立关联字段。
-- 所有已发布产品都在产品中心、所属产品类别和独立产品详情页中显示，不受使用说明是否存在的影响。
-- 如果产品已有使用说明，产品详情页提供前往对应网页文档和 PDF 下载的入口。
-- 如果产品暂无资料，只是不在技术支持的“使用说明”栏目中显示；不创建空白文档页。
-- 页面设置“联系我们”按钮，跳转到 `/about#contact`。
-
-### 产品内容字段
-
-| Field | 是否必填 | 用途 |
-| --- | --- | --- |
-| `id` | 是 | 产品内部唯一编号，用于稳定关联文档，不作为产品型号展示 |
-| `name` | 是 | 产品名称与型号，二者使用同一个字段 |
-| `slug` | 是 | 产品 URL 中使用的相对路径名称 |
-| `categoryId` | 是 | 所属产品类别的内部编号 |
-| `coverImage` | 是 | 产品列表及详情页主图，作为网站文件直接上传 |
-| `galleryImages` | 否 | 产品详情页的其他产品图片，作为网站文件直接上传 |
-| `keyFeatures` | 否 | 关键功能标签数组；每项包含 `label` 和受控的 `color` |
-| `productFeatures` | 否 | 产品特点的完整文字说明 |
-| `technicalParameters` | 否 | 可分组的多行技术参数表格 |
-| `sortOrder` | 否 | 控制同类别产品的展示顺序 |
-| `published` | 是 | 控制产品是否在公开网站显示 |
-| `seoTitle` | 否 | 可人工修改的 SEO 标题 |
-| `seoDescription` | 否 | 可人工修改的 SEO 摘要 |
-| `seoPath` | 否 | 相对于网站根目录的 SEO 路径 |
-| `seoImage` | 否 | 搜索结果或分享预览图片 |
-
-`productFeatures` 用于详情页的完整说明。文档不直接保存在产品字段中，而是通过产品 `id` 指向对应产品；产品是否有资料由网站自动判断。
-
-## 解决方案 `/solutions`
-
-- 列表页展示所有已发布的解决方案。
-- 方案名称可以直接包含行业或使用场景，不单独设置行业或场景字段。
-- 消防、石油石化、应急指挥、军方、工地、酒店、大型事业单位、大型超市等仅是潜在覆盖范围，不代表最终上线分类。
-
-### 解决方案详情 `/solutions/{solution-slug}`
-
-- 内容可以包括列表摘要、核心需求、解决方案、方案特点和正文图片或系统结构图。
-- 正文图片和系统结构图均为选填内容，仅属于解决方案，不属于产品字段。
-- 不设置独立的“系统组成”字段；需要时将其作为“解决方案”正文中的可选小节。
-- 不设置关联产品编号或推荐产品字段。
-- 页面设置“联系我们”按钮，跳转到 `/about#contact`。
-
-## 技术支持 `/support`
-
-技术支持首页由“使用说明、常见问题、售后服务”三个内容区块组成。
-
-### 使用说明
-
-- “使用说明”是 `/support` 页面中的静态标题和说明，不建立 `/support/guides` 独立页面。
-- 标题下列出已有资料的产品类别，点击后进入 `/support/{category-slug}`。
-- `faq` 是系统保留路径，不能用作产品类别 slug。
-
-#### 产品类别资料页 `/support/{category-slug}`
-
-- 按产品分组展示该类别中已经发布的资料。
-- 没有资料的产品不显示。
-- 产品只有一份资料时，直接列出这一份。
-- 产品有多份资料时，在同一产品名下全部列出。
-- 文档类型和名称自由填写，不限定为快速入门、完整用户手册或安装说明。
-
-#### 具体文档 `/support/{category-slug}/{document-slug}`
-
-- 每份资料都提供完整网页正文。
-- 每份资料都提供 PDF 下载。
-- PDF 作为网站文件直接上传，不依赖外部 URL。
-
-### 常见问题
-
-- `/support` 页面直接展示前三个常见问题及答案。
-- “常见问题”标题和整个区块不可点击。
-- 前三个问题下方设置“查看更多”按钮；只有该按钮进入 `/support/faq`。
-- FAQ 不分类、不分组，全部内容按顺序显示。
-- 售后服务信息不放入 FAQ。
-
-### 全部常见问题 `/support/faq`
-
-- 展示完整 FAQ 内容。
-- 不建立问题排查页或单篇排查文章页。
-
-### 售后服务
-
-- 售后服务是 `/support` 页面最下方的静态区块，不建立独立页面。
-- 售后服务区块包含前往联系信息的按钮，跳转到 `/about#contact`。
-
-## 关于我们 `/about`
-
-- 公司简介、合规与资质、联系我们均在同一页面展示全文，不建立各自的子页面。
-- 联系我们区块使用 `contact` 锚点，其他页面通过 `/about#contact` 自动定位。
-- 联系信息包括电话、邮箱、地址和工作时间。
-- 联系方式公开可见，不要求用户登录。
+- `/` 与 `/products/` 当前显示相同的产品展示内容，但由两个独立页面文件组合，可以在未来分别修改。
+- 产品类别、产品详情、解决方案、方案详情、技术支持、六项服务、关于我们、法律声明和隐私政策当前均使用默认 `BaseLayout` 占位。
+- 本轮不开发产品类别功能、产品详情正文、support 卡片或服务详情正文。
+- 旧支持说明文档、FAQ 和售后服务架构已取消，不保留内容模型或入口。
 
 ## 页脚
 
-- 页脚参考苹果和华为官网，桌面端使用多栏导航；移动端将各栏目折叠为可展开列表。
-- 页脚不显示电话、邮箱、地址和工作时间；这些内容只在 `/about#contact` 展示。
-- 产品中心栏目包含“全部产品”及各产品类别链接。
-- 解决方案栏目包含“全部解决方案”及已发布的重点解决方案链接。方案较少时可以全部列出；数量增加后只保留 4–6 个重点方案。
-- 技术支持栏目包含使用说明 `/support#manuals`、常见问题 `/support#faq`、全部常见问题 `/support/faq` 和售后服务 `/support#after-sales`。
-- 关于我们栏目包含公司简介 `/about#company`、合规与资质 `/about#qualifications` 和联系我们 `/about#contact`。
-- 法律信息栏目包含隐私政策 `/privacy` 和法律声明 `/legal`。
+页脚主导航只有四栏：
 
-```text
-产品中心
-├─ 全部产品  /products
-└─ 各产品类别  /products/{category-slug}
+- 产品中心：标题不可点击，明细为四个产品类别；
+- 解决方案：标题链接 `/solutions/`，明细为全部已发布具体方案；
+- 技术支持：标题链接 `/support/`，明细为六项服务；
+- 关于我们：标题链接 `/about/`，明细为三个正文锚点。
 
-解决方案
-├─ 全部解决方案  /solutions
-└─ 重点解决方案  /solutions/{solution-slug}
+移动端每栏标题占一行：点击可链接的标题文字只跳转；点击该行除文字外的区域只展开或收起。产品中心文字为静态标题。
 
-技术支持
-├─ 使用说明  /support#manuals
-├─ 常见问题  /support#faq
-├─ 全部常见问题  /support/faq
-└─ 售后服务  /support#after-sales
+法律声明和隐私政策不属于主导航，和版权、ICP 备案、公安联网备案并列在底部法律栏。桌面端使用 `space-between`；移动端版权独占第一行，其余四项在居中的第二信息组。
 
-关于我们
-├─ 公司简介  /about#company
-├─ 合规与资质  /about#qualifications
-└─ 联系我们  /about#contact
+## 保持原则
 
-法律信息
-├─ 隐私政策  /privacy
-└─ 法律声明  /legal
-```
-
-## 已取消或不再使用的旧路由
-
-以下路由不再建立页面：
-
-```text
-/contact
-/about/company
-/about/qualifications
-/support/guides
-/support/guides/{category-slug}
-/support/guides/{category-slug}/{document-slug}
-/support/troubleshooting
-/support/troubleshooting/{article-slug}
-/support/after-sales
-```
-
-旧网站 URL 将根据最终的 URL 对照表设置跳转；无法匹配到新内容的旧地址可以跳转到新网站首页。
+- 全站只提供简体中文公开内容，不包含登录、支付或信息提交功能。
+- 所有公开页面使用静态生成，服务器只托管构建产物。
+- 正式业务资料未确认前，不编造公司承诺、联系方式、备案链接或产品数据。

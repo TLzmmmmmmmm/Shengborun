@@ -16,7 +16,7 @@ sortOrder: 10
 published: true
 seoTitle: 示例数字对讲机 | 盛博润
 seoDescription: 查看盛博润示例数字对讲机的产品特点与后续技术资料。
-seoPath: /products/two-way-radio/sample-radio/
+seoPath: /two-way-radio/sample-radio/
 seoImage: /images/products/sample-radio.png
 ---
 

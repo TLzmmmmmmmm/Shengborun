@@ -1,4 +1,6 @@
-# 盛博润静态网站实施计划
+# 盛博润静态网站实施计划（历史基线）
+
+> 本文件记录 2026-08-08 的原始实施基线，其中产品嵌套路由、技术支持文档/FAQ/售后结构和五栏 Footer 已被取消。当前实现必须以 `SiteMap.md` 和 `docs/superpowers/specs/2026-08-12-site-structure-and-support-redesign.md` 为准，不得依据本历史文件恢复旧结构。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
