@@ -31,31 +31,26 @@ test('header and footer follow the approved structure', async ({ page }) => {
 
   const footer = page.locator('footer');
   await expect(page.getByRole('navigation', { name: '页脚导航' })).toBeVisible();
-  await expect(footer.locator('details')).toHaveCount(5);
+  await expect(footer.locator('[data-footer-group]')).toHaveCount(4);
   await expect(footer).not.toContainText('工作时间');
   await expect(footer).not.toContainText('电话');
   await expect(footer).not.toContainText('邮箱');
   await expect(footer).not.toContainText('地址');
-  await expect(page.getByRole('link', { name: '隐私政策' })).toHaveAttribute(
-    'href',
-    '/privacy/',
-  );
-  await expect(footer.getByRole('link', { name: '使用说明' })).toHaveAttribute(
-    'href',
-    '/support#manuals',
-  );
-  const faqLinks = footer.getByRole('link', { name: '常见问题', exact: true });
-  await expect(faqLinks).toHaveCount(1);
-  await expect(faqLinks).toHaveAttribute('href', '/support/faq/');
-  await expect(footer).not.toContainText('全部常见问题');
-  await expect(footer.getByRole('link', { name: '售后服务' })).toHaveAttribute(
-    'href',
-    '/support#after-sales',
-  );
+  await expect(footer).not.toContainText('全部产品');
+  await expect(footer).not.toContainText('全部解决方案');
+  await expect(footer).not.toContainText('使用说明');
+  await expect(footer).not.toContainText('常见问题');
+  await expect(footer).not.toContainText('售后服务');
+  await expect(footer.getByRole('link', { name: '解决方案', exact: true })).toHaveAttribute('href', '/solutions/');
+  await expect(footer.getByRole('link', { name: '技术支持', exact: true })).toHaveAttribute('href', '/support/');
+  await expect(footer.getByRole('link', { name: '关于我们', exact: true })).toHaveAttribute('href', '/about/');
+  await expect(footer.getByRole('link', { name: '网络规划服务' })).toHaveAttribute('href', '/support/network-planning/');
   await expect(footer.getByRole('link', { name: '联系我们' })).toHaveAttribute(
     'href',
-    '/about#contact',
+    '/about/#contact',
   );
+  await expect(footer.getByRole('link', { name: '法律声明' })).toHaveAttribute('href', '/legal/');
+  await expect(footer.getByRole('link', { name: '隐私政策' })).toHaveAttribute('href', '/privacy/');
 });
 
 test('provides skip navigation and complete page metadata', async ({ page }) => {
@@ -171,7 +166,7 @@ test('renders the approved light footer hierarchy', async ({ page }) => {
     'border-bottom-color',
     'rgb(218, 218, 224)',
   );
-  await expect(footer.locator('summary').first()).toHaveCSS(
+  await expect(footer.locator('.footer-title').first()).toHaveCSS(
     'color',
     'rgb(0, 0, 0)',
   );
@@ -179,7 +174,7 @@ test('renders the approved light footer hierarchy', async ({ page }) => {
     'font-size',
     '16px',
   );
-  await expect(footer.locator('summary').first()).toHaveCSS('font-size', '16px');
+  await expect(footer.locator('.footer-title').first()).toHaveCSS('font-size', '16px');
   await expect(footerLinks.getByRole('link').first()).toHaveCSS(
     'color',
     'rgb(110, 110, 115)',
@@ -190,17 +185,15 @@ test('renders the approved light footer hierarchy', async ({ page }) => {
   const legal = footer.locator('.footer-legal');
   await expect(legal).toHaveCSS('border-top-color', 'rgb(218, 218, 224)');
   await expect(legal).toHaveCSS('font-size', '14px');
-  await expect(legal).toHaveCSS('justify-content', 'flex-start');
+  await expect(legal).toHaveCSS('justify-content', 'space-between');
   await expect(legal).toHaveCSS('text-align', 'left');
-  await expect(legal.locator(':scope > *')).toHaveCount(3);
+  await expect(legal.locator(':scope > *')).toHaveCount(2);
   await expect(legal.locator(':scope > *').nth(0)).toHaveText(
     '版权所有 © 2026 北京盛博润通信设备有限公司',
   );
-  await expect(legal.locator(':scope > *').nth(1)).toHaveText('ICP备案（待确认）');
-  await expect(legal.locator(':scope > *').nth(2)).toHaveText(
-    '公安联网备案（待确认）',
-  );
-  await expect(legal.getByRole('link')).toHaveCount(0);
+  await expect(legal.locator('.footer-legal-secondary')).toContainText('ICP备案（待确认）');
+  await expect(legal.locator('.footer-legal-secondary')).toContainText('公安联网备案（待确认）');
+  await expect(legal.getByRole('link')).toHaveCount(2);
   await expect(footer.locator('input[type="search"]')).toHaveCount(0);
 });
 
@@ -208,19 +201,17 @@ test('uses compact mobile footer detail hierarchy', async ({ page }) => {
   await page.setViewportSize({ width: 647, height: 900 });
   await page.goto('/');
 
-  const groups = page.locator('footer details');
+  const groups = page.locator('footer [data-footer-group]');
   const firstGroup = groups.first();
-  const firstSummary = firstGroup.locator('summary');
+  const firstSummary = firstGroup.locator('[data-footer-toggle]');
   const firstList = firstGroup.locator('ul');
   const firstLink = firstList.getByRole('link').first();
 
-  await expect(firstGroup).not.toHaveAttribute('open', '');
+  await expect(firstSummary).toHaveAttribute('aria-expanded', 'false');
   await firstSummary.click();
-  await expect(firstGroup).toHaveAttribute('open', '');
+  await expect(firstSummary).toHaveAttribute('aria-expanded', 'true');
 
-  await expect(firstSummary).toHaveCSS('font-size', '16px');
-  await expect(firstSummary).toHaveCSS('padding-top', '16px');
-  await expect(firstSummary).toHaveCSS('padding-bottom', '16px');
+  await expect(firstGroup.locator('.footer-title')).toHaveCSS('font-size', '16px');
   await expect(firstList).toHaveCSS('row-gap', '9.36px');
   await expect(firstList).toHaveCSS('padding-bottom', '17.6px');
   await expect(firstLink).toHaveCSS('font-size', '14px');
@@ -228,12 +219,12 @@ test('uses compact mobile footer detail hierarchy', async ({ page }) => {
 
   await firstSummary.focus();
   await page.keyboard.press('Enter');
-  await expect(firstGroup).not.toHaveAttribute('open', '');
+  await expect(firstSummary).toHaveAttribute('aria-expanded', 'false');
   await page.keyboard.press('Space');
-  await expect(firstGroup).toHaveAttribute('open', '');
+  await expect(firstSummary).toHaveAttribute('aria-expanded', 'true');
 
   await page.setViewportSize({ width: 768, height: 900 });
-  await expect(firstGroup).toHaveAttribute('open', '');
+  await expect(firstList).toBeVisible();
   await expect(firstList).toHaveCSS('row-gap', '10.4px');
   await expect(firstLink).toHaveCSS('font-size', '16px');
 });
@@ -249,12 +240,13 @@ test('uses a centered two-row mobile legal layout', async ({ page }) => {
   await expect(legal).toHaveCSS('justify-content', 'center');
   await expect(legal).toHaveCSS('text-align', 'center');
   await expect(legal).toHaveCSS('font-size', '12px');
-  await expect(legal).toHaveCSS('column-gap', '20px');
 
   const legalBox = (await legal.boundingBox())!;
   const copyright = (await parts.nth(0).boundingBox())!;
-  const icp = (await parts.nth(1).boundingBox())!;
-  const police = (await parts.nth(2).boundingBox())!;
+  const secondary = legal.locator('.footer-legal-secondary');
+  const secondaryParts = secondary.locator(':scope > *');
+  const icp = (await secondaryParts.nth(0).boundingBox())!;
+  const police = (await secondaryParts.nth(1).boundingBox())!;
   const centerX = (box: { x: number; width: number }) => box.x + box.width / 2;
   const centerY = (box: { y: number; height: number }) => box.y + box.height / 2;
 
@@ -265,7 +257,7 @@ test('uses a centered two-row mobile legal layout', async ({ page }) => {
 
   await page.setViewportSize({ width: 768, height: 900 });
   await expect(legal).toHaveCSS('display', 'flex');
-  await expect(legal).toHaveCSS('justify-content', 'flex-start');
+  await expect(legal).toHaveCSS('justify-content', 'space-between');
   await expect(legal).toHaveCSS('text-align', 'left');
   await expect(legal).toHaveCSS('font-size', '14px');
 });
@@ -276,7 +268,7 @@ test('uses the final navigation border and desktop legal separator', async ({
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto('/');
 
-  const footerGroups = page.locator('footer details');
+  const footerGroups = page.locator('footer [data-footer-group]');
   const lastFooterGroup = footerGroups.last();
   const legal = page.locator('.footer-legal');
 
@@ -355,9 +347,9 @@ test('keeps navigation usable and avoids horizontal overflow', async ({ page }) 
       ).toHaveAttribute('aria-expanded', 'true');
       await page.keyboard.press('Escape');
 
-      const firstFooterGroup = page.locator('footer details').first();
-      const firstFooterSummary = firstFooterGroup.locator('summary');
-      await expect(firstFooterGroup).not.toHaveAttribute('open', '');
+      const firstFooterGroup = page.locator('footer [data-footer-group]').first();
+      const firstFooterSummary = firstFooterGroup.locator('[data-footer-toggle]');
+      await expect(firstFooterSummary).toHaveAttribute('aria-expanded', 'false');
       await expect(firstFooterGroup).toHaveCSS(
         'border-bottom-color',
         'rgb(218, 218, 224)',
@@ -366,7 +358,7 @@ test('keeps navigation usable and avoids horizontal overflow', async ({ page }) 
 
       await firstFooterSummary.focus();
       await page.keyboard.press('Enter');
-      await expect(firstFooterGroup).toHaveAttribute('open', '');
+      await expect(firstFooterSummary).toHaveAttribute('aria-expanded', 'true');
     }
 
     const hasHorizontalOverflow = await page.evaluate(

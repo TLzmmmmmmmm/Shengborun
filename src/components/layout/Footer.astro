@@ -1,255 +1,153 @@
 ---
 import { getCollection } from 'astro:content';
+import { supportServices } from '../../data/support-services';
 import type { BreadcrumbItem } from '../../lib/breadcrumbs';
 import Breadcrumbs from './Breadcrumbs.astro';
 
-interface Props {
-  breadcrumbs: readonly BreadcrumbItem[];
-}
+interface Props { breadcrumbs: readonly BreadcrumbItem[]; }
+interface FooterLink { label: string; href?: string; }
+interface FooterGroup { title: string; titleHref?: string; links: FooterLink[]; }
 
 const { breadcrumbs } = Astro.props;
-
 const [categories, solutions] = await Promise.all([
   getCollection('productCategories', ({ data }) => data.published),
   getCollection('solutions', ({ data }) => data.published),
 ]);
-
-const sortedCategories = categories.sort(
-  (left, right) => left.data.sortOrder - right.data.sortOrder,
-);
-const sortedSolutions = solutions.sort(
-  (left, right) => left.data.sortOrder - right.data.sortOrder,
-);
-
-const footerGroups = [
+const sortedCategories = categories.toSorted((a, b) => a.data.sortOrder - b.data.sortOrder);
+const sortedSolutions = solutions.toSorted((a, b) => a.data.sortOrder - b.data.sortOrder);
+const footerGroups: FooterGroup[] = [
   {
     title: '产品中心',
-    links: [
-      { label: '全部产品', href: '/products/' },
-      ...sortedCategories.map(({ data }) => ({
-        label: data.name,
-        href: `/products/${data.slug}/`,
-      })),
-    ],
+    links: sortedCategories.map(({ data }) => ({ label: data.name, href: `/${data.slug}/` })),
   },
   {
     title: '解决方案',
-    links: [
-      { label: '全部解决方案', href: '/solutions/' },
-      ...sortedSolutions.slice(0, 6).map(({ data }) => ({
-        label: data.name,
-        href: `/solutions/${data.slug}/`,
-      })),
-    ],
+    titleHref: '/solutions/',
+    links: sortedSolutions.map(({ data }) => ({ label: data.name, href: `/solutions/${data.slug}/` })),
   },
   {
     title: '技术支持',
-    links: [
-      { label: '使用说明', href: '/support#manuals' },
-      { label: '常见问题', href: '/support/faq/' },
-      { label: '售后服务', href: '/support#after-sales' },
-    ],
+    titleHref: '/support/',
+    links: supportServices.map(({ name, href }) => ({ label: name, href })),
   },
   {
     title: '关于我们',
+    titleHref: '/about/',
     links: [
-      { label: '公司简介', href: '/about#company' },
-      { label: '合规与资质', href: '/about#qualifications' },
-      { label: '联系我们', href: '/about#contact' },
+      { label: '公司简介', href: '/about/#company' },
+      { label: '合规与资质', href: '/about/#qualifications' },
+      { label: '联系我们', href: '/about/#contact' },
     ],
   },
-  {
-    title: '法律信息',
-    links: [
-      { label: '隐私政策', href: '/privacy/' },
-      { label: '法律声明', href: '/legal/' },
-    ],
-  },
-] as const;
+];
 ---
 
 <footer class="site-footer">
   <div class="footer-inner site-container">
-    <div class="footer-breadcrumb">
-      <Breadcrumbs items={breadcrumbs} />
-    </div>
-
+    <div class="footer-breadcrumb"><Breadcrumbs items={breadcrumbs} /></div>
     <nav class="footer-navigation" aria-label="页脚导航">
-      {
-        footerGroups.map((group) => (
-          <details class="footer-group" open>
-            <summary>{group.title}</summary>
-            <ul>
+      {footerGroups.map((group, index) => {
+        const panelId = `footer-panel-${index}`;
+        return (
+          <section class="footer-group" data-footer-group>
+            <div class="footer-heading-row">
+              {group.titleHref ? (
+                <a class="footer-title" href={group.titleHref}>{group.title}</a>
+              ) : (
+                <span class="footer-title">{group.title}</span>
+              )}
+              <button
+                class="footer-toggle"
+                type="button"
+                aria-label={`展开${group.title}`}
+                aria-expanded="false"
+                aria-controls={panelId}
+                data-footer-toggle
+              ><span aria-hidden="true">+</span></button>
+            </div>
+            <ul id={panelId} data-footer-panel>
               {group.links.map((link) => (
-                <li>
-                  <a href={link.href}>{link.label}</a>
-                </li>
+                <li>{link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>}</li>
               ))}
             </ul>
-          </details>
-        ))
-      }
+          </section>
+        );
+      })}
     </nav>
-
     <div class="footer-legal">
       <span>版权所有 © 2026 北京盛博润通信设备有限公司</span>
-      <span class="footer-filing" data-link-pending>ICP备案（待确认）</span>
-      <span class="footer-filing" data-link-pending>公安联网备案（待确认）</span>
+      <div class="footer-legal-secondary">
+        <span data-link-pending>ICP备案（待确认）</span>
+        <span data-link-pending>公安联网备案（待确认）</span>
+        <a href="/legal/">法律声明</a>
+        <a href="/privacy/">隐私政策</a>
+      </div>
     </div>
   </div>
 </footer>
 
 <script>
-  const footerQuery = window.matchMedia('(max-width: 47.999rem)');
-  const groups = document.querySelectorAll<HTMLDetailsElement>('.footer-group');
-
-  const syncFooterGroups = (isMobile: boolean) => {
+  const media = window.matchMedia('(max-width: 47.999rem)');
+  const groups = document.querySelectorAll<HTMLElement>('[data-footer-group]');
+  const sync = () => {
     for (const group of groups) {
-      if (isMobile) group.removeAttribute('open');
-      else group.setAttribute('open', '');
+      const button = group.querySelector<HTMLButtonElement>('[data-footer-toggle]');
+      const panel = group.querySelector<HTMLElement>('[data-footer-panel]');
+      if (!button || !panel) continue;
+      if (media.matches) {
+        button.setAttribute('aria-expanded', 'false');
+        button.setAttribute('aria-label', `展开${group.querySelector('.footer-title')?.textContent ?? ''}`);
+        panel.hidden = true;
+      } else {
+        button.setAttribute('aria-expanded', 'true');
+        panel.hidden = false;
+      }
     }
   };
-
-  syncFooterGroups(footerQuery.matches);
-  footerQuery.addEventListener('change', (event) => syncFooterGroups(event.matches));
+  for (const group of groups) {
+    const button = group.querySelector<HTMLButtonElement>('[data-footer-toggle]');
+    const panel = group.querySelector<HTMLElement>('[data-footer-panel]');
+    button?.addEventListener('click', () => {
+      if (!media.matches || !panel) return;
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      const title = group.querySelector('.footer-title')?.textContent ?? '';
+      button.setAttribute('aria-expanded', String(open));
+      button.setAttribute('aria-label', `${open ? '收起' : '展开'}${title}`);
+      button.querySelector('span')!.textContent = open ? '−' : '+';
+      panel.hidden = !open;
+    });
+  }
+  sync();
+  media.addEventListener('change', sync);
 </script>
 
 <style>
-  .site-footer {
-    --footer-divider: #dadae0;
-
-    background: var(--surface-muted);
-    color: var(--text-secondary);
-  }
-
-  .footer-inner {
-    padding-block: 0;
-  }
-
-  .footer-breadcrumb {
-    padding-block: 1.5rem 1.25rem;
-    border-bottom: 1px solid var(--footer-divider);
-  }
-
-  .footer-navigation {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: clamp(1.25rem, 3vw, 2.5rem);
-    padding-block: 2.75rem 3.5rem;
-  }
-
-  .footer-group {
-    min-width: 0;
-  }
-
-  summary {
-    color: #000000;
-    font-size: 1rem;
-    font-weight: 700;
-    list-style: none;
-  }
-
-  summary::-webkit-details-marker {
-    display: none;
-  }
-
-  ul {
-    display: grid;
-    gap: 0.65rem;
-    margin: 1rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  a {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    text-decoration: none;
-    transition: color var(--transition-fast);
-  }
-
-  a:hover {
-    color: var(--text-primary);
-  }
-
-  .footer-legal {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.75rem 2rem;
-    padding-block: 1.25rem;
-    border-top: 1px solid var(--footer-divider);
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-    text-align: left;
-  }
-
-  @media (min-width: 48rem) {
-    summary {
-      cursor: default;
-      pointer-events: none;
-    }
-  }
-
+  .site-footer { --footer-divider: #dadae0; background: var(--surface-muted); color: var(--text-secondary); }
+  .footer-inner { padding-block: 0; }
+  .footer-breadcrumb { padding-block: 1.5rem 1.25rem; border-bottom: 1px solid var(--footer-divider); }
+  .footer-navigation { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); padding-block: 2.75rem 3.5rem; }
+  .footer-group { min-width: 0; }
+  .footer-heading-row { display: flex; min-height: 1.65rem; align-items: stretch; }
+  .footer-title { color: #000; font-size: 1rem; font-weight: 700; text-decoration: none; }
+  .footer-title:hover { color: var(--brand-teal-dark); }
+  .footer-toggle { display: none; }
+  ul { display: grid; gap: .65rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+  li a, li span { color: var(--text-secondary); font-size: 1rem; text-decoration: none; }
+  li a:hover { color: var(--text-primary); }
+  .footer-legal { display: flex; align-items: center; justify-content: space-between; gap: 1rem 2rem; padding-block: 1.25rem; border-top: 1px solid var(--footer-divider); font-size: .875rem; text-align: left; }
+  .footer-legal-secondary { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 1rem 2rem; }
+  .footer-legal a { color: var(--text-secondary); text-decoration: none; }
   @media (max-width: 47.999rem) {
-    .footer-navigation {
-      display: block;
-      padding-block: 1rem 0;
-    }
-
-    .footer-group {
-      border-bottom: 1px solid var(--footer-divider);
-    }
-
-    summary {
-      position: relative;
-      padding-block: 1rem;
-      padding-right: 2rem;
-      cursor: pointer;
-    }
-
-    summary::after {
-      position: absolute;
-      top: 50%;
-      right: 0.25rem;
-      color: var(--brand-teal);
-      content: '+';
-      font-size: 1.25rem;
-      font-weight: 400;
-      transform: translateY(-50%);
-    }
-
-    details[open] summary::after {
-      content: '−';
-    }
-
-    ul {
-      gap: 0.585rem;
-      margin: 0;
-      padding-bottom: 1.1rem;
-    }
-
-    a {
-      display: inline-flex;
-      min-height: 2.25rem;
-      align-items: center;
-      font-size: 0.875rem;
-    }
-
-    .footer-legal {
-      display: grid;
-      grid-template-columns: max-content max-content;
-      justify-content: center;
-      gap: 0.5rem 1.25rem;
-      padding-block: 1rem 1.25rem;
-      border-top: 0;
-      font-size: 0.75rem;
-      text-align: center;
-    }
-
-    .footer-legal > :first-child {
-      grid-column: 1 / -1;
-    }
+    .footer-navigation { display: block; padding-block: 1rem 0; }
+    .footer-group { border-bottom: 1px solid var(--footer-divider); }
+    .footer-heading-row { min-height: 3.25rem; align-items: stretch; }
+    .footer-title { display: inline-flex; flex: 0 0 auto; align-items: center; }
+    .footer-toggle { display: flex; min-width: 2.75rem; flex: 1; align-items: center; justify-content: flex-end; border: 0; background: transparent; color: var(--brand-teal); cursor: pointer; }
+    .footer-toggle span { padding-right: .25rem; font-size: 1.25rem; }
+    ul { gap: .585rem; margin: 0; padding-bottom: 1.1rem; }
+    li a, li span { display: inline-flex; min-height: 2.25rem; align-items: center; font-size: .875rem; }
+    .footer-legal { display: grid; justify-content: center; gap: .5rem; padding-block: 1rem 1.25rem; border-top: 0; font-size: .75rem; text-align: center; }
+    .footer-legal > span { justify-self: center; }
+    .footer-legal-secondary { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem 1.25rem; }
   }
 </style>
