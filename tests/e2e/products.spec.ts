@@ -81,7 +81,7 @@ test.describe('products landing page', () => {
       'href',
       '/products/two-way-radio/',
     );
-    await expect(categoryLink).toHaveCSS('background-color', 'rgb(0, 154, 152)');
+    await expect(categoryLink).toHaveCSS('background-color', 'rgb(0, 124, 123)');
     await expect(categoryLink).toHaveCSS('color', 'rgb(29, 29, 31)');
   });
 
@@ -95,6 +95,8 @@ test.describe('products landing page', () => {
     });
     const categoryDescription = section.locator('[data-category-description]');
     const introBox = await page.locator('[data-products-intro]').boundingBox();
+    const headerBox = await page.locator('header.site-header').boundingBox();
+    const introTitleBox = await introTitle.boundingBox();
     const introTitleSize = Number.parseFloat(
       await introTitle.evaluate((heading) => getComputedStyle(heading).fontSize),
     );
@@ -117,6 +119,7 @@ test.describe('products landing page', () => {
       name: '了解更多对讲机通信产品',
     });
     const categoryLinkBox = await categoryLink.boundingBox();
+    const firstCardBox = await section.locator('[data-product-card]').first().boundingBox();
     const cardBoxes = await section.locator('[data-product-card]').evaluateAll((cards) =>
       cards.map((card) => {
         const box = card.getBoundingClientRect();
@@ -125,6 +128,8 @@ test.describe('products landing page', () => {
     );
 
     expect(introBox).not.toBeNull();
+    expect(headerBox).not.toBeNull();
+    expect(introTitleBox).not.toBeNull();
     expect(introBox?.height ?? Number.POSITIVE_INFINITY).toBeLessThan(250);
     expect(introTitleSize).toBe(24);
     expect(introDescriptionSize).toBe(19);
@@ -133,10 +138,25 @@ test.describe('products landing page', () => {
     expect(bannerBox).not.toBeNull();
     expect(gridBox).not.toBeNull();
     expect(categoryLinkBox).not.toBeNull();
+    expect(firstCardBox).not.toBeNull();
+    expect(
+      Math.abs(
+        (introTitleBox?.y ?? 0) -
+          ((headerBox?.y ?? 0) + (headerBox?.height ?? 0)) -
+          32,
+      ),
+    ).toBeLessThan(1);
+    expect(
+      Math.abs(
+        (await categoryTitle.boundingBox())!.y -
+          ((introBox?.y ?? 0) + (introBox?.height ?? 0)) -
+          32,
+      ),
+    ).toBeLessThan(1);
     expect(Math.abs((bannerBox?.x ?? 0) - (gridBox?.x ?? 0))).toBeLessThan(1);
     expect(Math.abs((bannerBox?.width ?? 0) - (gridBox?.width ?? 0))).toBeLessThan(1);
     expect(
-      Math.abs((bannerBox?.width ?? 0) / (bannerBox?.height ?? 1) - 3.75),
+      Math.abs((bannerBox?.width ?? 0) / (bannerBox?.height ?? 1) - 3),
     ).toBeLessThan(0.02);
     expect(categoryLinkBox?.width ?? Number.POSITIVE_INFINITY).toBeLessThan(130);
     await expect(section.locator('[data-category-banner]')).toHaveCSS(
@@ -149,7 +169,22 @@ test.describe('products landing page', () => {
     );
     await expect(categoryLink).toHaveCSS(
       'background-color',
-      'rgb(0, 154, 152)',
+      'rgb(0, 124, 123)',
+    );
+    expect(
+      Math.abs(
+        (categoryLinkBox?.y ?? 0) -
+          ((firstCardBox?.y ?? 0) + (firstCardBox?.height ?? 0)) -
+          45,
+      ),
+    ).toBeLessThan(1);
+    await expect(section.locator('[data-category-banner]')).toHaveCSS(
+      'box-shadow',
+      'rgba(0, 0, 0, 0.06) 0px 4px 16px 0px',
+    );
+    await expect(section.locator('[data-product-card]').first()).toHaveCSS(
+      'box-shadow',
+      'rgba(0, 0, 0, 0.06) 0px 4px 16px 0px',
     );
 
     for (const box of cardBoxes) {
