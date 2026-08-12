@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { buildPublishedProductRoutes } from '../../lib/products';
+
+export async function getStaticPaths() {
+  const [categoryEntries, productEntries] = await Promise.all([
+    getCollection('productCategories'),
+    getCollection('products'),
+  ]);
+  const routes = buildPublishedProductRoutes(
+    categoryEntries.map((entry) => entry.data),
+    productEntries.map((entry) => entry.data),
+  );
+
+  return routes.details.map(({ category, product }) => ({
+    params: { category: category.slug, product: product.slug },
+    props: { category, product },
+  }));
+}
+
+const { category, product } = Astro.props;
+const categoryPath = `/${category.slug}/`;
+const canonicalPath = `${categoryPath}${product.slug}/`;
+---
+
+<BaseLayout
+  title={`${product.name} | 北京盛博润通讯设备有限公司`}
+  description={`${product.name}页面将在后续阶段完成。`}
+  canonicalPath={canonicalPath}
+  breadcrumbs={[
+    { label: category.name, href: categoryPath },
+    { label: product.name, href: canonicalPath },
+  ]}
+>
+  <section class="foundation-placeholder site-container">
+    <div>
+      <h1>{product.name}</h1>
+      <p>页面将在后续阶段完成。</p>
+    </div>
+  </section>
+</BaseLayout>
