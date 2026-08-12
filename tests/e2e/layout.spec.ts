@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const approvedNavigation = [
   ['首页', '/'],
-  ['产品中心', '/products/'],
+  ['产品中心', '/two-way-radio/'],
   ['解决方案', '/solutions/'],
   ['技术支持', '/support/'],
   ['关于我们', '/about/'],

@@ -1,15 +1,29 @@
 ---
+import { getCollection } from 'astro:content';
+
+const categories = await getCollection(
+  'productCategories',
+  ({ data }) => data.published,
+);
+const productPrefixes = categories.map(({ data }) => `/${data.slug}/`);
 const navigationItems = [
   { label: '首页', href: '/' },
-  { label: '产品中心', href: '/products/' },
+  { label: '产品中心', href: '/two-way-radio/', product: true },
   { label: '解决方案', href: '/solutions/' },
   { label: '技术支持', href: '/support/' },
   { label: '关于我们', href: '/about/' },
 ] as const;
 
 const currentPath = Astro.url.pathname;
-const isCurrent = (href: string) =>
-  href === '/' ? currentPath === href : currentPath.startsWith(href);
+const isProductPath = productPrefixes.some((prefix) =>
+  currentPath.startsWith(prefix),
+);
+const isCurrent = (item: (typeof navigationItems)[number]) =>
+  'product' in item && item.product
+    ? isProductPath
+    : item.href === '/'
+      ? currentPath === item.href
+      : currentPath.startsWith(item.href);
 ---
 
 <header class="site-header" data-site-header>
@@ -49,7 +63,7 @@ const isCurrent = (href: string) =>
             <li>
               <a
                 href={item.href}
-                aria-current={isCurrent(item.href) ? 'page' : undefined}
+                aria-current={isCurrent(item) ? 'page' : undefined}
               >
                 {item.label}
               </a>
