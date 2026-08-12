@@ -1,0 +1,277 @@
+---
+import { getCollection } from 'astro:content';
+
+const categories = await getCollection(
+  'productCategories',
+  ({ data }) => data.published,
+);
+const productPrefixes = categories.map(({ data }) => `/${data.slug}/`);
+const navigationItems = [
+  { label: '首页', href: '/' },
+  { label: '产品中心', href: '/two-way-radio/', product: true },
+  { label: '解决方案', href: '/solutions/' },
+  { label: '技术支持', href: '/support/' },
+  { label: '关于我们', href: '/about/' },
+] as const;
+
+const currentPath = Astro.url.pathname;
+const isProductPath = productPrefixes.some((prefix) =>
+  currentPath.startsWith(prefix),
+);
+const isCurrent = (item: (typeof navigationItems)[number]) =>
+  'product' in item && item.product
+    ? isProductPath
+    : item.href === '/'
+      ? currentPath === item.href
+      : currentPath.startsWith(item.href);
+---
+
+<header class="site-header" data-site-header>
+  <div class="header-inner site-container">
+    <div class="brand-mark" aria-label="盛博润">
+      <img
+        src="/brand/logo.png"
+        width="1297"
+        height="336"
+        alt="盛博润"
+        decoding="async"
+      />
+    </div>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-label="打开主导航"
+      aria-controls="primary-navigation"
+      aria-expanded="false"
+      data-menu-toggle
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+
+    <nav
+      id="primary-navigation"
+      class="primary-navigation"
+      aria-label="主导航"
+      data-primary-navigation
+    >
+      <ul>
+        {
+          navigationItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector('[data-site-header]');
+  const button = header?.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const navigation = header?.querySelector<HTMLElement>(
+    '[data-primary-navigation]',
+  );
+
+  const closeMenu = () => {
+    button?.setAttribute('aria-expanded', 'false');
+    button?.setAttribute('aria-label', '打开主导航');
+    navigation?.removeAttribute('data-open');
+  };
+
+  button?.addEventListener('click', () => {
+    const willOpen = button.getAttribute('aria-expanded') !== 'true';
+    button.setAttribute('aria-expanded', String(willOpen));
+    button.setAttribute('aria-label', willOpen ? '关闭主导航' : '打开主导航');
+    navigation?.toggleAttribute('data-open', willOpen);
+  });
+
+  navigation?.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) closeMenu();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && button?.getAttribute('aria-expanded') === 'true') {
+      closeMenu();
+      button.focus();
+    }
+  });
+
+  window.matchMedia('(min-width: 48rem)').addEventListener('change', closeMenu);
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    z-index: 100;
+    top: 0;
+    background: rgb(255 255 255 / 96%);
+    box-shadow: var(--shadow-header);
+  }
+
+  .header-inner {
+    display: flex;
+    height: 3.375rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .brand-mark {
+    flex: 0 0 9rem;
+  }
+
+  .brand-mark img {
+    width: 9rem;
+    height: auto;
+  }
+
+  .primary-navigation ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.25rem, 3vw, 2.25rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .primary-navigation a {
+    position: relative;
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .primary-navigation a::after {
+    position: absolute;
+    right: 0;
+    bottom: 0.25rem;
+    left: 0;
+    height: 0.125rem;
+    border-radius: 999px;
+    background: var(--brand-teal);
+    content: '';
+    opacity: 0;
+    transform: scaleX(0.3);
+    transition:
+      opacity var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .primary-navigation a:hover::after,
+  .primary-navigation a[aria-current='page']::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .menu-toggle {
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-radius: var(--radius-small);
+    background: transparent;
+    color: var(--brand-graphite);
+    cursor: pointer;
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 1.4rem;
+    height: 0.125rem;
+    margin: 0.27rem auto;
+    border-radius: 999px;
+    background: currentColor;
+    transition:
+      transform var(--transition-fast),
+      opacity var(--transition-fast);
+  }
+
+  .menu-toggle[aria-expanded='true'] span:first-child {
+    transform: translateY(0.395rem) rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded='true'] span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle[aria-expanded='true'] span:last-child {
+    transform: translateY(-0.395rem) rotate(-45deg);
+  }
+
+  @media (max-width: 47.999rem) {
+    .header-inner {
+      height: 3rem;
+      gap: 1rem;
+    }
+
+    .brand-mark {
+      flex-basis: 7.5rem;
+    }
+
+    .brand-mark img {
+      width: 7.5rem;
+    }
+
+    .menu-toggle {
+      display: block;
+      flex: 0 0 auto;
+    }
+
+    .primary-navigation {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      display: none;
+      border-top: 1px solid var(--divider);
+      background: var(--surface);
+      box-shadow: 0 0.75rem 1.5rem rgb(0 0 0 / 10%);
+    }
+
+    .primary-navigation[data-open] {
+      display: block;
+    }
+
+    .primary-navigation ul {
+      display: grid;
+      width: 100%;
+      margin-inline: auto;
+      gap: 0;
+      padding: 0.5rem var(--page-gutter) 1rem;
+    }
+
+    .primary-navigation a {
+      min-height: 2.7rem;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .primary-navigation a::after {
+      display: none;
+    }
+
+    .primary-navigation li:last-child a {
+      border-bottom-color: transparent;
+    }
+
+    .primary-navigation a:hover,
+    .primary-navigation a[aria-current='page'],
+    .primary-navigation li:last-child a:hover,
+    .primary-navigation li:last-child a[aria-current='page'] {
+      border-bottom-color: var(--brand-teal);
+    }
+  }
+</style>

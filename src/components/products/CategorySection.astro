@@ -1,0 +1,130 @@
+---
+import ProductCard from './ProductCard.astro';
+
+interface ProductItem {
+  name: string;
+  image: string;
+  imageAlt: string;
+  href: string;
+}
+
+interface Props {
+  id: string;
+  name: string;
+  description: string;
+  banner: string;
+  bannerAlt: string;
+  href: string;
+  products: ProductItem[];
+}
+
+const { id, name, description, banner, bannerAlt, href, products } = Astro.props;
+---
+
+<section class="category-section" data-category-section={id}>
+  <header class="category-heading">
+    <h2>{name}</h2>
+    <p data-category-description>{description}</p>
+  </header>
+
+  <img
+    class="category-banner"
+    data-category-banner
+    src={banner}
+    alt={bannerAlt}
+    width="1536"
+    height="512"
+    decoding="async"
+  />
+
+  <div class="product-grid" data-product-grid>
+    {products.map((product) => <ProductCard {...product} />)}
+  </div>
+
+  <a
+    class="category-link"
+    data-category-link
+    href={href}
+    aria-label={`了解更多${name}产品`}
+  >
+    了解更多
+  </a>
+</section>
+
+<style>
+  .category-section {
+    position: relative;
+    padding-block: 2rem;
+  }
+
+  .category-section + .category-section::before {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--divider);
+    content: '';
+  }
+
+  .category-heading {
+    margin-bottom: 1.75rem;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0.65rem 0 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+
+  .category-banner {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 1;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 6%);
+    object-fit: cover;
+  }
+
+  .product-grid {
+    display: grid;
+    margin-top: 1.5rem;
+    gap: 1.5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .category-link {
+    display: flex;
+    width: fit-content;
+    min-height: 3rem;
+    margin: 2.8125rem auto 0;
+    padding-inline: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-small);
+    background: var(--brand-teal-dark);
+    color: var(--text-primary);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+
+  .category-link:hover {
+    background: var(--brand-teal-hover);
+    color: var(--text-primary);
+  }
+
+  @media (max-width: 47.999rem) {
+    .category-banner {
+      aspect-ratio: 16 / 7;
+    }
+
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

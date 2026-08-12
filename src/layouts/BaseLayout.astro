@@ -1,0 +1,45 @@
+---
+import Footer from '../components/layout/Footer.astro';
+import Header from '../components/layout/Header.astro';
+import SeoHead from '../components/layout/SeoHead.astro';
+import type { BreadcrumbItem } from '../lib/breadcrumbs';
+import { resolveFooterBreadcrumbs } from '../lib/breadcrumbs';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  image?: string;
+  breadcrumbs?: readonly BreadcrumbItem[];
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  image,
+  breadcrumbs = [],
+} = Astro.props;
+const footerBreadcrumbs = resolveFooterBreadcrumbs(breadcrumbs);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <SeoHead
+      title={title}
+      description={description}
+      canonicalPath={canonicalPath}
+      image={image}
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳至主要内容</a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer breadcrumbs={footerBreadcrumbs} />
+  </body>
+</html>

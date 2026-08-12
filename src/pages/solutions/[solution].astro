@@ -1,0 +1,13 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+export async function getStaticPaths() {
+  const entries = await getCollection('solutions', ({ data }) => data.published);
+  return entries.map(({ data }) => ({ params: { solution: data.slug }, props: { solution: data } }));
+}
+const { solution } = Astro.props;
+const canonicalPath = `/solutions/${solution.slug}/`;
+---
+<BaseLayout title={solution.seoTitle ?? `${solution.name} | 北京盛博润通讯设备有限公司`} description={solution.seoDescription ?? solution.summary} canonicalPath={canonicalPath} breadcrumbs={[{ label: '解决方案', href: '/solutions/' }, { label: solution.name, href: canonicalPath }]}>
+  <section class="foundation-placeholder site-container"><div><h1>{solution.name}</h1><p>页面将在后续阶段完成。</p></div></section>
+</BaseLayout>

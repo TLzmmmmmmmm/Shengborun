@@ -1,0 +1,77 @@
+---
+interface Props {
+  name: string;
+  image: string;
+  imageAlt: string;
+  href: string;
+}
+
+const { name, image, imageAlt, href } = Astro.props;
+---
+
+<article class="product-card" data-product-card>
+  <div class="product-media" data-product-media>
+    <img src={image} alt={imageAlt} loading="lazy" decoding="async" />
+  </div>
+  <div class="product-card-content">
+    <h3>{name}</h3>
+    <a href={href}>了解更多</a>
+  </div>
+</article>
+
+<style>
+  .product-card {
+    display: grid;
+    aspect-ratio: 1;
+    border: 1px solid var(--divider);
+    border-radius: 0.75rem;
+    background: var(--surface);
+    box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 6%);
+    grid-template-rows: 1fr 1fr;
+    overflow: hidden;
+  }
+
+  .product-media {
+    width: min(55%, 12.5rem);
+    aspect-ratio: 1;
+    align-self: end;
+    justify-self: center;
+    background: var(--surface);
+  }
+
+  .product-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .product-card-content {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: clamp(1rem, 1.35vw, 1.2rem);
+    line-height: 1.35;
+  }
+
+  a {
+    color: var(--brand-teal-dark);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  @media (max-width: 47.999rem) {
+    .product-card-content {
+      gap: 0.75rem;
+      padding: 1rem;
+    }
+  }
+</style>

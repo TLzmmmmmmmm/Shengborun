@@ -1,0 +1,25 @@
+{
+  "name": "shengborun-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "pnpm run validate:content && astro check && astro build",
+    "check": "astro check",
+    "validate:content": "node scripts/validate-content.mjs",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test": "pnpm run test:unit && pnpm run build && pnpm run test:e2e"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/sitemap": "^3.7.3",
+    "@playwright/test": "^1.62.1",
+    "astro": "^6.4.8",
+    "vitest": "^4.1.10"
+  },
+  "devDependencies": {
+    "js-yaml": "4.3.1",
+    "typescript": "^5.9.3"
+  }
+}

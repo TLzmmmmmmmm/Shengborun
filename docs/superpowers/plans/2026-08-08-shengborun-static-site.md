@@ -1,4 +1,6 @@
-# 盛博润静态网站实施计划
+# 盛博润静态网站实施计划（历史基线）
+
+> 本文件记录 2026-08-08 的原始实施基线，其中产品嵌套路由、技术支持文档/FAQ/售后结构和五栏 Footer 已被取消。当前实现必须以 `SiteMap.md` 和 `docs/superpowers/specs/2026-08-12-site-structure-and-support-redesign.md` 为准，不得依据本历史文件恢复旧结构。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -71,6 +73,8 @@ Shengborun/
 
 ### Task 1: 静态工程基础与测试框架
 
+**当前状态（2026-08-09）：已完成。** 实际工程使用 pnpm 和电脑现有 Chrome；完成情况、提交记录及与原始命令的差异以 `docs/PROJECT_STATUS.md` 为准。下一步为 Task 2，开始前需得到用户确认。
+
 **Files:**
 - Create: `package.json`
 - Create: `astro.config.mjs`
@@ -111,7 +115,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://www.bjlmks.com.cn',
+  site: 'https://www.shengborun.com',
   output: 'static',
   build: { format: 'directory' },
   integrations: [sitemap()]
@@ -125,7 +129,7 @@ import { describe, expect, it } from 'vitest';
 
 describe('site foundation', () => {
   it('uses the public production origin', () => {
-    expect(new URL('https://www.bjlmks.com.cn').protocol).toBe('https:');
+    expect(new URL('https://www.shengborun.com').protocol).toBe('https:');
   });
 });
 ```
@@ -209,7 +213,6 @@ const product = defineCollection({
     name: z.string().min(1),
     slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
     categoryId: z.string().min(1),
-    shortDescription: z.string().min(30).max(80),
     coverImage: z.string().min(1),
     galleryImages: z.array(z.string()).default([]),
     keyFeatures: z.array(z.object({
@@ -381,7 +384,7 @@ export const selectVisibleProducts = (products: Product[], _documents: Document[
 
 - [ ] **Step 3: 实现产品列表和类别页面**
 
-要求：所有已发布产品显示；卡片使用 `shortDescription`；筛选参数只从实际内容生成；筛选无结果时显示明确提示和重置按钮。
+要求：所有已发布产品显示；卡片不显示简短介绍；筛选参数只从实际内容生成；筛选无结果时显示明确提示和重置按钮。
 
 - [ ] **Step 4: 实现产品详情页面**
 
@@ -557,7 +560,7 @@ it('prefers manually edited SEO values', () => {
 
 - [ ] **Step 4: 实现 Privacy、Legal、SEO、robots 和 sitemap 发现链接**
 
-`robots.txt` 指向 `https://www.bjlmks.com.cn/sitemap-index.xml`；canonical 使用 HTTPS；SEO path 只接受以 `/` 开头的相对路径。
+`robots.txt` 指向 `https://www.shengborun.com/sitemap-index.xml`；canonical 使用 HTTPS；SEO path 只接受以 `/` 开头的相对路径。
 
 - [ ] **Step 5: 实现百度统计的可控注入**
 

@@ -1,0 +1,8 @@
+{
+  "id": "mesh-network",
+  "name": "自组网通信",
+  "slug": "mesh-network",
+  "shortDescription": "快速部署、灵活组网的无线通信产品",
+  "sortOrder": 3,
+  "published": true
+}
