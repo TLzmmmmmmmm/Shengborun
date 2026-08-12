@@ -1,6 +1,6 @@
 # 盛博润网站项目进度
 
-最后更新：2026-08-11
+最后更新：2026-08-12
 
 本文档是跨对话交接的首要状态来源。新对话开始后，应先阅读本文档，再阅读 `SiteMap.md`、品牌配色规范、Task 3 视觉调整规范和完整实施计划。
 
@@ -8,7 +8,7 @@
 
 - Task 1“静态工程基础与测试框架”已完成。
 - Task 2“内容集合、字段校验与示例数据”已完成。
-- Task 3“品牌样式、全站布局、顶部导航和页脚”已完成，并已完成 2026-08-10 的 Logo、Header、全站边距、Footer 视觉调整以及 Footer 字号与留白修订。
+- Task 3“品牌样式、全站布局、顶部导航和页脚”已完成，并已完成 Logo、Header、全站边距、Footer、移动端导航节奏、移动端版权区、网站标题和 favicon 的后续修订。
 - 下一阶段是 Task 4“产品中心、参数筛选和产品详情”。未经用户确认不得自动开始。
 - 当前只有首页占位页可浏览；产品、解决方案、技术支持、关于我们、隐私和法律页面将在后续 Task 中生成。
 - 当前只允许在本地开发和测试，不部署、不切换 DNS、不访问或测试正式域名。
@@ -36,6 +36,14 @@
 - 移动端 Footer 末栏分隔线计划：`df7f82f docs: plan mobile footer divider cleanup`
 - 移动端 Footer 分隔与节奏纠正规范：`46ca6a4 docs: specify mobile footer rhythm correction`
 - 移动端 Footer 分隔与节奏纠正计划：`c8aa5d5 docs: plan mobile footer rhythm correction`
+- 产品简短说明字段移除提交：`46eaa24 refactor: remove product short description field`
+- 移动端 Header 分隔线统一提交：`27cf43a fix: unify mobile header navigation dividers`
+- 移动端 Header 间距调整提交：`40eb09f fix: refine mobile header navigation spacing`
+- 移动端 Footer 子链接层级调整提交：`a6784cd fix: refine mobile footer detail density`
+- 移动端 Footer 法务信息布局提交：`3551a2d fix: arrange mobile footer legal details`
+- 网站标题和 favicon 提交：`a6af3eb feat: add company title and favicon`
+- 白色圆角 favicon 提交：`113f3e6 fix: add rounded white favicon tile`
+- 本次状态同步前的最新功能提交：`113f3e6 fix: add rounded white favicon tile`
 
 每个阶段开始前必须运行 `git status --short --branch`，确认没有用户未提交修改。每个阶段均按“检查状态 → 测试先行 → 最小实现 → 完整验证 → git add → commit → push → 停下等待确认”的顺序执行。
 
@@ -68,15 +76,28 @@
 - Logo 主体上下各 28px、左右各 28px 对称留白；深色为 `#1D1D1F`，三个节点为 `#00B7B5`。
 - Logo 桌面显示宽度 144px，移动端 120px。
 - Header 桌面高度 54px，移动端 48px，并使用粘性定位固定在视口顶部。
+- 移动端主导航各项使用同一条下边框表达默认、悬停和当前页面状态：默认灰色，悬停及当前页面为品牌绿色；末项非当前页面时不显示常态分隔线。
+- 移动端主导航单项最小高度为 43.2px，间距小于最初版本、略大于第一次压缩后的版本。
 - 全站容器使用 `clamp(1rem, 7.5vw, 9rem)` 对称边距，超宽屏单侧最多 144px。
 - Footer 使用浅灰 `#F5F5F7` 背景、黑色栏目标题、深灰链接和 Footer 专用的 `#DADAE0` 分隔线；全局 `#E8E8ED` 分隔线保持不变。
 - Footer 顶部显示动态 breadcrumb：首页为“首页”，未来内页为“首页 / 当前页面”。
 - Footer breadcrumb、栏目标题和导航链接字号为 16px；底部版权与备案字号为 14px。
 - Footer 保留五栏导航；移动端使用原生 `<details>`。
+- 移动端 Footer 子链接字号为 14px、最小点击高度为 36px，子链接间距比原版本缩小约 10%；栏目标题之间的整体节奏不变。
 - Footer 技术支持栏只保留一个“常见问题”入口，地址为 `/support/faq/`。
-- Footer 底部是三个左对齐的独立信息单元：版权声明、ICP 备案、公安联网备案。
+- Footer 底部是三个独立信息单元：版权声明、ICP 备案、公安联网备案。桌面端左对齐；移动端第一项独占第一行，第二、三项并列居中显示，移动端字号为 12px。
 - 移动端 Footer 由最后一个“法律信息”栏目的下边框分隔导航和版权区；版权区自身不再重复绘制上边框，且 copyright 与“法律信息”的间距匹配相邻标题节奏。
 - Footer 不显示搜索框、商城行、社交图标、电话、邮箱、地址或工作时间。
+
+### 4. 网站标题与 favicon
+
+- 首页浏览器标签标题和站点名称已改为 `北京盛博润通讯设备有限公司`；首页页面内的占位 `h1` 仍显示品牌简称“盛博润”。
+- Footer 版权主体仍按已确认文本显示 `北京盛博润通信设备有限公司`，未随浏览器标题改变。
+- `src/components/layout/SeoHead.astro` 已声明 `/favicon.ico`，本地预览不再出现 favicon 404。
+- favicon 使用 Logo 左侧完整 SBR 图形，不包含右侧“盛博润”文字；图形保持原始颜色、比例和像素。
+- `public/brand/favicon-source.png` 是 512 × 512 的高清源文件，使用纯白圆角方形底板、透明外角，圆角约为底板边长的 22%。
+- `public/favicon.ico` 包含 16、32、48、64、128 和 256 像素六种尺寸，供标签页、书签和快捷方式按需选用。
+- favicon 仅在本地项目和远程代码分支中更新，未部署到正式域名；本地浏览器如显示旧图标需强制刷新、重开标签页或使用无痕窗口。
 
 ## 当前待补资料
 
