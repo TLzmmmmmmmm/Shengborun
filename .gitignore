@@ -1,6 +1,19 @@
 .worktrees/
 node_modules/
+.pnpm-store/
 dist/
 .astro/
+.astro-config/
+coverage/
 playwright-report/
 test-results/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Tool and operating-system noise
+*.log
+.DS_Store
+Thumbs.db
