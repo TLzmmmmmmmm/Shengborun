@@ -31,14 +31,14 @@ describe('content rules', () => {
     ]);
   });
 
-  it('accepts the approved product fields and controlled tag colors', () => {
+  it('accepts the approved product fields and string key features', () => {
     const result = productSchema.safeParse({
       id: 'radio-sample',
       name: '示例数字对讲机',
       slug: 'sample-radio',
       categoryId: 'two-way-radio',
       coverImage: '/images/products/sample-radio.svg',
-      keyFeatures: [{ label: '数字通信', color: 'blue' }],
+      keyFeatures: ['数字通信', '超长续航'],
       published: true,
     });
 
@@ -68,14 +68,14 @@ describe('content rules', () => {
     expect(categoryResult.success).toBe(true);
   });
 
-  it('rejects unapproved product fields and arbitrary tag colors', () => {
+  it('rejects legacy feature objects and unapproved product fields', () => {
     const result = productSchema.safeParse({
       id: 'radio-sample',
       name: '示例数字对讲机',
       slug: 'sample-radio',
       categoryId: 'two-way-radio',
       coverImage: '/images/products/sample-radio.svg',
-      keyFeatures: [{ label: '数字通信', color: 'red' }],
+      keyFeatures: [{ label: '数字通信', color: 'blue' }],
       hasDocuments: true,
       published: true,
     });
@@ -97,28 +97,6 @@ describe('content rules', () => {
 
     expect(errors).toEqual([
       'Unknown categoryId: missing-category',
-    ]);
-  });
-
-  it('requires a feature label to keep the same color across products', () => {
-    const errors = validateContentReferences({
-      categories: [{ id: 'two-way-radio', slug: 'two-way-radio' }],
-      products: [
-        {
-          id: 'radio-one',
-          categoryId: 'two-way-radio',
-          keyFeatures: [{ label: '数字通信', color: 'blue' }],
-        },
-        {
-          id: 'radio-two',
-          categoryId: 'two-way-radio',
-          keyFeatures: [{ label: '数字通信', color: 'teal' }],
-        },
-      ],
-    });
-
-    expect(errors).toEqual([
-      'Feature label "数字通信" uses both "blue" and "teal".',
     ]);
   });
 
@@ -164,9 +142,10 @@ describe('content rules', () => {
         JSON.stringify({ id: 'two-way-radio', slug: 'two-way-radio' }),
         'utf8',
       );
+      writeFileSync(path.join(fixtureRoot, 'products', 'draft.json'), '', 'utf8');
       writeFileSync(
-        path.join(fixtureRoot, 'products', 'broken.md'),
-        '---\nid: broken\ncategoryId: missing-category\n---\n',
+        path.join(fixtureRoot, 'products', 'broken.json'),
+        JSON.stringify({ id: 'broken', categoryId: 'missing-category' }),
         'utf8',
       );
 

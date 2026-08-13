@@ -7,6 +7,7 @@ import {
   siteSettingsSchema,
   solutionSchema,
 } from './lib/content-rules';
+import { jsonProductLoader } from './lib/json-product-loader';
 
 const productCategories = defineCollection({
   loader: glob({
@@ -17,10 +18,7 @@ const productCategories = defineCollection({
 });
 
 const products = defineCollection({
-  loader: glob({
-    pattern: '**/*.{md,mdx}',
-    base: './src/content/products',
-  }),
+  loader: jsonProductLoader({ base: './src/content/products' }),
   schema: productSchema,
 });
 

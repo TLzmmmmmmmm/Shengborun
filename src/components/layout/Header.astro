@@ -5,10 +5,13 @@ const categories = await getCollection(
   'productCategories',
   ({ data }) => data.published,
 );
-const productPrefixes = categories.map(({ data }) => `/${data.slug}/`);
+const productPrefixes = [
+  '/products/',
+  ...categories.map(({ data }) => `/${data.slug}/`),
+];
 const navigationItems = [
   { label: '首页', href: '/' },
-  { label: '产品中心', href: '/two-way-radio/', product: true },
+  { label: '产品中心', href: '/products/', product: true },
   { label: '解决方案', href: '/solutions/' },
   { label: '技术支持', href: '/support/' },
   { label: '关于我们', href: '/about/' },

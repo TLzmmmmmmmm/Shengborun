@@ -30,6 +30,7 @@ const canonicalPath = `${categoryPath}${product.slug}/`;
   description={`${product.name}页面将在后续阶段完成。`}
   canonicalPath={canonicalPath}
   breadcrumbs={[
+    { label: '产品中心', href: '/products/' },
     { label: category.name, href: categoryPath },
     { label: product.name, href: canonicalPath },
   ]}

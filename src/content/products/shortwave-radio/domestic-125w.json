@@ -1,0 +1,34 @@
+{
+  "id": "domestic-125w",
+  "name": "国产125W短波电台",
+  "slug": "domestic-125w",
+  "categoryId": "shortwave-radio",
+  "coverImage": "/images/products/shortwave-radio/domestic-125w/image.png",
+  "galleryImages": [],
+  "keyFeatures": [
+    "国产短波",
+    "固定短波"
+  ],
+  "productFeatures": "\t该125W短波全数字化电台是最新一代的短波抗干扰通信电台，主要用于中、远距离通信。配15m斜天线，通信距离500公里以上；配44m双极天线，通信距离1000公里以上。\n\t该电台采用最先进的软件无线电技术和SCA技术，实现了射频数字化、业务功能数字化及通信自动化，具有定频、自动通信功能。可进行模拟话、声码话、数据传输等业务，具有GPS定位、IP网络接口、软件在线加载、加密、远程遥控等功能。电台配外置自动天线调谐器，可自动调谐各种天线。",
+  "technicalParameters": [
+    {
+      "group": "一般规格",
+      "items": [
+        {
+          "name": "频率范围",
+          "value": "1.6000MHz - 29.9999MHz"
+        },
+        {
+            "name": "外形尺寸",
+            "value": "269mm*320mm*103mm"
+        },
+        {
+            "name": "重量",
+            "value": "8.5kg (含电池)"
+        }
+      ]
+    }
+  ],
+  "sortOrder": 3,
+  "published": true
+}

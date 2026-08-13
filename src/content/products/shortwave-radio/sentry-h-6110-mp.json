@@ -1,0 +1,58 @@
+{
+  "id": "sentry-h-6110-mp",
+  "name": "柯顿SENTRY-H 6110-MP",
+  "slug": "sentry-h-6110-mp",
+  "categoryId": "shortwave-radio",
+  "coverImage": "/images/products/shortwave-radio/sentry-h-6110-mp/image.png",
+  "galleryImages": [],
+  "keyFeatures": [
+    "背负短波",
+    "维和免检"
+  ],
+  "productFeatures": "Codan Sentry-H 6110-MP是一款30W便携式软件软件化背负式短波电台(SDR)。",
+  "technicalParameters": [
+    {
+      "group": "一般规格",
+      "items": [
+        {
+          "name": "信道容量",
+          "value": "1000个"
+        },
+        {
+          "name": "频率范围",
+          "value": "发射：1.6-30 MHz；接收：250KHz-30MHz"
+        },
+        {
+          "name": "输出功率",
+          "value": "30W RF±1Db(双音或语音)，用户可编程1W步进（低/中/高）"
+        },
+        {
+          "name": "联系人",
+          "value": "500个"
+        },
+        {
+          "name": "网络",
+          "value": "20个同时扫描"
+        },
+        {
+          "name": "GPS",
+          "value": "内嵌式接收器/天线（GPS,GLONESS,北斗）"
+        },
+        {
+            "name": "编译",
+            "value": "TPS-M电台编译软件，USB记忆体"
+        },
+        {
+            "name": "语言支持",
+            "value": "中文、英文、西班牙文、俄语、法语、阿拉伯语"
+        },
+        {
+            "name": "重量",
+            "value": "收发器：2.9公斤（5.0公斤，8Ah镍氢电池）；智能手机0.3公斤"
+        }
+      ]
+    }
+  ],
+  "sortOrder": 5,
+  "published": true
+}

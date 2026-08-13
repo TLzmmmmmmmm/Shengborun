@@ -1,0 +1,44 @@
+{
+  "id": "ly298",
+  "name": "润信达 LY298",
+  "slug": "ly298",
+  "categoryId": "two-way-radio",
+  "coverImage": "/images/products/two-way-radio/ly298/ly298.png",
+  "galleryImages": [],
+  "keyFeatures": [
+    "5G全网通公网",
+    "远距离通话",
+    "耳挂对讲",
+    "适配多种平台"
+  ],
+  "productFeatures": "LY298是一款5G全网通公网POC对讲机，该型对讲机可满足客户单呼组呼群呼功能，只要有电信运营商信号的地方，就可实现客户的通话需求。",
+  "technicalParameters": [
+    {
+      "group": "一般规格",
+      "items": [
+        {
+          "name": "频率范围",
+          "value": "5G全网通"
+        },
+        {
+            "name": "电池容量",
+            "value": "1000 mAh Li-ion"
+        },
+        {
+            "name": "整机尺寸",
+            "value": "95*60*35mm (含电池)"
+        },
+        {
+            "name": "整机重量",
+            "value": "160g (含电池)"
+        },
+        {
+            "name": "适用平台",
+            "value": "适配善理/芯对讲/博纳德"
+        }
+      ]
+    }
+  ],
+  "sortOrder": 2,
+  "published": true
+}

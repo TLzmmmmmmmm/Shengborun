@@ -26,16 +26,7 @@ export const productSchema = z
     categoryId: z.string().min(1),
     coverImage: z.string().min(1),
     galleryImages: z.array(z.string().min(1)).default([]),
-    keyFeatures: z
-      .array(
-        z
-          .object({
-            label: z.string().min(1),
-            color: z.enum(PRODUCT_TAG_COLORS),
-          })
-          .strict(),
-      )
-      .default([]),
+    keyFeatures: z.array(z.string().min(1)).default([]),
     productFeatures: z.string().min(1).optional(),
     technicalParameters: z
       .array(
@@ -101,14 +92,12 @@ export const siteSettingsSchema = z
   })
   .strict();
 
-type ProductTagColor = (typeof PRODUCT_TAG_COLORS)[number];
-
 interface ContentReferences {
   categories: Array<{ id: string; slug: string }>;
   products: Array<{
     id: string;
     categoryId: string;
-    keyFeatures?: Array<{ label: string; color: ProductTagColor }>;
+    keyFeatures?: string[];
   }>;
 }
 
@@ -148,30 +137,6 @@ export function validateContentReferences({
   for (const product of products) {
     if (!categoryIds.has(product.categoryId)) {
       errors.push(`Unknown categoryId: ${product.categoryId}`);
-    }
-  }
-
-  const featureColors = new Map<string, ProductTagColor>();
-  const reportedFeatureConflicts = new Set<string>();
-
-  for (const product of products) {
-    for (const feature of product.keyFeatures ?? []) {
-      const existingColor = featureColors.get(feature.label);
-
-      if (!existingColor) {
-        featureColors.set(feature.label, feature.color);
-        continue;
-      }
-
-      if (
-        existingColor !== feature.color &&
-        !reportedFeatureConflicts.has(feature.label)
-      ) {
-        errors.push(
-          `Feature label "${feature.label}" uses both "${existingColor}" and "${feature.color}".`,
-        );
-        reportedFeatureConflicts.add(feature.label);
-      }
     }
   }
 

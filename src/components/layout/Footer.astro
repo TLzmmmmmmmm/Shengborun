@@ -18,6 +18,7 @@ const sortedSolutions = solutions.toSorted((a, b) => a.data.sortOrder - b.data.s
 const footerGroups: FooterGroup[] = [
   {
     title: '产品中心',
+    titleHref: '/products/',
     links: sortedCategories.map(({ data }) => ({ label: data.name, href: `/${data.slug}/` })),
   },
   {
@@ -132,6 +133,7 @@ const footerGroups: FooterGroup[] = [
   .footer-title:hover { color: var(--brand-teal-dark); }
   .footer-toggle { display: none; }
   ul { display: grid; gap: .65rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+  [data-footer-panel][hidden] { display: none; }
   li a, li span { color: var(--text-secondary); font-size: 1rem; text-decoration: none; }
   li a:hover { color: var(--text-primary); }
   .footer-legal { display: flex; align-items: center; justify-content: space-between; gap: 1rem 2rem; padding-block: 1.25rem; border-top: 1px solid var(--footer-divider); font-size: .875rem; text-align: left; }

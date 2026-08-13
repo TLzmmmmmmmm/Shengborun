@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const approvedNavigation = [
   ['首页', '/'],
-  ['产品中心', '/two-way-radio/'],
+  ['产品中心', '/products/'],
   ['解决方案', '/solutions/'],
   ['技术支持', '/support/'],
   ['关于我们', '/about/'],
@@ -41,6 +41,11 @@ test('header and footer follow the approved structure', async ({ page }) => {
   await expect(footer).not.toContainText('使用说明');
   await expect(footer).not.toContainText('常见问题');
   await expect(footer).not.toContainText('售后服务');
+  await expect(footer.getByRole('link', { name: '产品中心', exact: true })).toHaveAttribute('href', '/products/');
+  await expect(footer.getByRole('link', { name: '对讲机通信', exact: true })).toHaveAttribute('href', '/two-way-radio/');
+  await expect(footer.getByRole('link', { name: '短波通信', exact: true })).toHaveAttribute('href', '/shortwave-radio/');
+  await expect(footer.getByRole('link', { name: '自组网通信', exact: true })).toHaveAttribute('href', '/mesh-network/');
+  await expect(footer.getByRole('link', { name: 'ICT 集成', exact: true })).toHaveAttribute('href', '/ict-integration/');
   await expect(footer.getByRole('link', { name: '解决方案', exact: true })).toHaveAttribute('href', '/solutions/');
   await expect(footer.getByRole('link', { name: '技术支持', exact: true })).toHaveAttribute('href', '/support/');
   await expect(footer.getByRole('link', { name: '关于我们', exact: true })).toHaveAttribute('href', '/about/');
@@ -175,11 +180,11 @@ test('renders the approved light footer hierarchy', async ({ page }) => {
     '16px',
   );
   await expect(footer.locator('.footer-title').first()).toHaveCSS('font-size', '16px');
-  await expect(footerLinks.getByRole('link').first()).toHaveCSS(
+  await expect(footerLinks.locator('li a').first()).toHaveCSS(
     'color',
     'rgb(110, 110, 115)',
   );
-  await expect(footerLinks.getByRole('link').first()).toHaveCSS('font-size', '16px');
+  await expect(footerLinks.locator('li a').first()).toHaveCSS('font-size', '16px');
   await expect(breadcrumb).toHaveCSS('color', 'rgb(110, 110, 115)');
 
   const legal = footer.locator('.footer-legal');
@@ -208,8 +213,10 @@ test('uses compact mobile footer detail hierarchy', async ({ page }) => {
   const firstLink = firstList.getByRole('link').first();
 
   await expect(firstSummary).toHaveAttribute('aria-expanded', 'false');
+  await expect(firstList).toBeHidden();
   await firstSummary.click();
   await expect(firstSummary).toHaveAttribute('aria-expanded', 'true');
+  await expect(firstList).toBeVisible();
 
   await expect(firstGroup.locator('.footer-title')).toHaveCSS('font-size', '16px');
   await expect(firstList).toHaveCSS('row-gap', '9.36px');
@@ -220,8 +227,10 @@ test('uses compact mobile footer detail hierarchy', async ({ page }) => {
   await firstSummary.focus();
   await page.keyboard.press('Enter');
   await expect(firstSummary).toHaveAttribute('aria-expanded', 'false');
+  await expect(firstList).toBeHidden();
   await page.keyboard.press('Space');
   await expect(firstSummary).toHaveAttribute('aria-expanded', 'true');
+  await expect(firstList).toBeVisible();
 
   await page.setViewportSize({ width: 768, height: 900 });
   await expect(firstList).toBeVisible();

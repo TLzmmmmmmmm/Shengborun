@@ -2,7 +2,7 @@
   "id": "shortwave-radio",
   "name": "短波通信",
   "slug": "shortwave-radio",
-  "shortDescription": "面向远距离与复杂环境的短波通信设备",
+  "shortDescription": "面向远距离与复杂环境的稳定通信系统。",
   "sortOrder": 2,
   "published": true
 }

@@ -21,6 +21,20 @@ export function selectPublishedProducts<T extends ProductSummary>(
     .slice(0, limit);
 }
 
+export function selectAllPublishedProducts<T extends ProductSummary>(
+  products: readonly T[],
+  categoryId: string,
+): T[] {
+  return products
+    .filter(
+      (product) => product.published && product.categoryId === categoryId,
+    )
+    .toSorted(
+      (left, right) =>
+        left.sortOrder - right.sortOrder || left.id.localeCompare(right.id),
+    );
+}
+
 interface RouteCategory {
   id: string;
   slug: string;

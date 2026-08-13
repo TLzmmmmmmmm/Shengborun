@@ -1,11 +1,11 @@
 ---
-import CategorySection from '../../components/products/CategorySection.astro';
+import CategoryOverviewCard from '../../components/products/CategoryOverviewCard.astro';
+import { getProductCategoryOverview } from '../../data/product-category-overview';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getProductPresentation } from '../../lib/product-presentation';
 
-const categories = await getProductPresentation();
 const pageTitle = '产品中心 | 北京盛博润通讯设备有限公司';
 const pageDescription = '专业的通信设备与解决方案，助力客户高效连接世界';
+const productCategoryOverview = await getProductCategoryOverview();
 ---
 
 <BaseLayout
@@ -20,18 +20,67 @@ const pageDescription = '专业的通信设备与解决方案，助力客户高�
         <h1>产品中心</h1>
         <p>{pageDescription}</p>
       </section>
-      {categories.map((category) => <CategorySection {...category} />)}
+
+      <section class="category-grid" aria-label="产品分类">
+        {
+          productCategoryOverview.map((category) => (
+            <CategoryOverviewCard {...category} />
+          ))
+        }
+      </section>
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .products-page { background: var(--surface-muted); }
-  .products-content { max-width: 100rem; }
-  .products-intro {
-    padding-block: 2rem clamp(2rem, 3.5vw, 3rem);
-    border-bottom: 1px solid var(--divider);
+  .products-page {
+    min-height: 100vh;
+    background: var(--surface-muted);
   }
-  h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; line-height: 1.1; }
-  p { margin: 1rem 0 0; color: var(--text-secondary); font-size: 1.1875rem; }
+
+  .products-content {
+    max-width: 100rem;
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+  }
+
+  .products-intro {
+    padding-block: clamp(2rem, 4vh, 2.75rem) clamp(2rem, 4.5vh, 2.75rem);
+    text-align: center;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--brand-graphite);
+    font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+
+  .products-intro p {
+    margin: 0.75rem 0 0;
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 1.45vw, 1.125rem);
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.25rem, 2vw, 1.75rem);
+  }
+
+  @media (max-width: 47.999rem) {
+    .products-content {
+      padding-bottom: 4rem;
+    }
+
+    .products-intro {
+      padding-block: 2rem 2.25rem;
+      text-align: center;
+    }
+
+    .category-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25rem;
+    }
+  }
 </style>
