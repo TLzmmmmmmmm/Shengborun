@@ -1,6 +1,6 @@
 {
   "id": "domestic-5w",
-  "name": "国产5W短波电台",
+  "name": "国产 5W短波电台",
   "slug": "domestic-5w",
   "categoryId": "shortwave-radio",
   "coverImage": "/images/products/shortwave-radio/domestic-5w/image.png",
@@ -9,22 +9,26 @@
     "国产短波",
     "手持短波"
   ],
-  "productFeatures": "该5W手持式抗干扰数字化短波电台可配3米鞭天线或配15米斜天线或配44米双极天线。该电台可进行模拟话、声码话、数据传输等业务，具有软件在线加载、加密、收发短信等功能。内置自动天线调谐器，可自动调谐各种天线。该电台采用铝合金套箱式结构，可防潮防霉、防盐雾。具有体积小、重量轻、操作简便等特点。",
+  "productFeatures": "该电台主要用于近、中距离通信。配3m鞭天线，通信距离15公里以上；配15m斜天线，通信距离200公里以上；配44m双极天线，通信距离500公里以上。",
   "technicalParameters": [
     {
       "group": "一般规格",
       "items": [
         {
           "name": "频率范围",
-          "value": "2.0000MHz - 29.9999MHz"
+          "value": "2.0000MHz～29.9999MHz"
         },
         {
-            "name": "外形尺寸",
-            "value": "269mm*320mm*103mm"
+          "name": "输出功率",
+          "value": "5W"
         },
         {
-            "name": "重量",
-            "value": "≤8.5kg (含电池)"
+          "name": "整机尺寸",
+          "value": "269mm×320mm×103mm"
+        },
+        {
+          "name": "整机重量",
+          "value": "1kg"
         }
       ]
     }

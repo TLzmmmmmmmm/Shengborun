@@ -1,6 +1,6 @@
 {
   "id": "sentry-h-6120",
-  "name": "柯顿 Sentry -H 6120",
+  "name": "柯顿 Sentry-H 6120",
   "slug": "sentry-h-6120",
   "categoryId": "shortwave-radio",
   "coverImage": "/images/products/shortwave-radio/sentry-h-6120/image.png",
@@ -9,50 +9,26 @@
     "固定短波",
     "维和免检"
   ],
-  "productFeatures": "Codan 柯顿 Sentry -H 6120车载/基地短波电台凭借150W RF功率，可集成到车台和基站配置中。",
+  "productFeatures": "Codan柯顿Sentry-H 6120车载/基地短波电台凭借150 W RF功率，可集成到车台和基站配置中。",
   "technicalParameters": [
     {
       "group": "一般规格",
       "items": [
         {
-          "name": "信道容量",
-          "value": "1000个"
-        },
-        {
           "name": "频率范围",
-          "value": "发射：1.6-30 MHz；接收：250KHz-30MHz"
+          "value": "1.6MHz～30MHz"
         },
         {
           "name": "输出功率",
-          "value": "30W RF±1Db(双音或语音)，用户可编程1W步进（低/中/高）"
+          "value": "150W"
         },
         {
-          "name": "GPS",
-          "value": "RFU-外置天线，手咪-嵌入式接收器/天线（GPS、GLONASS、北斗）"
+          "name": "外形尺寸",
+          "value": "220×190×66.5mm"
         },
         {
-            "name": "机械尺寸",
-            "value": "RFU:220毫米W * 66.5毫米D * 190毫米H; 手咪：67毫米W * 210毫米D * 72.5毫米H;"
-        },
-        {
-            "name": "重量",
-            "value": "2.82公斤；手咪208克（无电缆）"
-        },
-        {
-            "name": "数字语音",
-            "value": "声码器：STANAG4591/MELPe(2400/1200bps)TWELP(2400/1200/600bps)全数字模式自动波特率，自动声码器切换"
-        },
-        {
-            "name": "加密",
-            "value": "CES-128；AES-256"
-        },
-        {
-            "name": "连接",
-            "value": "ALE：FED-STD-1045、MIL-STD-188-1418、STANAG4538(3G ALE-未来)\n选择性呼叫：CCIR493-4专有和开放标准"
-        },
-        {
-            "name": "接口",
-            "value": "ATU控制，通用接口，手咪接口，直流电源：全封闭式MIL接口\nH-250:6引脚MIL支持音频输入输出、PTT、麦克风输入、音频输出和熔断12V直流输出\nGPS天线：天线SMB插座\n天线：N-类型\n点火感应单线输入，直流电池电缆一部分。"
+          "name": "重量",
+          "value": "2.82kg"
         }
       ]
     }

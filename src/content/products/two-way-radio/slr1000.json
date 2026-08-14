@@ -1,0 +1,52 @@
+{
+  "id": "slr1000",
+  "name": "摩托罗拉 SLR1000",
+  "slug": "slr1000",
+  "categoryId": "two-way-radio",
+  "coverImage": "/images/products/two-way-radio/slr1000/image.png",
+  "galleryImages": [],
+  "keyFeatures": [
+    "室外使用",
+    "性能可靠",
+    "坚固耐用",
+    "设备轻薄"
+  ],
+  "productFeatures": "SLR 1000不同于传统的中继台，它采用IP65等级防尘和防水保护，因而可以广泛部署至校园、停车库以及其他室外场所。精致小巧的外形提供了更多安装选择，如墙面或栏杆上。低功率无风扇设计减小了占用的空间，能耗更低，随时为您节省开支。",
+  "technicalParameters": [
+    {
+      "group": "一般规格",
+      "items": [
+        {
+          "name": "频率范围",
+          "value": "400-527MHz"
+        },
+        {
+          "name": "输出功率",
+          "value": "≤10W"
+        },
+        {
+          "name": "电池容量",
+          "value": "12V"
+        },
+        {
+          "name": "信道数量",
+          "value": "64"
+        },
+        {
+          "name": "整机尺寸",
+          "value": "279.4×228.6×101.6mm"
+        },
+        {
+          "name": "工作温度",
+          "value": "-30℃-60℃"
+        },
+        {
+          "name": "整机重量",
+          "value": "4.54Kg"
+        }
+      ]
+    }
+  ],
+  "sortOrder": 19,
+  "published": true
+}
