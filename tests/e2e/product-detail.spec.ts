@@ -19,6 +19,7 @@ test.describe('product detail page', () => {
     await expect(page.locator('[data-detail-feature]')).toHaveCount(4);
     await expect(page.locator('[data-detail-feature] svg')).toHaveCount(4);
     await expect(page.locator('[data-product-gallery]')).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(1440);
   });
 
   test('stacks the overview and uses a two-column feature grid on mobile', async ({ page }) => {

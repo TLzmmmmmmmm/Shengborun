@@ -259,3 +259,19 @@ test.describe('product category pages', () => {
     }
   });
 });
+
+test('renders product detail routes with footer breadcrumbs', async ({ page }) => {
+  await page.goto('/two-way-radio/ly198/');
+  await expect(page.locator('[data-product-detail]')).toBeVisible();
+  const breadcrumb = page
+    .getByRole('contentinfo')
+    .getByRole('navigation', { name: '面包屑' });
+  await expect(breadcrumb.getByRole('link', { name: '产品中心' })).toHaveAttribute(
+    'href',
+    '/products/',
+  );
+  await expect(breadcrumb.getByRole('link', { name: '对讲机通信' })).toHaveAttribute(
+    'href',
+    '/two-way-radio/',
+  );
+});
