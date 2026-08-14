@@ -82,12 +82,20 @@ const icons = {
 
   li {
     display: grid;
+    place-content: center;
     justify-items: center;
     gap: 0.5rem;
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-    line-height: 1.45;
-    text-align: center;
+
+    aspect-ratio: 1 / 1;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 1.25rem;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08);
+
+    color: var(--text-secondary); 
+    font-size: 0.875rem; 
+    line-height: 1.45; 
+    text-align: center; 
   }
 
   svg {
@@ -100,7 +108,19 @@ const icons = {
   @media (max-width: 47.999rem) {
     .product-feature-list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
+      gap: clamp(0.75rem, 3vw, 1.25rem);
+    }
+
+    li {
+      padding: clamp(1rem, 4vw, 1.75rem);
+      border-radius: clamp(1rem, 4vw, 1.5rem);
+      font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+      gap: clamp(0.5rem, 2vw, 0.875rem);
+    }
+
+    svg {
+      width: clamp(1rem, 7vw, 3rem);
+      height: clamp(1rem, 7vw, 3rem);
     }
   }
 </style>
