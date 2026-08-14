@@ -19,5 +19,18 @@
   { "name": "维和免检", "icon": "shield-check" },
   { "name": "500W短波", "icon": "zap" },
   { "name": "背负短波", "icon": "backpack" },
-  { "name": "手持短波", "icon": "hand" }
+  { "name": "手持短波", "icon": "hand" },
+  { "name": "电量播报", "icon": "battery" },
+  { "name": "三色背景", "icon": "monitor" },
+  { "name": "强光照明", "icon": "zap" },
+  { "name": "FM收音", "icon": "radio" },
+  { "name": "多种充电", "icon": "battery" },
+  { "name": "腔体设计", "icon": "blocks" },
+  { "name": "声控功能", "icon": "volume" },
+  { "name": "语音加密", "icon": "shield-check" },
+  { "name": "屏下显示", "icon": "monitor" },
+  { "name": "侧键定义", "icon": "sliders" },
+  { "name": "199信道", "icon": "signal" },
+  { "name": "尾音消除", "icon": "volume" },
+  { "name": "监听功能", "icon": "headphones" }
 ]
