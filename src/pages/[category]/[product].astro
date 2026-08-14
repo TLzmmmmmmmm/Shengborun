@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 
 import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
 import ProductHero from '../../components/products/ProductHero.astro';
+import TechnicalParameters from '../../components/products/TechnicalParameters.astro';
 import productFeatureLibrary from '../../content/product-features/features.json';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import type { ProductFeatureDefinition } from '../../lib/product-features';
@@ -58,6 +59,7 @@ const breadcrumbs = [
         coverImage={product.coverImage}
         features={resolvedFeatures}
       />
+      <TechnicalParameters parameters={product.technicalParameters} />
     </div>
   </section>
 </BaseLayout>

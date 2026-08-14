@@ -34,4 +34,34 @@ test.describe('product detail page', () => {
     expect(new Set(xs).size).toBe(2);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
   });
+
+  test('switches desktop parameter groups with pointer and keyboard input', async ({ page }) => {
+    await page.goto('/shortwave-radio/envoy-x/');
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.reload();
+    const tabs = page.locator('[data-parameter-tab]');
+    await expect(tabs).toHaveCount(3);
+    await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('[data-parameter-panel]:visible')).toHaveCount(1);
+    await tabs.nth(1).click();
+    await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('[data-parameter-panel]:visible')).toContainText('电压范围');
+    await tabs.nth(1).press('ArrowDown');
+    await expect(tabs.nth(2)).toHaveAttribute('aria-selected', 'true');
+  });
+
+  test('merges every parameter item into one mobile table', async ({ page }) => {
+    await page.goto('/shortwave-radio/envoy-x/');
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.reload();
+    for (const tab of await page.locator('[data-parameter-tab]').all()) {
+      await expect(tab).toBeHidden();
+    }
+    const mobileTable = page.locator('[data-mobile-parameter-table]');
+    await expect(mobileTable).toBeVisible();
+    await expect(mobileTable).toContainText('信道和扫描组');
+    await expect(mobileTable).toContainText('电压范围');
+    await expect(mobileTable).toContainText('环境标准');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+  });
 });
