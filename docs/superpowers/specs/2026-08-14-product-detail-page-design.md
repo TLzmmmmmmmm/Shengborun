@@ -90,7 +90,7 @@ The reference screenshot defines the information hierarchy rather than a pixel-p
 - A dedicated CTA block follows the technical-parameter section and precedes the Footer.
 - The button is centered.
 - The visible label is “立即咨询”.
-- The destination is `/about#contact`.
+- The CTA is a visual placeholder for now and has no destination or click behavior.
 - The background uses the company brand teal and the text is black.
 - Desktop uses a moderate fixed width.
 - Mobile increases the touch target while retaining side margins instead of becoming edge-to-edge.
@@ -151,7 +151,7 @@ Automated tests must verify:
 - Mobile hides group navigation and displays one merged table containing every Item in source order.
 - Long parameter values do not cause horizontal overflow.
 - Empty technical parameters render “技术参数整理中”.
-- The inquiry CTA is centered, uses the required label, and links to `/about#contact`.
+- The inquiry CTA is centered, uses the required label, and renders without a link until contact navigation is approved.
 - Existing category pages, product-card links, Header, Footer, and mobile Footer interaction continue to pass regression tests.
 
 ## Out of Scope

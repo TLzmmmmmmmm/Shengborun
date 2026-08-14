@@ -17,7 +17,7 @@
 - Replace planned Feature colors with canonical library-backed Icon identifiers; related Features may reuse Icons.
 - Desktop technical parameters use left-side tabs and one visible group table.
 - Mobile technical parameters flatten all groups into one continuous table with no Group navigation.
-- The CTA label is `立即咨询`, links to `/about#contact`, uses brand teal with black text, and is centered.
+- The CTA label is `立即咨询`, is a non-interactive visual placeholder with no link, uses brand teal with black text, and is centered.
 - Preserve all category-page, product-card, Header, Footer, and mobile Footer behavior.
 
 ---
@@ -646,7 +646,7 @@ git commit -m "feat: add product parameter tabs"
 - Modify: `tests/e2e/product-routes.spec.ts`
 
 **Interfaces:**
-- `ProductInquiryCta` has no required props and always renders `/about#contact` with label `立即咨询`.
+- `ProductInquiryCta` has no required props and renders a non-interactive `立即咨询` visual placeholder without an anchor or destination.
 - The route supplies a four-level main Breadcrumb and matching `BaseLayout` Footer Breadcrumb data.
 
 - [ ] **Step 1: Write failing CTA, Breadcrumb, and metadata tests**
@@ -662,8 +662,9 @@ test('renders product breadcrumbs, metadata and the centered inquiry CTA', async
   await expect(breadcrumb).toContainText('润信达 LY198');
   await expect(page).toHaveTitle(/润信达 LY198/);
   await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /模拟对讲机/);
-  const cta = page.getByRole('link', { name: '立即咨询' });
-  await expect(cta).toHaveAttribute('href', '/about#contact');
+  const cta = page.locator('[data-product-inquiry-cta]');
+  await expect(cta).toHaveText('立即咨询');
+  await expect(cta.locator('a')).toHaveCount(0);
   const ctaBox = (await cta.boundingBox())!;
   expect(Math.abs((ctaBox.x + ctaBox.width / 2) - 720)).toBeLessThan(2);
 });
@@ -686,11 +687,11 @@ Create `ProductInquiryCta.astro`:
 
 ```astro
 <section class="product-inquiry" aria-label="产品咨询">
-  <a class="product-inquiry__button" href="/about#contact">立即咨询</a>
+  <span class="product-inquiry__button" data-product-inquiry-cta>立即咨询</span>
 </section>
 ```
 
-Center the link with Grid or Flex. Use `background: var(--brand-teal)`, black text, visible hover/focus treatment, minimum height `3rem`, desktop width around `13rem`, and mobile width `min(20rem, 100%)` inside page gutters.
+Center the visual CTA with Grid or Flex. Use `background: var(--brand-teal)`, black text, minimum height `3rem`, desktop width around `13rem`, and mobile width `min(20rem, 100%)` inside page gutters. Do not add an anchor, `href`, or click handler.
 
 - [ ] **Step 4: Finalize route metadata and Breadcrumbs**
 
@@ -829,7 +830,7 @@ git commit -m "test: verify product detail experience"
 - [ ] Desktop parameter tabs work with mouse and keyboard.
 - [ ] Mobile parameters appear as one merged table without group navigation.
 - [ ] Empty technical parameters show `技术参数整理中`.
-- [ ] CTA is centered, brand teal, black text, and links to `/about#contact`.
+- [ ] CTA is centered, brand teal, black text, and has no link or click behavior.
 - [ ] No horizontal overflow exists at 390px or the minimum supported 320px.
 - [ ] `design-qa.md` ends with `final result: passed`.
 - [ ] Full unit, content, diagnostic, build, and browser verification passes.
