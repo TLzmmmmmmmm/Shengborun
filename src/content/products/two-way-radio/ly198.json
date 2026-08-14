@@ -6,43 +6,43 @@
   "coverImage": "/images/products/two-way-radio/ly198/ly198.jpeg",
   "galleryImages": [],
   "keyFeatures": [
-    "一键对频",
     "一体天线",
+    "一键对频",
     "小巧轻薄",
     "电量提示"
   ],
-  "productFeatures": "LY198是一款机身小巧轻便的模拟对讲机，具备一键对频功能，可实现不同品牌型号的对讲机之间在模拟模式下实现通话，满足客户的通话需求。",
+  "productFeatures": "LY198是一款机身小巧轻便的模拟对讲机，具备一键对频功能，可实现不同品牌型号的模拟对讲机之间通话。",
   "technicalParameters": [
     {
       "group": "一般规格",
       "items": [
         {
           "name": "频率范围",
-          "value": "400-480 MHz"
+          "value": "400-480MHz"
         },
         {
           "name": "输出功率",
-          "value": "2 W"
+          "value": "≤2W"
         },
         {
-            "name": "电池容量",
-            "value": "1200 mAh"
+          "name": "电池容量",
+          "value": "1200mAh"
         },
         {
-            "name": "信道容量",
-            "value": "16"
+          "name": "信道数量",
+          "value": "16"
         },
         {
-            "name": "整机尺寸",
-            "value": "95*45*35 mm"
+          "name": "整机尺寸",
+          "value": "95*45*35mm"
         },
         {
-            "name": "工作温度",
-            "value": "-20℃-55℃"
+          "name": "工作温度",
+          "value": "-20℃- 55℃"
         },
         {
-            "name": "整机重量",
-            "value": "95 g"
+          "name": "整机重量",
+          "value": "95g"
         }
       ]
     }
