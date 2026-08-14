@@ -41,6 +41,7 @@ test.describe('product detail page', () => {
     await page.reload();
     const tabs = page.locator('[data-parameter-tab]');
     await expect(tabs).toHaveCount(3);
+    await expect(page.getByRole('tablist')).toHaveAttribute('aria-orientation', 'vertical');
     await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true');
     await expect(page.locator('[data-parameter-panel]:visible')).toHaveCount(1);
     await tabs.nth(1).click();

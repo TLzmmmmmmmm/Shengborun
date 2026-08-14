@@ -26,7 +26,7 @@ const { groups, allItems, isEmpty } = prepareTechnicalParameters(parameters);
     <h2 id="technical-parameters-title">技术参数</h2>
     <div class="parameter-desktop">
       <div class="parameter-layout">
-        <div class="parameter-tabs" role="tablist" aria-label="技术参数分组">
+        <div class="parameter-tabs" role="tablist" aria-label="技术参数分组" aria-orientation="vertical">
           {groups.map((group, index) => (
             <button
               id={`parameter-tab-${index}`}
