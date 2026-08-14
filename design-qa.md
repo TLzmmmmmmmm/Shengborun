@@ -91,4 +91,50 @@
 - Focused comparison: the navigation region and complete product-card rows are readable in the 1024px full-page capture; no additional crops are required.
 - Findings: no actionable P0, P1, or P2 mismatch remains for the reported desktop issues.
 
+## Product detail page — Task 5 visual QA
+
+### Evidence
+
+- Source visual truth: `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-b5ebcb15-76a6-493e-9efd-e159f5dadbb1.png` — 1024 × 1535 PNG.
+- Desktop implementation: `docs/design-previews/product-detail/product-detail-desktop-1440x900.png` — 1440 × 2012 full-page PNG from a 1440 × 900 CSS viewport, device scale factor 1.
+- Mobile implementation: `docs/design-previews/product-detail/product-detail-mobile-390x844.png` — 390 × 1746 full-page PNG from a 390 × 844 CSS viewport, device scale factor 1.
+- Density normalization: all implementation evidence is captured at 1× CSS density. The 1024 px source is a narrower desktop reference, so the comparison normalizes by page-owned regions and responsive intent rather than treating its pixel width as the 1440 px implementation viewport.
+- State: default `/two-way-radio/ly198/` product detail route; first parameter group selected; desktop navigation visible; mobile menu closed; no hover or focus state forced.
+
+### Full-view comparison
+
+- The implementation retains the source hierarchy and rhythm: compact Header, breadcrumbs, left product image/right product information, four lightweight Feature icons, technical parameters, centered teal CTA, and Footer.
+- Desktop keeps the overview balanced at 48%/52%, the cover image contained and uncropped, and the CTA centered between the parameter content and Footer.
+- Mobile stacks media before information, lays Features out in two columns, merges parameters into one table, keeps the CTA centered, and preserves Header/body/Footer separation without horizontal overflow at 390 px or the checked 320 px minimum.
+- The source uses a different LY198 packshot and more bordered surfaces. The implementation intentionally uses the canonical site product asset and existing muted-surface/table tokens; subject, containment, hierarchy, and density remain faithful to the approved non-pixel-replication brief.
+
+### Focused comparison
+
+- Hero: full-resolution evidence confirms a sharp contained cover, readable title/description, balanced two-column desktop placement, and clean stacked mobile wrapping.
+- Features: all four Lucide library icons are visible, aligned, consistent in stroke weight, teal, and paired with readable labels; the mobile 2 × 2 grid does not collide or clip.
+- Parameters and CTA: row labels/values are legible in both full-resolution captures; desktop tabs have a clear selected treatment, mobile has no group navigation, and the black-on-teal CTA is centered. Separate crops were unnecessary because these regions remain readable at original image resolution.
+
+### Required fidelity surfaces
+
+- Fonts and typography: the site font stack, graphite heading hierarchy, body line height, optical weight, wrapping, and small-label sizing are coherent across desktop and mobile; no truncation or cramped copy is visible.
+- Spacing and layout rhythm: breadcrumbs, overview, Features, parameter heading/table, CTA, and Footer use distinct section gaps; desktop and mobile alignments preserve the source reading order.
+- Colors and visual tokens: graphite text, secondary gray copy, muted media surface, subtle row dividers, and brand teal icons/CTA use the established site tokens with sufficient visible contrast.
+- Image quality and asset fidelity: the canonical LY198 image remains sharp at both captures, uses `contain`, has no gallery control, and shows no stretch, crop, halo, or compression artifact.
+- Copy and content: the product name, description, four Feature labels, parameter values, breadcrumbs, and `立即咨询` CTA render as real product content rather than placeholders.
+
+### Comparison history
+
+1. Initial capture finding — P2: the Astro development toolbar appeared in both full-page screenshots, covering part of the desktop parameter area and the mobile `技术参数` heading. This was a capture-only artifact, not a production component.
+2. Fix: conditional screenshot capture now hides the `astro-dev-toolbar` host before capture while leaving the product page implementation unchanged.
+3. Post-fix evidence: the source, revised desktop screenshot, and revised mobile screenshot were opened together with `view_image`. The obstruction is gone and no actionable P0, P1, or P2 visual mismatch remains.
+
+### Findings and verification limits
+
+- P0: none.
+- P1: none.
+- P2: none after the capture-artifact fix above.
+- P3 follow-up: recheck very long imported parameter labels once the in-progress product content set is finalized.
+- Representative capture coverage passes for desktop and mobile, including four library icons, contained cover image, two-column/stacked layouts, 390 px and 320 px overflow checks, and the link-free centered CTA.
+- Multi-tab regression is externally blocked by current product data: `envoy-x` now contains one parameter group, while every currently published multi-group product references at least one Feature name missing from the canonical library and therefore cannot render. Per task scope, no product JSON, product image, or Feature-library data was changed.
+
 final result: passed

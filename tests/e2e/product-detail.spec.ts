@@ -20,6 +20,14 @@ test.describe('product detail page', () => {
     await expect(page.locator('[data-detail-feature] svg')).toHaveCount(4);
     await expect(page.locator('[data-product-gallery]')).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(1440);
+
+    if (process.env.CAPTURE_PRODUCT_DETAIL === '1') {
+      await page.addStyleTag({ content: 'astro-dev-toolbar { display: none !important; }' });
+      await page.screenshot({
+        path: 'docs/design-previews/product-detail/product-detail-desktop-1440x900.png',
+        fullPage: true,
+      });
+    }
   });
 
   test('stacks the overview and uses a two-column feature grid on mobile', async ({ page }) => {
@@ -33,6 +41,18 @@ test.describe('product detail page', () => {
     );
     expect(new Set(xs).size).toBe(2);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+
+    if (process.env.CAPTURE_PRODUCT_DETAIL === '1') {
+      await page.addStyleTag({ content: 'astro-dev-toolbar { display: none !important; }' });
+      await page.screenshot({
+        path: 'docs/design-previews/product-detail/product-detail-mobile-390x844.png',
+        fullPage: true,
+      });
+    }
+
+    await page.setViewportSize({ width: 320, height: 800 });
+    await page.reload();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
   });
 
   test('switches desktop parameter groups with pointer and keyboard input', async ({ page }) => {
