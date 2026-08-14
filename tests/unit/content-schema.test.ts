@@ -39,7 +39,7 @@ describe('content rules', () => {
   it('resolves at most four product features in source order', () => {
     const resolved = resolveProductFeatures(
       ['一键对频', '一体天线', '小巧轻薄', '电量提示', '智能降噪'],
-      featureLibrary,
+      productFeatureLibrarySchema.parse(featureLibrary),
     );
 
     expect(resolved.map(({ name }) => name)).toEqual([
