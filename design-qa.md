@@ -98,8 +98,9 @@
 - Source visual truth: `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-b5ebcb15-76a6-493e-9efd-e159f5dadbb1.png` — 1024 × 1535 PNG.
 - Desktop implementation: `docs/design-previews/product-detail/product-detail-desktop-1440x900.png` — 1440 × 2012 full-page PNG from a 1440 × 900 CSS viewport, device scale factor 1.
 - Mobile implementation: `docs/design-previews/product-detail/product-detail-mobile-390x844.png` — 390 × 1746 full-page PNG from a 390 × 844 CSS viewport, device scale factor 1.
+- Focused multi-tab fixture: `docs/design-previews/product-detail/product-detail-parameters-focused-1440x900.png` — 1224 × 272 element PNG from a 1440 × 900 CSS viewport, device scale factor 1.
 - Density normalization: all implementation evidence is captured at 1× CSS density. The 1024 px source is a narrower desktop reference, so the comparison normalizes by page-owned regions and responsive intent rather than treating its pixel width as the 1440 px implementation viewport.
-- State: default `/two-way-radio/ly198/` product detail route; first parameter group selected; desktop navigation visible; mobile menu closed; no hover or focus state forced.
+- State: default `/two-way-radio/ly198/` product detail route for normal captures; desktop navigation visible; mobile menu closed; no hover or focus state forced. The focused evidence uses an isolated Playwright fixture that clones the route's existing parameter DOM into three groups before the real component client script initializes, with the second group selected.
 
 ### Full-view comparison
 
@@ -110,16 +111,16 @@
 
 ### Focused comparison
 
-- Hero: full-resolution evidence confirms a sharp contained cover, readable title/description, balanced two-column desktop placement, and clean stacked mobile wrapping.
+- Hero: full-resolution evidence confirms a contained, uncropped cover, readable title/description, balanced two-column desktop placement, and clean stacked mobile wrapping. The 277 × 277 source asset is visibly soft when enlarged on desktop; this is recorded below as a P3 content limitation.
 - Features: all four Lucide library icons are visible, aligned, consistent in stroke weight, teal, and paired with readable labels; the mobile 2 × 2 grid does not collide or clip.
-- Parameters and CTA: row labels/values are legible in both full-resolution captures; desktop tabs have a clear selected treatment, mobile has no group navigation, and the black-on-teal CTA is centered. Separate crops were unnecessary because these regions remain readable at original image resolution.
+- Parameters and CTA: the focused fixture capture shows three real component tab nodes, distinct selected/unselected affordances, and the selected panel's ruled table at readable resolution. Automated checks prove pointer selection, ArrowDown focus/selection, hidden inactive panels, and a six-row mobile merge with group navigation hidden. The black-on-teal CTA remains centered.
 
 ### Required fidelity surfaces
 
 - Fonts and typography: the site font stack, graphite heading hierarchy, body line height, optical weight, wrapping, and small-label sizing are coherent across desktop and mobile; no truncation or cramped copy is visible.
 - Spacing and layout rhythm: breadcrumbs, overview, Features, parameter heading/table, CTA, and Footer use distinct section gaps; desktop and mobile alignments preserve the source reading order.
 - Colors and visual tokens: graphite text, secondary gray copy, muted media surface, subtle row dividers, and brand teal icons/CTA use the established site tokens with sufficient visible contrast.
-- Image quality and asset fidelity: the canonical LY198 image remains sharp at both captures, uses `contain`, has no gallery control, and shows no stretch, crop, halo, or compression artifact.
+- Image quality and asset fidelity: the canonical LY198 image is only 277 × 277 pixels and is visibly soft in the much larger desktop media slot. It still uses `contain`, has no gallery control, and shows no stretch or crop. Replacing it with a higher-resolution canonical asset is a P3 content follow-up outside this task's permitted scope.
 - Copy and content: the product name, description, four Feature labels, parameter values, breadcrumbs, and `立即咨询` CTA render as real product content rather than placeholders.
 
 ### Comparison history
@@ -133,8 +134,10 @@
 - P0: none.
 - P1: none.
 - P2: none after the capture-artifact fix above.
+- P3 content follow-up: replace the 277 × 277 LY198 source image with a higher-resolution canonical asset; the current desktop enlargement is visibly softer than the reference. This task was explicitly prohibited from modifying product images.
 - P3 follow-up: recheck very long imported parameter labels once the in-progress product content set is finalized.
 - Representative capture coverage passes for desktop and mobile, including four library icons, contained cover image, two-column/stacked layouts, 390 px and 320 px overflow checks, and the link-free centered CTA.
-- Multi-tab regression is externally blocked by current product data: `envoy-x` now contains one parameter group, while every currently published multi-group product references at least one Feature name missing from the canonical library and therefore cannot render. Per task scope, no product JSON, product image, or Feature-library data was changed.
+- Multi-tab regression uses a stable test-level fixture on the valid LY198 route rather than mutable product content. A document-start `MutationObserver` clones the component's own scoped DOM before its client script initializes; the passing click, keyboard-focus, panel-visibility, and mobile-merge assertions demonstrate that the actual `TechnicalParameters` script and CSS own the behavior.
+- External regression remains limited to imported content validation/build and category-card-count expectations; no product JSON, product image, or Feature-library data was changed.
 
 final result: passed

@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { installMultiGroupParameterFixture } from './fixtures/technical-parameters';
+
 test.describe('product detail page', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/two-way-radio/ly198/');
@@ -56,33 +58,50 @@ test.describe('product detail page', () => {
   });
 
   test('switches desktop parameter groups with pointer and keyboard input', async ({ page }) => {
-    await page.goto('/shortwave-radio/envoy-x/');
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.reload();
+    await installMultiGroupParameterFixture(page);
+    await page.goto('/two-way-radio/ly198/');
+    await expect(page.locator('[data-test-parameter-fixture="multi-group"]')).toBeVisible();
     const tabs = page.locator('[data-parameter-tab]');
     await expect(tabs).toHaveCount(3);
     await expect(page.getByRole('tablist')).toHaveAttribute('aria-orientation', 'vertical');
     await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true');
+    await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'false');
+    await expect(tabs.nth(1)).toHaveAttribute('tabindex', '-1');
+    await expect(page.locator('[data-parameter-panel]').nth(1)).toBeHidden();
     await expect(page.locator('[data-parameter-panel]:visible')).toHaveCount(1);
     await tabs.nth(1).click();
     await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('[data-parameter-panel]:visible')).toContainText('电压范围');
+    await expect(page.locator('[data-parameter-panel]:visible')).toContainText('夹具灵敏度');
+
+    if (process.env.CAPTURE_PRODUCT_DETAIL === '1') {
+      await page.addStyleTag({ content: 'astro-dev-toolbar { display: none !important; }' });
+      await page.locator('[data-technical-parameters]').screenshot({
+        path: 'docs/design-previews/product-detail/product-detail-parameters-focused-1440x900.png',
+      });
+    }
+
     await tabs.nth(1).press('ArrowDown');
     await expect(tabs.nth(2)).toHaveAttribute('aria-selected', 'true');
+    await expect(tabs.nth(2)).toBeFocused();
+    await expect(page.locator('[data-parameter-panel]:visible')).toContainText('夹具工作温度');
   });
 
   test('merges every parameter item into one mobile table', async ({ page }) => {
-    await page.goto('/shortwave-radio/envoy-x/');
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.reload();
+    await installMultiGroupParameterFixture(page);
+    await page.goto('/two-way-radio/ly198/');
+    await expect(page.locator('[data-test-parameter-fixture="multi-group"]')).toBeVisible();
+    await expect(page.locator('[data-parameter-tab]')).toHaveCount(3);
     for (const tab of await page.locator('[data-parameter-tab]').all()) {
       await expect(tab).toBeHidden();
     }
     const mobileTable = page.locator('[data-mobile-parameter-table]');
     await expect(mobileTable).toBeVisible();
-    await expect(mobileTable).toContainText('信道和扫描组');
-    await expect(mobileTable).toContainText('电压范围');
-    await expect(mobileTable).toContainText('环境标准');
+    await expect(mobileTable.locator('tr')).toHaveCount(6);
+    await expect(mobileTable).toContainText('夹具频率范围');
+    await expect(mobileTable).toContainText('夹具灵敏度');
+    await expect(mobileTable).toContainText('夹具工作温度');
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
   });
 
