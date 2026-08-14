@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 
 import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
 import ProductHero from '../../components/products/ProductHero.astro';
+import ProductInquiryCta from '../../components/products/ProductInquiryCta.astro';
 import TechnicalParameters from '../../components/products/TechnicalParameters.astro';
 import productFeatureLibrary from '../../content/product-features/features.json';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -34,25 +35,21 @@ const resolvedFeatures = resolveProductFeatures(
   productFeatureLibrary as ProductFeatureDefinition[],
 );
 const breadcrumbs = [
-  { label: '产品中心', href: '/products/' },
+  { label: '\u4ea7\u54c1\u4e2d\u5fc3', href: '/products/' },
   { label: category.name, href: categoryPath },
   { label: product.name, href: canonicalPath },
 ];
 ---
 
 <BaseLayout
-  title={`${product.name} | 北京盛博润通讯设备有限公司`}
-  description={`${product.name}页面将在后续阶段完成。`}
+  title={product.name + ' | \u5317\u4eac\u76db\u535a\u6da6\u901a\u8baf\u8bbe\u5907\u6709\u9650\u516c\u53f8'}
+  description={product.productFeatures ?? product.name + '\u4ea7\u54c1\u4fe1\u606f\u4e0e\u6280\u672f\u53c2\u6570\u3002'}
   canonicalPath={canonicalPath}
-  breadcrumbs={[
-    { label: '产品中心', href: '/products/' },
-    { label: category.name, href: categoryPath },
-    { label: product.name, href: canonicalPath },
-  ]}
+  breadcrumbs={breadcrumbs}
 >
   <section class="product-detail-page" data-product-detail>
     <div class="product-detail-content site-container">
-      <Breadcrumbs items={breadcrumbs} />
+      <Breadcrumbs items={[{ label: '\u9996\u9875', href: '/' }, ...breadcrumbs]} />
       <ProductHero
         name={product.name}
         description={product.productFeatures}
@@ -60,6 +57,7 @@ const breadcrumbs = [
         features={resolvedFeatures}
       />
       <TechnicalParameters parameters={product.technicalParameters} />
+      <ProductInquiryCta />
     </div>
   </section>
 </BaseLayout>

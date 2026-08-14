@@ -274,4 +274,9 @@ test('renders product detail routes with footer breadcrumbs', async ({ page }) =
     'href',
     '/two-way-radio/',
   );
+  await expect(breadcrumb).toContainText('\u6da6\u4fe1\u8fbe LY198');
+  await expect(breadcrumb.getByText('\u6da6\u4fe1\u8fbe LY198')).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
 });

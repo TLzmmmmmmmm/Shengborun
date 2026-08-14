@@ -65,4 +65,22 @@ test.describe('product detail page', () => {
     await expect(mobileTable).toContainText('环境标准');
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
   });
+
+  test('renders product breadcrumbs, metadata and the centered inquiry CTA', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/two-way-radio/ly198/');
+    const breadcrumb = page
+      .getByRole('main')
+      .getByRole('navigation', { name: '\u9762\u5305\u5c51' });
+    await expect(breadcrumb.getByRole('link', { name: '\u4ea7\u54c1\u4e2d\u5fc3' })).toHaveAttribute('href', '/products/');
+    await expect(breadcrumb.getByRole('link', { name: '\u5bf9\u8bb2\u673a\u901a\u4fe1' })).toHaveAttribute('href', '/two-way-radio/');
+    await expect(breadcrumb).toContainText('\u6da6\u4fe1\u8fbe LY198');
+    await expect(page).toHaveTitle(/\u6da6\u4fe1\u8fbe LY198/);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /\u6a21\u62df\u5bf9\u8bb2\u673a/);
+    const cta = page.locator('[data-product-inquiry-cta]');
+    await expect(cta).toHaveText('\u7acb\u5373\u54a8\u8be2');
+    await expect(cta.locator('a')).toHaveCount(0);
+    const ctaBox = (await cta.boundingBox())!;
+    expect(Math.abs((ctaBox.x + ctaBox.width / 2) - 720)).toBeLessThan(2);
+  });
 });

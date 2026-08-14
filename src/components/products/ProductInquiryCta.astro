@@ -1,0 +1,26 @@
+<section class="product-inquiry" aria-label={'\u4ea7\u54c1\u54a8\u8be2'}>
+  <span class="product-inquiry__button" data-product-inquiry-cta>{'\u7acb\u5373\u54a8\u8be2'}</span>
+</section>
+
+<style>
+  .product-inquiry {
+    display: grid;
+    justify-items: center;
+  }
+
+  .product-inquiry__button {
+    display: grid;
+    width: 13rem;
+    min-height: 3rem;
+    place-items: center;
+    background: var(--brand-teal);
+    color: #000;
+    font-weight: 700;
+  }
+
+  @media (max-width: 47.999rem) {
+    .product-inquiry__button {
+      width: min(20rem, 100%);
+    }
+  }
+</style>
