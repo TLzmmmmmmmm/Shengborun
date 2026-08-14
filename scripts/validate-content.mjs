@@ -36,14 +36,20 @@ async function readJsonDirectory(directoryName) {
   ).then((items) => items.filter(Boolean));
 }
 
+async function readJsonFile(relativePath) {
+  return JSON.parse(await readFile(path.join(contentRoot, relativePath), 'utf8'));
+}
+
 async function main() {
-  const [categories, products] = await Promise.all([
+  const [categories, products, features] = await Promise.all([
     readJsonDirectory('product-categories'),
     readJsonDirectory('products'),
+    readJsonFile(path.join('product-features', 'features.json')),
   ]);
   const errors = validateContentReferences({
     categories,
     products,
+    features,
   });
 
   if (errors.length > 0) {

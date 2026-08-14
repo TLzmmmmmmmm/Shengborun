@@ -1,0 +1,23 @@
+[
+  { "name": "一键对频", "icon": "scan-line" },
+  { "name": "一体天线", "icon": "antenna" },
+  { "name": "小巧轻薄", "icon": "feather" },
+  { "name": "电量提示", "icon": "battery" },
+  { "name": "5G全网通公网", "icon": "globe" },
+  { "name": "远距离通话", "icon": "radio-tower" },
+  { "name": "柔性天线", "icon": "antenna" },
+  { "name": "智能降噪", "icon": "volume" },
+  { "name": "双屏显示", "icon": "monitor" },
+  { "name": "手动调频", "icon": "sliders" },
+  { "name": "UV双段", "icon": "signal" },
+  { "name": "一键报警", "icon": "bell" },
+  { "name": "双模扩展", "icon": "layers" },
+  { "name": "耳挂对讲", "icon": "headphones" },
+  { "name": "适配多种平台", "icon": "blocks" },
+  { "name": "国产短波", "icon": "badge-check" },
+  { "name": "固定短波", "icon": "radio" },
+  { "name": "维和免检", "icon": "shield-check" },
+  { "name": "500W短波", "icon": "zap" },
+  { "name": "背负短波", "icon": "backpack" },
+  { "name": "手持短波", "icon": "hand" }
+]

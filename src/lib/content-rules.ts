@@ -1,13 +1,6 @@
 import { z } from 'astro/zod';
 
-export const PRODUCT_TAG_COLORS = [
-  'teal',
-  'blue',
-  'green',
-  'amber',
-  'violet',
-  'gray',
-] as const;
+import { PRODUCT_FEATURE_ICONS } from './product-features.ts';
 
 const slugSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
@@ -92,18 +85,32 @@ export const siteSettingsSchema = z
   })
   .strict();
 
+export const productFeatureLibrarySchema = z
+  .array(
+    z
+      .object({
+        name: z.string().min(1),
+        icon: z.enum(PRODUCT_FEATURE_ICONS),
+      })
+      .strict(),
+  )
+  .min(1);
+
 interface ContentReferences {
   categories: Array<{ id: string; slug: string }>;
   products: Array<{
     id: string;
     categoryId: string;
     keyFeatures?: string[];
+    published: boolean;
   }>;
+  features: Array<{ name: string; icon: string }>;
 }
 
 export function validateContentReferences({
   categories,
   products,
+  features,
 }: ContentReferences): string[] {
   const errors: string[] = [];
   const categoryIds = new Set(categories.map((category) => category.id));
@@ -137,6 +144,32 @@ export function validateContentReferences({
   for (const product of products) {
     if (!categoryIds.has(product.categoryId)) {
       errors.push(`Unknown categoryId: ${product.categoryId}`);
+    }
+  }
+
+  const featureNames = new Set(features.map((feature) => feature.name));
+  const seenFeatureNames = new Set<string>();
+  const reportedFeatureNames = new Set<string>();
+  for (const feature of features) {
+    if (
+      seenFeatureNames.has(feature.name) &&
+      !reportedFeatureNames.has(feature.name)
+    ) {
+      errors.push(`Duplicate product feature name: ${feature.name}`);
+      reportedFeatureNames.add(feature.name);
+    }
+    seenFeatureNames.add(feature.name);
+  }
+
+  for (const product of products) {
+    if (!product.published) continue;
+
+    for (const featureName of product.keyFeatures ?? []) {
+      if (!featureNames.has(featureName)) {
+        errors.push(
+          `Unknown product feature "${featureName}" referenced by product "${product.id}"`,
+        );
+      }
     }
   }
 

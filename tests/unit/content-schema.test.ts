@@ -10,24 +10,43 @@ import { spawnSync } from 'node:child_process';
 
 import { describe, expect, it } from 'vitest';
 
+import featureLibrary from '../../src/content/product-features/features.json';
 import {
-  PRODUCT_TAG_COLORS,
   productCategorySchema,
+  productFeatureLibrarySchema,
   productSchema,
   siteSettingsSchema,
   solutionSchema,
   validateContentReferences,
 } from '../../src/lib/content-rules';
+import { resolveProductFeatures } from '../../src/lib/product-features';
 
 describe('content rules', () => {
-  it('limits feature colors', () => {
-    expect(PRODUCT_TAG_COLORS).toEqual([
-      'teal',
-      'blue',
-      'green',
-      'amber',
-      'violet',
-      'gray',
+  it('accepts the canonical name and icon feature library', () => {
+    const result = productFeatureLibrarySchema.safeParse([
+      { name: '一键对频', icon: 'scan-line' },
+      { name: '电量提示', icon: 'battery' },
+    ]);
+
+    expect(result.success).toBe(true);
+    expect(
+      productFeatureLibrarySchema.safeParse([
+        { name: '一键对频', color: 'teal' },
+      ]).success,
+    ).toBe(false);
+  });
+
+  it('resolves at most four product features in source order', () => {
+    const resolved = resolveProductFeatures(
+      ['一键对频', '一体天线', '小巧轻薄', '电量提示', '智能降噪'],
+      featureLibrary,
+    );
+
+    expect(resolved.map(({ name }) => name)).toEqual([
+      '一键对频',
+      '一体天线',
+      '小巧轻薄',
+      '电量提示',
     ]);
   });
 
@@ -91,8 +110,10 @@ describe('content rules', () => {
           id: 'radio-sample',
           categoryId: 'missing-category',
           keyFeatures: [],
+          published: true,
         },
       ],
+      features: [],
     });
 
     expect(errors).toEqual([
@@ -111,19 +132,54 @@ describe('content rules', () => {
           id: 'radio-sample',
           categoryId: 'two-way-radio',
           keyFeatures: [],
+          published: true,
         },
         {
           id: 'radio-sample',
           categoryId: 'two-way-radio',
           keyFeatures: [],
+          published: true,
         },
       ],
+      features: [],
     });
 
     expect(errors).toEqual([
       'Duplicate product category id: two-way-radio',
       'Duplicate product id: radio-sample',
     ]);
+  });
+
+  it('reports an unknown feature used by a published product', () => {
+    const errors = validateContentReferences({
+      categories: [{ id: 'two-way-radio', slug: 'two-way-radio' }],
+      products: [
+        {
+          id: 'radio-sample',
+          categoryId: 'two-way-radio',
+          keyFeatures: ['不存在的功能'],
+          published: true,
+        },
+      ],
+      features: [{ name: '一键对频', icon: 'scan-line' }],
+    });
+
+    expect(errors).toContain(
+      'Unknown product feature "不存在的功能" referenced by product "radio-sample"',
+    );
+  });
+
+  it('reports duplicate feature names', () => {
+    const errors = validateContentReferences({
+      categories: [],
+      products: [],
+      features: [
+        { name: '一键对频', icon: 'scan-line' },
+        { name: '一键对频', icon: 'battery' },
+      ],
+    });
+
+    expect(errors).toContain('Duplicate product feature name: 一键对频');
   });
 
   it('validates product references in nested content directories', () => {
@@ -137,15 +193,30 @@ describe('content rules', () => {
     try {
       mkdirSync(nestedCategoryDirectory, { recursive: true });
       mkdirSync(path.join(fixtureRoot, 'products'));
+      mkdirSync(path.join(fixtureRoot, 'product-features'));
       writeFileSync(
         path.join(nestedCategoryDirectory, 'two-way-radio.json'),
-        JSON.stringify({ id: 'two-way-radio', slug: 'two-way-radio' }),
+        JSON.stringify({
+          id: 'two-way-radio',
+          slug: 'two-way-radio',
+          published: true,
+        }),
         'utf8',
       );
       writeFileSync(path.join(fixtureRoot, 'products', 'draft.json'), '', 'utf8');
       writeFileSync(
         path.join(fixtureRoot, 'products', 'broken.json'),
-        JSON.stringify({ id: 'broken', categoryId: 'missing-category' }),
+        JSON.stringify({
+          id: 'broken',
+          categoryId: 'missing-category',
+          keyFeatures: ['一键对频'],
+          published: true,
+        }),
+        'utf8',
+      );
+      writeFileSync(
+        path.join(fixtureRoot, 'product-features', 'features.json'),
+        JSON.stringify([{ name: '一键对频', icon: 'scan-line' }]),
         'utf8',
       );
 
