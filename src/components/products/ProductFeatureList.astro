@@ -1,0 +1,106 @@
+---
+import {
+  Antenna,
+  Backpack,
+  BadgeCheck,
+  Battery,
+  Bell,
+  Blocks,
+  Feather,
+  Globe,
+  Hand,
+  Headphones,
+  Layers,
+  Monitor,
+  Radio,
+  RadioTower,
+  ScanLine,
+  ShieldCheck,
+  Signal,
+  SlidersHorizontal,
+  Volume2,
+  Zap,
+} from '@lucide/astro';
+import type {
+  ProductFeatureIcon,
+  ResolvedProductFeature,
+} from '../../lib/product-features';
+
+interface Props {
+  features: ResolvedProductFeature[];
+}
+
+const { features } = Astro.props;
+const icons = {
+  antenna: Antenna,
+  backpack: Backpack,
+  'badge-check': BadgeCheck,
+  battery: Battery,
+  bell: Bell,
+  blocks: Blocks,
+  feather: Feather,
+  globe: Globe,
+  hand: Hand,
+  headphones: Headphones,
+  layers: Layers,
+  monitor: Monitor,
+  radio: Radio,
+  'radio-tower': RadioTower,
+  'scan-line': ScanLine,
+  'shield-check': ShieldCheck,
+  signal: Signal,
+  sliders: SlidersHorizontal,
+  volume: Volume2,
+  zap: Zap,
+} satisfies Record<ProductFeatureIcon, typeof Antenna>;
+---
+
+<ul class="product-feature-list">
+  {
+    features.slice(0, 4).map((feature) => {
+      const Icon = icons[feature.icon];
+
+      return (
+        <li data-detail-feature>
+          <Icon aria-hidden="true" />
+          <span>{feature.name}</span>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .product-feature-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    color: var(--brand-teal);
+    stroke-width: 1.75;
+  }
+
+  @media (max-width: 47.999rem) {
+    .product-feature-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+  }
+</style>

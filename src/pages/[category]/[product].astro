@@ -1,7 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
 
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import ProductHero from '../../components/products/ProductHero.astro';
+import productFeatureLibrary from '../../content/product-features/features.json';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { ProductFeatureDefinition } from '../../lib/product-features';
+import { resolveProductFeatures } from '../../lib/product-features';
 import { buildPublishedProductRoutes } from '../../lib/products';
 
 export async function getStaticPaths() {
@@ -23,6 +28,15 @@ export async function getStaticPaths() {
 const { category, product } = Astro.props;
 const categoryPath = `/${category.slug}/`;
 const canonicalPath = `${categoryPath}${product.slug}/`;
+const resolvedFeatures = resolveProductFeatures(
+  product.keyFeatures,
+  productFeatureLibrary as ProductFeatureDefinition[],
+);
+const breadcrumbs = [
+  { label: '产品中心', href: '/products/' },
+  { label: category.name, href: categoryPath },
+  { label: product.name, href: canonicalPath },
+];
 ---
 
 <BaseLayout
@@ -35,10 +49,26 @@ const canonicalPath = `${categoryPath}${product.slug}/`;
     { label: product.name, href: canonicalPath },
   ]}
 >
-  <section class="foundation-placeholder site-container">
-    <div>
-      <h1>{product.name}</h1>
-      <p>页面将在后续阶段完成。</p>
+  <section class="product-detail-page" data-product-detail>
+    <div class="product-detail-content site-container">
+      <Breadcrumbs items={breadcrumbs} />
+      <ProductHero
+        name={product.name}
+        description={product.productFeatures}
+        coverImage={product.coverImage}
+        features={resolvedFeatures}
+      />
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .product-detail-page {
+    padding-block: clamp(2rem, 5vw, 5rem);
+  }
+
+  .product-detail-content {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+</style>

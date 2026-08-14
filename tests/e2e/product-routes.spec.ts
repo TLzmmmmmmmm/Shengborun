@@ -259,21 +259,3 @@ test.describe('product category pages', () => {
     }
   });
 });
-
-test('keeps product detail routes as BaseLayout placeholders', async ({ page }) => {
-  await page.goto('/two-way-radio/ly198/');
-  await expect(page.locator('.foundation-placeholder')).toBeVisible();
-  await expect(page.getByRole('heading', { name: '润信达 LY198' })).toBeVisible();
-  const breadcrumb = page
-    .getByRole('contentinfo')
-    .getByRole('navigation', { name: '面包屑' });
-  await expect(breadcrumb.getByRole('link', { name: '产品中心' })).toHaveAttribute(
-    'href',
-    '/products/',
-  );
-  await expect(breadcrumb.getByRole('link', { name: '对讲机通信' })).toHaveAttribute(
-    'href',
-    '/two-way-radio/',
-  );
-  await expect(page.locator('[data-product-detail]')).toHaveCount(0);
-});
