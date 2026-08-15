@@ -1,6 +1,113 @@
 ---
+import { getCollection } from 'astro:content';
+
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import SolutionCard from '../../components/solutions/SolutionCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const solutions = (await getCollection('solutions', ({ data }) => data.published))
+  .sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 ---
-<BaseLayout title="解决方案 | 北京盛博润通讯设备有限公司" description="解决方案页面将在后续阶段完成。" canonicalPath="/solutions/" breadcrumbs={[{ label: '解决方案', href: '/solutions/' }]}>
-  <section class="foundation-placeholder site-container"><div><h1>解决方案</h1><p>页面将在后续阶段完成。</p></div></section>
+
+<BaseLayout
+  title="解决方案 | 北京盛博润通信设备有限公司"
+  description="面向不同行业与应用场景的通信及 ICT 解决方案，帮助客户实现高效协同与稳定运行。"
+  canonicalPath="/solutions/"
+  breadcrumbs={[{ label: '解决方案', href: '/solutions/' }]}
+>
+  <div class="solutions-page">
+    <div class="solutions-content site-container">
+      <div class="solutions-breadcrumb">
+        <Breadcrumbs items={[{ label: '首页', href: '/' }, { label: '解决方案' }]} />
+      </div>
+
+      <header class="solutions-header">
+        <h1>解决方案</h1>
+        <p>面向不同行业与应用场景的通信及 ICT 解决方案，帮助客户实现高效协同与稳定运行</p>
+      </header>
+
+      <main class="solutions-grid" aria-label="行业解决方案">
+        {solutions.map(({ data }) => (
+          <SolutionCard
+            name={data.name}
+            summary={data.summary}
+            image={data.coverImage}
+            imageAlt={data.coverImageAlt}
+            imageWidth={data.coverImageWidth}
+            imageHeight={data.coverImageHeight}
+            imagePosition={data.coverImagePosition}
+            href={`/solutions/${data.slug}/`}
+          />
+        ))}
+      </main>
+    </div>
+  </div>
 </BaseLayout>
+
+<style>
+  .solutions-page {
+    background: var(--surface);
+  }
+
+  .solutions-content {
+    max-width: 100rem;
+    padding-block: 1.5rem clamp(4rem, 7vw, 6rem);
+  }
+
+  .solutions-breadcrumb {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  .solutions-header {
+    margin-top: 1.75rem;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--brand-graphite);
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .solutions-header p {
+    max-width: 48rem;
+    margin: 0.85rem 0 0;
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+  }
+
+  .solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.25rem, 2vw, 1.75rem);
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  @media (max-width: 63.999rem) {
+    .solutions-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 43.999rem) {
+    .solutions-content {
+      padding-block: 1.25rem 4rem;
+    }
+
+    .solutions-breadcrumb {
+      font-size: 0.8rem;
+    }
+
+    .solutions-header {
+      margin-top: 1.5rem;
+    }
+
+    .solutions-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+      margin-top: 2.25rem;
+    }
+  }
+</style>

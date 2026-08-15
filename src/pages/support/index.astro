@@ -1,17 +1,289 @@
 ---
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import { supportServices } from '../../data/support-services';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="技术支持 | 北京盛博润通讯设备有限公司"
-  description="技术支持页面将在后续阶段完成。"
+  title="技术支持 | 北京盛博润通信设备有限公司"
+  description="北京盛博润提供通信方案设计、项目交付培训和项目施工服务，助力通信项目高效落地与稳定运行。"
   canonicalPath="/support/"
   breadcrumbs={[{ label: '技术支持', href: '/support/' }]}
 >
-  <section class="foundation-placeholder site-container">
-    <div>
-      <h1>技术支持</h1>
-      <p>页面将在后续阶段完成。</p>
+  <header class="support-hero site-container">
+    <div class="support-hero__inner">
+      <Breadcrumbs items={[{ label: '首页', href: '/' }, { label: '技术支持' }]} />
+      <div class="support-hero__copy">
+        <h1>技术支持</h1>
+        <p class="support-hero__lead">专业的通信设备与解决方案支持服务，助力项目高效落地与稳定运行</p>
+      </div>
     </div>
-  </section>
+  </header>
+
+  <main class="support-content site-container" aria-label="技术支持服务">
+    <div class="support-list">
+      {supportServices.map((service) => (
+        <article class="service-card" id={service.id} aria-labelledby={`${service.id}-heading`}>
+          <div class="service-visual">
+            <img
+              src={service.image}
+              alt={service.imageAlt}
+              width={service.imageWidth}
+              height={service.imageHeight}
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="service-visual__copy" aria-hidden="true">
+              <h2>{service.name}</h2>
+              <p>{service.summary}</p>
+            </div>
+          </div>
+
+          <div class="service-copy">
+            <h2 id={`${service.id}-heading`}>{service.name}</h2>
+            <p>{service.body}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <section class="support-cta" aria-labelledby="support-cta-heading">
+      <h2 id="support-cta-heading">需要技术支持？</h2>
+      <p>欢迎联系我们，获取适合您项目需求的技术服务与支持。</p>
+      <a href="/about/#contact">联系技术支持</a>
+    </section>
+  </main>
 </BaseLayout>
+
+<style>
+  .support-hero {
+    padding-block: 1.5rem clamp(2rem, 4.5vh, 2.75rem);
+    border-bottom: 1px solid var(--divider);
+    background: var(--surface-muted);
+  }
+
+  .support-hero__inner,
+  .support-list {
+    max-width: 90rem;
+    margin-inline: auto;
+  }
+
+  .support-hero__copy {
+    margin-top: 1.75rem;
+    text-align: center;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--brand-graphite);
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .support-hero__lead {
+    max-width: 46rem;
+    margin: 0.85rem auto 0;
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+  }
+
+  .support-content {
+    padding-block: clamp(2rem, 4vw, 3.5rem) clamp(4rem, 7vw, 6rem);
+  }
+
+  .support-list {
+    display: grid;
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  .service-card {
+    display: grid;
+    overflow: hidden;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: clamp(19rem, 25vw, 23rem);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-small);
+    background: var(--surface);
+    scroll-margin-top: 6rem;
+  }
+
+  .service-card:nth-child(even) .service-visual {
+    order: 2;
+  }
+
+  .service-card:nth-child(even) .service-copy {
+    order: 1;
+  }
+
+  .service-visual {
+    position: relative;
+    display: grid;
+    overflow: hidden;
+    min-height: 19rem;
+    background: #f4f4f6;
+  }
+
+  .service-visual img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .service-visual__copy {
+    position: relative;
+    z-index: 1;
+    align-self: end;
+    max-width: 34rem;
+    margin-inline: auto;
+    padding: 1.25rem clamp(1.25rem, 3vw, 2.5rem) clamp(1.75rem, 3.5vw, 2.75rem);
+    text-align: center;
+  }
+
+  .service-visual__copy h2,
+  .service-visual__copy p {
+    margin: 0;
+  }
+
+  .service-visual__copy h2 {
+    color: var(--brand-graphite);
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+    line-height: 1.25;
+  }
+
+  .service-visual__copy p {
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+    font-size: clamp(0.9375rem, 1.25vw, 1.0625rem);
+    line-height: 1.65;
+  }
+
+  .service-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .service-copy h2 {
+    margin: 0;
+    padding-left: 1rem;
+    border-left: 0.35rem solid var(--brand-teal-dark);
+    color: var(--brand-graphite);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+  }
+
+  .service-copy p {
+    margin: clamp(1.25rem, 2vw, 1.75rem) 0 0;
+    color: #404047;
+    font-size: clamp(1rem, 1.25vw, 1.125rem);
+    line-height: 1.85;
+    text-align: justify;
+  }
+
+  .support-cta {
+    max-width: 90rem;
+    margin: clamp(2.5rem, 5vw, 4.5rem) auto 0;
+    padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 6vw, 5rem);
+    border-radius: var(--radius-medium);
+    background: var(--brand-graphite);
+    color: var(--surface);
+    text-align: center;
+  }
+
+  .support-cta h2,
+  .support-cta p {
+    margin: 0;
+  }
+
+  .support-cta h2 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+  }
+
+  .support-cta p {
+    margin-top: 0.75rem;
+    color: #d7dadd;
+    font-size: clamp(0.9375rem, 1.25vw, 1.0625rem);
+  }
+
+  .support-cta a {
+    display: inline-grid;
+    min-height: 3rem;
+    margin-top: 1.75rem;
+    padding-inline: 2rem;
+    border-radius: var(--radius-small);
+    background: var(--brand-teal);
+    color: var(--brand-graphite);
+    font-weight: 700;
+    place-items: center;
+    text-decoration: none;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .support-cta a:hover {
+    background: var(--brand-teal-hover);
+    color: var(--brand-graphite);
+    transform: translateY(-0.125rem);
+  }
+
+  @media (max-width: 59.999rem) {
+    .service-card {
+      grid-template-columns: minmax(0, 44%) minmax(0, 56%);
+      min-height: 21rem;
+    }
+
+    .service-card:nth-child(even) {
+      grid-template-columns: minmax(0, 56%) minmax(0, 44%);
+    }
+
+    .service-copy {
+      padding: clamp(1.75rem, 3.5vw, 2.75rem);
+    }
+
+    .service-visual__copy {
+      padding-inline: 1.25rem;
+    }
+  }
+
+  @media (max-width: 47.999rem) {
+    .service-card,
+    .service-card:nth-child(even) {
+      grid-template-columns: 1fr;
+    }
+
+    .service-card:nth-child(even) .service-visual,
+    .service-card:nth-child(even) .service-copy {
+      order: initial;
+    }
+
+    .service-visual {
+      min-height: 17rem;
+      aspect-ratio: 16 / 10;
+    }
+
+    .service-copy {
+      padding: clamp(1.75rem, 7vw, 2.5rem) clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .service-copy p {
+      text-align: left;
+    }
+  }
+
+  @media (max-width: 29.999rem) {
+    .service-visual {
+      min-height: 15rem;
+    }
+
+    .service-visual__copy {
+      padding-bottom: 1.5rem;
+    }
+  }
+</style>

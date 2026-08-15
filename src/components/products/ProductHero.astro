@@ -13,12 +13,12 @@ const { name, description, coverImage, features } = Astro.props;
 ---
 
 <section class="product-hero" data-product-hero>
-  <div class="product-info" data-product-info>
-    <h1>{name}</h1>
-  </div>
+  <h1 class="product-title">{name}</h1>
+
   <div class="product-media" data-product-media>
     <img data-product-cover src={coverImage} alt={`${name} 产品图`} />
   </div>
+
   <div class="product-info" data-product-info>
     {description && <p data-product-description>{description}</p>}
     <ProductFeatureList features={features} />
@@ -29,11 +29,15 @@ const { name, description, coverImage, features } = Astro.props;
   .product-hero {
     display: grid;
     grid-template-columns: minmax(0, 48%) minmax(0, 52%);
+    grid-template-areas:
+      "media title"
+      "media info";
     align-items: center;
-    margin: clamp(1.5rem, 4vw, 3rem);
+    margin-inline: clamp(1.5rem, 4vw, 3rem);
   }
 
   .product-media {
+    grid-area: media;
     display: grid;
     aspect-ratio: 1;
     place-items: center;
@@ -51,8 +55,14 @@ const { name, description, coverImage, features } = Astro.props;
   }
 
   .product-info {
+    grid-area: info;
     display: grid;
     gap: clamp(2rem, 5vw, 4rem);
+    padding-left: clamp(2rem, 5vw, 5rem);
+  }
+
+  .product-title {
+    grid-area: title;
     padding-left: clamp(2rem, 5vw, 5rem);
   }
 
@@ -73,7 +83,16 @@ const { name, description, coverImage, features } = Astro.props;
   @media (max-width: 47.999rem) {
     .product-hero {
       grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "title"
+        "media"
+        "info";
       gap: 2rem;
+    }
+
+    .product-title {
+      padding-left: 0;
+      text-align: center;
     }
 
     .product-info {

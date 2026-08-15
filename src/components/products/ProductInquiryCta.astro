@@ -1,5 +1,11 @@
 <section class="product-inquiry" aria-label={'\u4ea7\u54c1\u54a8\u8be2'}>
-  <span class="product-inquiry__button" data-product-inquiry-cta>{'\u7acb\u5373\u54a8\u8be2'}</span>
+  <a
+    class="product-inquiry__button"
+    href="/about/#contact"
+    data-product-inquiry-cta
+  >
+    {'\u7acb\u5373\u54a8\u8be2'}
+  </a>
 </section>
 
 <style>
@@ -16,10 +22,14 @@
     min-height: 3rem;
     place-items: center;
     margin: 2rem auto 0;
+
     background: var(--brand-teal);
     color: var(--text-primary);
     font-weight: 700;
     border-radius: var(--radius-small);
+
+    text-decoration: none;
+    cursor: pointer;
   }
 
   @media (max-width: 47.999rem) {

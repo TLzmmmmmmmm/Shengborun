@@ -1,0 +1,85 @@
+<style>
+  .nav-study { display: grid; gap: 28px; }
+  .nav-study .study-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 24px; align-items: start; }
+  .nav-study .viewport { border: 1px solid var(--border); border-radius: 18px; background: var(--card); overflow: hidden; }
+  .nav-study .viewport-bar { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--muted-foreground); }
+  .nav-study .screen { padding: 28px; }
+  .nav-study .mobile .screen { padding: 20px 14px; }
+  .nav-study .title-block { margin-bottom: 34px; }
+  .nav-study .title-block strong { display: block; font-size: 1.35rem; margin-bottom: 6px; }
+  .nav-study .title-block span { color: var(--muted-foreground); }
+  .nav-study .category-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .nav-study .nav-item { display: grid; justify-items: center; gap: 9px; padding: 4px 2px 11px; color: var(--foreground); border-bottom: 3px solid transparent; }
+  .nav-study .nav-item.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .nav-study .icon-ring { display: grid; width: 64px; height: 64px; place-items: center; border: 1px solid var(--border); border-radius: 50%; background: var(--background); }
+  .nav-study .active .icon-ring { border-color: var(--primary); }
+  .nav-study .icon-ring svg { width: 28px; height: 28px; }
+  .nav-study .nav-label { font-weight: 500; white-space: nowrap; }
+  .nav-study .mobile .category-nav { gap: 3px; }
+  .nav-study .mobile .nav-item { gap: 6px; padding-inline: 0; }
+  .nav-study .mobile .icon-ring { width: 46px; height: 46px; }
+  .nav-study .mobile .icon-ring svg { width: 21px; height: 21px; }
+  .nav-study .mobile .nav-label { font-size: .76rem; }
+  .nav-study .banner { height: 104px; margin-top: 20px; border-radius: 10px; background: linear-gradient(135deg, var(--muted), var(--accent)); display: grid; place-items: center; color: var(--muted-foreground); }
+  .nav-study .notes { display: grid; gap: 12px; }
+  .nav-study .note { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .nav-study .note strong { display: block; margin-bottom: 4px; }
+  .nav-study .narrow-demo { margin-top: 20px; }
+  .nav-study .narrow-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .nav-study .narrow-grid .nav-item { border: 1px solid var(--border); border-radius: 10px; padding: 12px 4px; }
+  .nav-study .narrow-grid .nav-item.active { border-color: var(--primary); }
+  @media (max-width: 680px) { .nav-study .study-grid { grid-template-columns: 1fr; } }
+</style>
+
+<div class="nav-study">
+  <div>
+    <h2>Category Navigation 比例确认</h2>
+    <p class="subtitle">桌面端保持舒展四项；标准移动端优先四项同排，极窄屏才自动切换 2×2。请选择是否采用这个比例方向。</p>
+  </div>
+
+  <div class="study-grid">
+    <div class="viewport">
+      <div class="viewport-bar">Desktop · 约 1200px 内容宽度</div>
+      <div class="screen">
+        <div class="title-block"><strong>对讲机通信</strong><span>专业可靠的即时通信设备，满足多场景协同需求。</span></div>
+        <div class="category-nav">
+          <div class="nav-item active"><span class="icon-ring"><i data-lucide="radio" aria-hidden="true"></i></span><span class="nav-label">对讲机通信</span></div>
+          <div class="nav-item"><span class="icon-ring"><i data-lucide="radio-tower" aria-hidden="true"></i></span><span class="nav-label">短波通信</span></div>
+          <div class="nav-item"><span class="icon-ring"><i data-lucide="network" aria-hidden="true"></i></span><span class="nav-label">自组网通信</span></div>
+          <div class="nav-item"><span class="icon-ring"><i data-lucide="server" aria-hidden="true"></i></span><span class="nav-label">ICT 集成</span></div>
+        </div>
+        <div class="banner">Category Banner</div>
+      </div>
+    </div>
+
+    <div class="viewport mobile">
+      <div class="viewport-bar">Mobile · 390px</div>
+      <div class="screen">
+        <div class="title-block"><strong>对讲机通信</strong><span>专业可靠的即时通信设备，满足多场景协同需求。</span></div>
+        <div class="category-nav">
+          <div class="nav-item active"><span class="icon-ring"><i data-lucide="radio" aria-hidden="true"></i></span><span class="nav-label">对讲机通信</span></div>
+          <div class="nav-item"><span class="icon-ring"><i data-lucide="radio-tower" aria-hidden="true"></i></span><span class="nav-label">短波通信</span></div>
+          <div class="nav-item"><span class="icon-ring"><i data-lucide="network" aria-hidden="true"></i></span><span class="nav-label">自组网通信</span></div>
+          <div class="nav-item"><span class="icon-ring"><i data-lucide="server" aria-hidden="true"></i></span><span class="nav-label">ICT 集成</span></div>
+        </div>
+        <div class="banner">Category Banner</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="four-column-responsive" onclick="toggleSelect(this)">
+    <div class="notes">
+      <div class="note"><strong>推荐：标准手机四项同排</strong><span class="text-muted">圆框约 46px，图标约 21px，文字保持完整显示，不横向滚动。</span></div>
+      <div class="note"><strong>极窄屏自动切换</strong><span class="text-muted">当可用宽度不足以保证完整中文标签与合理触控间距时，切换为 2×2。</span></div>
+    </div>
+    <div class="narrow-demo mobile">
+      <div class="viewport-bar">极窄屏备选 · 320px</div>
+      <div class="narrow-grid">
+        <div class="nav-item active"><span class="icon-ring"><i data-lucide="radio" aria-hidden="true"></i></span><span class="nav-label">对讲机通信</span></div>
+        <div class="nav-item"><span class="icon-ring"><i data-lucide="radio-tower" aria-hidden="true"></i></span><span class="nav-label">短波通信</span></div>
+        <div class="nav-item"><span class="icon-ring"><i data-lucide="network" aria-hidden="true"></i></span><span class="nav-label">自组网通信</span></div>
+        <div class="nav-item"><span class="icon-ring"><i data-lucide="server" aria-hidden="true"></i></span><span class="nav-label">ICT 集成</span></div>
+      </div>
+    </div>
+  </div>
+</div>
