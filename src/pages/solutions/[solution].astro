@@ -35,7 +35,6 @@ const breadcrumbs = [
         <Breadcrumbs items={[{ label: '首页', href: '/' }, ...breadcrumbs]} />
 
         <div class="solution-hero__copy">
-          <p class="solution-hero__eyebrow">行业解决方案</p>
           <h1>{data.name}</h1>
           <p class="solution-hero__summary">{data.summary}</p>
         </div>
@@ -81,14 +80,6 @@ const breadcrumbs = [
     margin-top: clamp(2.25rem, 5vw, 4.5rem);
   }
 
-  .solution-hero__eyebrow {
-    margin: 0 0 0.75rem;
-    color: var(--brand-teal-dark);
-    font-size: 0.875rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-  }
-
   h1 {
     margin: 0;
     color: var(--brand-graphite);
@@ -107,7 +98,6 @@ const breadcrumbs = [
 
   .solution-hero__media {
     overflow: hidden;
-    aspect-ratio: 21 / 8;
     margin: clamp(2rem, 4vw, 3.5rem) 0 0;
     border-radius: var(--radius-medium);
     background: var(--surface-muted);
@@ -115,8 +105,8 @@ const breadcrumbs = [
 
   .solution-hero__media img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    display: block;
   }
 
   .solution-main {
@@ -157,6 +147,12 @@ const breadcrumbs = [
     text-align: justify;
   }
 
+  .solution-body :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
   .solution-body :global(ol),
   .solution-body :global(ul) {
     display: grid;
@@ -193,7 +189,6 @@ const breadcrumbs = [
     }
 
     .solution-hero__media {
-      aspect-ratio: 16 / 10;
       margin-top: 2rem;
       border-radius: var(--radius-small);
     }
