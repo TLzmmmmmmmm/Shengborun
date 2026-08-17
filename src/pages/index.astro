@@ -16,7 +16,6 @@ import {
 import BaseLayout from '../layouts/BaseLayout.astro';
 import {
   heroBenefits,
-  partners,
   productCategories,
   reasons,
   solutions,
@@ -57,11 +56,11 @@ const iconMap = {
             提供高可靠对讲终端、短波通信、自组网通信和 ICT 集成服务，保障关键场景中的稳定互联。
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="/solutions/">
-              解决方案 <ArrowRight aria-hidden="true" size={18} strokeWidth={2} />
+            <a class="button button-primary" href="/products/">
+              产品中心 <ArrowRight aria-hidden="true" size={18} strokeWidth={2} />
             </a>
-            <a class="button button-secondary" href="/about/#contact">
-              定制化解决方案 <ArrowRight aria-hidden="true" size={18} strokeWidth={2} />
+            <a class="button button-secondary" href="/solutions/">
+              解决方案 <ArrowRight aria-hidden="true" size={18} strokeWidth={2} />
             </a>
           </div>
         </div>
@@ -72,7 +71,7 @@ const iconMap = {
               const Icon = iconMap[item.icon as keyof typeof iconMap];
               return (
                 <div class="hero-benefit">
-                  <Icon aria-hidden="true" size={22} strokeWidth={1.8} />
+                  <Icon aria-hidden="true" size={20} strokeWidth={1.7} />
                   <span>{item.name}</span>
                 </div>
               );
@@ -93,7 +92,7 @@ const iconMap = {
             productCategories.map((item) => (
               <article class="image-card">
                 <a class="image-card-link" href={item.href} aria-label={`查看${item.name}`}>
-                  <img src={item.image} width="1456" height="1080" alt={item.imageAlt} loading="lazy" decoding="async" />
+                  <img src={item.image} alt={item.imageAlt} loading="lazy" decoding="async" />
                   <div class="image-card-content">
                     <h3>{item.name}</h3>
                     <p>{item.description}</p>
@@ -135,8 +134,8 @@ const iconMap = {
     <section class="support-section" aria-labelledby="support-title">
       <div class="site-container section-container">
         <div class="centered-heading">
-          <p>专业服务，全程保障</p>
           <h2 id="support-title">技术支持</h2>
+            <p>专业服务，全程保障</p>
         </div>
         <div class="support-grid">
           {
@@ -144,7 +143,7 @@ const iconMap = {
               const Icon = iconMap[item.icon as keyof typeof iconMap];
               return (
                 <article class="support-item">
-                  <span class="support-number">{String(index + 1).padStart(2, '0')}</span>
+                  <span class="support-number">{String(index + 1)}</span>
                   <div class="support-icon"><Icon aria-hidden="true" size={43} strokeWidth={1.55} /></div>
                   <h3>{item.name}</h3>
                   <p>{item.description}</p>
@@ -154,7 +153,6 @@ const iconMap = {
             })
           }
         </div>
-        <a class="support-more" href="/support/">了解技术支持 <ArrowRight aria-hidden="true" size={18} /></a>
       </div>
     </section>
 
@@ -181,32 +179,16 @@ const iconMap = {
       </div>
     </section>
 
-    <section class="partners-section" aria-labelledby="partners-title">
-      <div class="site-container section-container">
-        <div class="centered-heading partners-heading">
-          <h2 id="partners-title">合作伙伴</h2>
-          <p>与生态伙伴共同构建安全可靠的通信生态</p>
-        </div>
-        <div class="partners-grid">
-          {
-            partners.map((partner) => (
-              <div class="partner-card" title={partner.name}>
-                <img class={partner.imageClass} src={partner.image} alt={partner.imageAlt} loading="lazy" decoding="async" />
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    </section>
-
-    <section class="cta-section site-container" aria-labelledby="cta-title">
-      <div class="cta-panel">
-        <div class="cta-copy">
-          <h2 id="cta-title">需要通信方案或产品选型支持？</h2>
-          <p>填写需求或联系我们的专家团队，我们将为您提供专业建议与定制化方案。</p>
-          <a class="button button-primary" href="/about/#contact">
-            立即联系专家团队 <ArrowRight aria-hidden="true" size={18} />
-          </a>
+    <section class="cta-section" aria-labelledby="cta-title">
+      <div class="site-container cta-container">
+        <div class="cta-panel">
+          <div class="cta-copy">
+            <h2 id="cta-title">需要通信方案或产品选型支持？</h2>
+            <p>填写需求或联系我们的专家团队，我们将为您提供专业建议与定制化方案。</p>
+            <a class="button button-primary" href="/about/#contact">
+              联系我们 <ArrowRight aria-hidden="true" size={18} />
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -218,8 +200,16 @@ const iconMap = {
   .section-container { max-width: 100rem; }
   .hero {
     position: relative;
-    min-height: clamp(34rem, 48vw, 45rem);
-    background-image: linear-gradient(90deg, rgb(244 250 253 / 96%) 0%, rgb(244 250 253 / 84%) 32%, rgb(244 250 253 / 12%) 61%, transparent 100%), url('/images/home/hero.png');
+    min-height: clamp(30rem, 40vw, 40rem);
+    background-image:
+      linear-gradient(
+        90deg,
+        rgb(244 250 253 / 96%) 0%,
+        rgb(244 250 253 / 84%) 30%,
+        rgb(244 250 253 / 15%) 52%,
+        transparent 72%
+      ),
+      url('/images/home/hero.png');
     background-position: center;
     background-size: cover;
   }
@@ -231,7 +221,10 @@ const iconMap = {
     justify-content: center;
     padding-block: clamp(4rem, 7vw, 6rem) 2rem;
   }
-  .hero-copy { width: min(41rem, 55%); padding-bottom: 5.75rem; }
+  .hero-copy {
+    width: min(41rem, 55%);
+    padding-bottom: 5.5rem;
+  }
   .hero-kicker {
     margin: 0 0 .8rem;
     color: var(--brand-graphite);
@@ -278,13 +271,13 @@ const iconMap = {
     bottom: 1.75rem;
     left: max(var(--page-gutter), calc((100vw - 100rem) / 2 + var(--page-gutter)));
     display: grid;
-    width: min(40rem, calc(100% - 2 * var(--page-gutter)));
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: .75rem;
+    width: min(24rem, calc(100% - 2 * var(--page-gutter)));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2.0rem;
   }
   .hero-benefit { display: flex; align-items: center; gap: .45rem; color: #16354f; font-size: .93rem; font-weight: 700; }
   .hero-benefit :global(svg) { flex: 0 0 auto; color: var(--brand-teal); }
-  .home-section, .support-section, .reasons-section, .partners-section { padding-block: clamp(3.75rem, 6vw, 5.5rem); }
+  .home-section, .support-section, .reasons-section { padding-block: clamp(3.75rem, 6vw, 5.5rem); }
   .solutions-section { padding-top: 0; }
   .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; }
   .section-heading h2, .centered-heading h2, .cta-copy h2 {
@@ -294,7 +287,7 @@ const iconMap = {
     letter-spacing: -.035em;
     line-height: 1.2;
   }
-  .section-heading a, .support-more {
+  .section-heading a {
     display: inline-flex;
     align-items: center;
     gap: .35rem;
@@ -302,7 +295,7 @@ const iconMap = {
     font-weight: 700;
     text-decoration: none;
   }
-  .section-heading a:hover, .support-more:hover { color: var(--brand-graphite); }
+  .section-heading a:hover { color: var(--brand-graphite); }
   .card-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1rem, 1.8vw, 1.5rem); }
   .image-card {
     overflow: hidden;
@@ -314,9 +307,9 @@ const iconMap = {
   }
   .image-card:hover { box-shadow: 0 .8rem 2rem rgb(15 41 65 / 11%); transform: translateY(-3px); }
   .image-card-link { display: flex; height: 100%; flex-direction: column; color: inherit; text-decoration: none; }
-  .image-card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
-  .image-card-content { display: flex; min-height: 14rem; flex: 1; flex-direction: column; padding: 1.25rem 1.25rem 1.35rem; }
-  .image-card h3, .support-item h3, .reason-card h3 { margin-bottom: .5rem; color: #0b213d; font-size: 1.2rem; line-height: 1.35; }
+  .image-card img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; }
+  .image-card-content { display: flex; min-height: 11rem; flex: 1; flex-direction: column; padding: 1.25rem 1.25rem 1.35rem; }
+  .image-card h3, .support-item h3, .reason-card h3 { margin-bottom: .75rem; color: #0b213d; font-size: 1.2rem; line-height: 1.35; }
   .image-card p, .support-item p, .reason-card p { margin-bottom: 1rem; color: var(--text-secondary); font-size: .95rem; line-height: 1.75; }
   .image-card-content span, .support-item a {
     display: inline-flex;
@@ -329,7 +322,13 @@ const iconMap = {
   }
   .support-section { border-top: 1px solid #e4ebef; border-bottom: 1px solid #e4ebef; background: #fff; }
   .centered-heading { margin-bottom: clamp(2.5rem, 4vw, 3.75rem); text-align: center; }
-  .centered-heading > p:first-child { margin-bottom: .45rem; color: var(--brand-teal-dark); font-size: .88rem; font-weight: 700; letter-spacing: .12em; }
+  .centered-heading > p {
+    margin: .65rem 0 0;
+    color: var(--brand-teal-dark);
+    font-size: .95rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+  }
   .support-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(2.5rem, 6vw, 6rem); }
   .support-item { position: relative; display: flex; align-items: center; flex-direction: column; text-align: center; }
   .support-item:not(:last-child)::after {
@@ -351,46 +350,40 @@ const iconMap = {
     border-radius: 50%;
     background: var(--brand-teal);
     color: #fff;
-    font-size: .85rem;
+    font-size: 1.0rem;
     font-weight: 800;
   }
   .support-icon { display: grid; width: 4.5rem; height: 4.5rem; margin: 1.1rem 0 .7rem; place-items: center; color: var(--brand-teal); }
   .support-item p { max-width: 18rem; margin-bottom: .75rem; }
-  .support-more { width: fit-content; margin: 2.25rem auto 0; }
-  .reasons-section { background: linear-gradient(180deg, #f2fafb 0%, #f8fcfc 100%); }
+  .reasons-section { padding-bottom: clamp(2.75rem, 4vw, 3.5rem); background: linear-gradient(180deg, #f2fafb 0%, #f8fcfc 100%); }
   .reasons-heading { margin-bottom: 1.8rem; }
-  .reasons-heading p, .partners-heading p { max-width: 52rem; margin: .75rem auto 0; color: var(--text-secondary); }
+  .reasons-heading p { max-width: 52rem; margin: .7rem auto 0; color: var(--text-secondary); font-size: .95rem; font-weight: 500; line-height: 1.6;}
   .reasons-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.5rem); }
-  .reason-card { min-height: 15rem; padding: 2.1rem 1.5rem 1.75rem; border: 1px solid #d7e6e8; border-radius: .5rem; background: rgb(255 255 255 / 78%); text-align: center; }
+  .reason-card { min-height: 13rem; padding: 2.1rem 1.5rem 1.75rem; border: 1px solid #d7e6e8; border-radius: .5rem; background: rgb(255 255 255 / 78%); text-align: center; }
   .reason-card :global(svg) { margin-inline: auto; color: var(--brand-teal); }
   .reason-card h3 { margin-top: 1rem; }
   .reason-card p { max-width: 15rem; margin-inline: auto; }
-  .partners-section { padding-bottom: 2.25rem; }
-  .partners-heading { margin-bottom: 1.75rem; }
-  .partners-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(.75rem, 1.5vw, 1.25rem); }
-  .partner-card {
-    display: grid;
-    min-height: 7rem;
-    place-items: center;
-    padding: 1.1rem;
-    overflow: hidden;
-    border: 1px solid #dce4ea;
-    border-radius: .5rem;
-    background: #fff;
+  .cta-section {
+    background: linear-gradient(180deg, #f8fcfc 0%, #f2fafb 100%);
+    padding-block: 0 3.5rem;
   }
-  .partner-card img { width: auto; max-width: 100%; max-height: 4.8rem; object-fit: contain; }
-  .partner-card .partner-motorola { width: 100%; }
-  .partner-card .partner-hytera { max-height: 3.6rem; }
-  .partner-card .partner-huawei { max-height: 4.4rem; }
-  .partner-card .partner-h3c { max-height: 5.25rem; }
-  .partner-card .partner-codan { max-height: 4.75rem; }
-  .cta-section { max-width: 100rem; padding-block: 0 3.5rem; }
+
+  .cta-container {
+    max-width: 100rem;
+  }
   .cta-panel {
     min-height: 13.5rem;
     padding: clamp(2rem, 4vw, 3.25rem);
-    border: 1px solid #cae0e6;
+    border: 1px solid #e3eef0;
     border-radius: .6rem;
-    background-image: linear-gradient(90deg, rgb(245 252 254 / 97%) 0%, rgb(245 252 254 / 88%) 40%, rgb(245 252 254 / 10%) 72%), url('/images/home/cta.png');
+    background-image:
+      linear-gradient(
+        90deg,
+        rgb(245 252 254 / 97%) 0%,
+        rgb(245 252 254 / 88%) 40%,
+        rgb(245 252 254 / 10%) 72%
+      ),
+      url('/images/home/cta.png');
     background-position: center;
     background-size: cover;
   }
@@ -399,7 +392,6 @@ const iconMap = {
 
   @media (max-width: 74.999rem) {
     .card-grid, .reasons-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .partners-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   @media (max-width: 55.999rem) {
     .hero {
@@ -414,30 +406,168 @@ const iconMap = {
   }
   @media (max-width: 47.999rem) {
     .hero {
-      min-height: 42rem;
-      background-image: linear-gradient(180deg, rgb(244 250 253 / 97%) 0%, rgb(244 250 253 / 90%) 54%, rgb(244 250 253 / 38%) 100%), url('/images/home/hero.png');
+      min-height: auto;
+      background-image:
+        linear-gradient(
+          180deg,
+          rgb(244 250 253 / 94%) 0%,
+          rgb(244 250 253 / 85%) 50%,
+          rgb(244 250 253 / 70%) 100%
+        ),
+        url('/images/home/hero.png');
       background-position: 66% center;
     }
-    .hero-inner { justify-content: flex-start; padding-top: 3.75rem; }
-    .hero-copy { width: 100%; padding-bottom: 7.5rem; }
-    .hero-actions { align-items: stretch; flex-direction: column; }
-    .button { width: 100%; }
-    .hero-benefits { bottom: 1.4rem; gap: .65rem 1rem; }
-    .hero-benefit { font-size: .85rem; }
-    .home-section, .support-section, .reasons-section, .partners-section { padding-block: 3.25rem; }
+
+    .hero-inner {
+      justify-content: flex-start;
+      padding-block: 2.75rem 1.75rem;
+    }
+
+    .hero-copy {
+      width: 100%;
+      padding-bottom: 0;
+    }
+
+    .hero-actions {
+      align-items: flex-start;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      width: auto;
+    }
+
+    .hero-benefits {
+      position: static;
+      width: 100%;
+      margin-top: 2.5rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .8rem 1rem;
+    }
+
+    .hero-benefit {
+      font-size: .85rem;
+    }
+    .home-section, .support-section { padding-block: 3.25rem; }
+    .support-section {margin-inline: 2rem}
     .solutions-section { padding-top: 0; }
     .section-heading { align-items: flex-start; }
     .section-heading a { padding-top: .35rem; font-size: .88rem; }
-    .card-grid, .support-grid, .reasons-grid, .partners-grid { grid-template-columns: minmax(0, 1fr); }
+    .image-card img {
+      aspect-ratio: 16 / 9;
+    }
+
+    .image-card-link {
+      height: auto;
+    }
+
+    .image-card-content {
+      min-height: auto;
+      flex: initial;
+    }
+    .card-grid, .support-grid, .reasons-grid { grid-template-columns: minmax(0, 1fr); }
     .image-card-content { min-height: auto; }
-    .support-grid { gap: 2.5rem; }
-    .reason-card { min-height: auto; }
-    .partner-card { min-height: 6.5rem; }
+    .support-grid {
+      gap: 1.75rem;
+    }
+
+    .support-item {
+      display: grid;
+      grid-template-columns: max-content 2.5rem minmax(0, 1fr);
+      grid-template-areas:
+        "title icon ."
+        "description description description"
+        "link link link";
+      gap: 0.4rem 0.65rem;
+      align-items: center;
+      padding: 0;
+      text-align: left;
+    }
+
+    .support-number {
+      display: none;
+    }
+
+    .support-icon {
+      grid-area: icon;
+      display: grid;
+      width: 2.5rem;
+      height: 2.5rem;
+      margin: 0;
+      place-items: center;
+      color: var(--brand-teal);
+    }
+
+    .support-icon :global(svg) {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .support-item h3 {
+      grid-area: title;
+      margin: 0;
+    }
+
+    .support-item p {
+      grid-area: description;
+      max-width: none;
+      margin: 0.35rem 0 0;
+    }
+
+    .support-item a {
+      grid-area: link;
+      margin-top: 0.25rem;
+    }
+
+    .support-item:not(:last-child)::after {
+      display: none;
+    }
+    
+    .reasons-section {
+      padding-block: 2.75rem 3rem;
+    }
+
+    .reasons-heading {
+      margin-bottom: 1.75rem;
+    }
+
+    .reasons-heading p {
+      max-width: 28rem;
+      margin-top: .6rem;
+      line-height: 1.6;
+    }
+
+    .reasons-grid {
+      gap: 1rem;
+    }
+
+    .reason-card {
+      min-height: auto;
+      padding: 1.5rem 1.25rem 1.4rem;
+    }
+
+    .reason-card :global(svg) {
+      width: 2.6rem;
+      height: 2.6rem;
+    }
+
+    .reason-card h3 {
+      margin-top: .75rem;
+      margin-bottom: .45rem;
+    }
+
+    .reason-card p {
+      max-width: 19rem;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
     .cta-section { padding-block: 0 2.5rem; }
     .cta-panel {
-      min-height: 24rem;
+      min-height: 16rem;
       padding: 2rem 1.35rem;
-      background-image: linear-gradient(180deg, rgb(245 252 254 / 98%) 0%, rgb(245 252 254 / 88%) 48%, rgb(245 252 254 / 12%) 100%), url('/images/home/cta.png');
+      background-image: linear-gradient(180deg, rgb(245 252 254 / 90%) 0%, rgb(245 252 254 / 80%) 48%, rgb(245 252 254 / 70%) 100%), url('/images/home/cta.png');
       background-position: 70% center;
     }
   }
