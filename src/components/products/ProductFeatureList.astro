@@ -107,20 +107,24 @@ const icons = {
 
   @media (max-width: 47.999rem) {
     .product-feature-list {
+      margin-top: 1rem;
+      width: 100%;
+      max-width: 18rem;
+      margin-inline: auto;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: clamp(0.75rem, 3vw, 1.25rem);
+      gap: 0.875rem;
     }
 
     li {
-      padding: clamp(1rem, 4vw, 1.75rem);
-      border-radius: clamp(1rem, 4vw, 1.5rem);
-      font-size: clamp(0.9rem, 3.5vw, 1.1rem);
-      gap: clamp(0.5rem, 2vw, 0.875rem);
+      padding: 1rem;
+      border-radius: 1.25rem;
+      font-size: 0.9375rem;
+      gap: 0.625rem;
     }
 
     svg {
-      width: clamp(1rem, 7vw, 3rem);
-      height: clamp(1rem, 7vw, 3rem);
+      width: 2rem;
+      height: 2rem;
     }
   }
 </style>

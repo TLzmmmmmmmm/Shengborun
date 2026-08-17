@@ -116,6 +116,9 @@ const { id, name, description, image, imageAlt, href } = Astro.props;
   }
 
   @media (max-width: 47.999rem) {
+    .category-card__media {
+      aspect-ratio: 2 / 1;
+    }
     .category-card__content {
       min-height: 8.75rem;
     }
