@@ -1,0 +1,252 @@
+---
+import {
+  prepareTechnicalParameters,
+  type TechnicalParameterInput,
+} from '../../lib/technical-parameters';
+
+interface Props {
+  parameters: readonly TechnicalParameterInput[];
+}
+
+const { parameters } = Astro.props;
+const { groups, allItems, isEmpty } = prepareTechnicalParameters(parameters);
+---
+
+{isEmpty ? (
+  <section class="technical-parameters" data-technical-parameters>
+    <h2>技术参数</h2>
+    <p class="parameter-empty" data-parameter-empty>技术参数整理中</p>
+  </section>
+) : (
+  <section
+    class="technical-parameters"
+    data-technical-parameters
+    aria-labelledby="technical-parameters-title"
+  >
+    <h2 id="technical-parameters-title">技术参数</h2>
+    <div class="parameter-desktop">
+      <div class="parameter-layout">
+        <div
+          class="parameter-tabs"
+          role="tablist"
+          aria-label="技术参数分组"
+          aria-orientation="vertical"
+        >
+          {groups.map((group, index) => (
+            <button
+              id={`parameter-tab-${index}`}
+              type="button"
+              role="tab"
+              aria-selected={index === 0 ? 'true' : 'false'}
+              aria-controls={`parameter-panel-${index}`}
+              tabindex={index === 0 ? 0 : -1}
+              data-parameter-tab
+            >
+              {group.label}
+            </button>
+          ))}
+        </div>
+        <div class="parameter-panels">
+          {groups.map((group, index) => (
+            <div
+              id={`parameter-panel-${index}`}
+              role="tabpanel"
+              aria-labelledby={`parameter-tab-${index}`}
+              hidden={index !== 0}
+              data-parameter-panel
+            >
+              <table>
+                <tbody>
+                  {group.items.map((item) => (
+                    <tr>
+                      <th scope="row">{item.name}</th>
+                      <td>{item.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="parameter-mobile">
+      <table data-mobile-parameter-table>
+        <tbody>
+          {allItems.map((item) => (
+            <tr>
+              <th scope="row">{item.name}</th>
+              <td>{item.value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-technical-parameters]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-parameter-tab]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-parameter-panel]'));
+
+    const activate = (index: number, moveFocus = false) => {
+      tabs.forEach((tab, tabIndex) => {
+        const selected = tabIndex === index;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        panels[tabIndex].hidden = !selected;
+      });
+      if (moveFocus) tabs[index].focus();
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => activate(index));
+      tab.addEventListener('keydown', (event) => {
+        const last = tabs.length - 1;
+        const next = event.key === 'ArrowDown' || event.key === 'ArrowRight'
+          ? (index + 1) % tabs.length
+          : event.key === 'ArrowUp' || event.key === 'ArrowLeft'
+            ? (index - 1 + tabs.length) % tabs.length
+            : event.key === 'Home' ? 0
+            : event.key === 'End' ? last
+            : undefined;
+
+        if (next !== undefined) {
+          event.preventDefault();
+          activate(next, true);
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .technical-parameters {
+    display: grid;
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+    background: #fff;
+    border-radius: 1.25rem;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08);
+    padding: clamp(0.5rem, 3vw, 2rem);
+    margin-left: clamp(1.5rem, 4vw, 3rem);
+    margin-right: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--brand-graphite);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .parameter-layout {
+    display: grid;
+    grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr);
+    gap: clamp(1rem, 2.5vw, 2.5rem);
+  }
+
+  .parameter-tabs {
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+    border-right: 0.125rem solid var(--border);
+  }
+
+  .parameter-tabs button {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 0;
+    border-left: 0.25rem solid transparent;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+  }
+
+  .parameter-tabs button[aria-selected='true'] {
+    border-left-color: var(--brand-teal);
+    background: var(--surface-muted);
+    color: var(--brand-graphite);
+    font-weight: 700;
+  }
+
+  .parameter-tabs button:focus-visible {
+    outline: 0.1875rem solid var(--brand-primary);
+    outline-offset: 0.1875rem;
+  }
+
+  .parameter-panels {
+    display: grid;
+    justify-items: center;
+    min-width: 0;
+  }
+
+  [data-parameter-panel] {
+    width: min(100%, 40rem);
+  }
+
+  [data-parameter-panel][hidden] {
+    display: none;
+  }
+
+  table {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    overflow: hidden;
+  }
+
+  th,
+  td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+    background: var(--surface);
+  }
+
+  th {
+    width: 34%;
+    color: var(--brand-graphite);
+    border-right: 1px solid var(--border);
+  }
+
+  td {
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+  }
+
+  .parameter-mobile {
+    display: none;
+  }
+
+  .parameter-empty {
+    margin: 0;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 47.999rem) {
+    .technical-parameters {
+      margin-top: 2rem;
+      padding: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    .parameter-desktop {
+      display: none;
+    }
+
+    .parameter-mobile {
+      display: block;
+      min-width: 0;
+    }
+
+    th,
+    td {
+      padding: 0.75rem;
+    }
+  }
+</style>

@@ -1,0 +1,116 @@
+{
+  "id": "optic-repeater-remote",
+  "name": "润信达 光纤直放站远端机",
+  "slug": "optic-repeater-remote",
+  "categoryId": "two-way-radio",
+  "coverImage": "/images/products/two-way-radio/optic-repeater-remote/image.png",
+  "galleryImages": [],
+  "keyFeatures": [
+    "功率定制",
+    "支持多路"
+  ],
+  "productFeatures": "光信号传输由于速度快、衰耗小，可以灵活运用于隧道、山区、大面积楼宇等无线电波难以到达的地区，远端机用于将光信号再转换成射频信号输出，在通讯系统中具有距离远、延时小，语音质量稳定等特点。",
+  "technicalParameters": [
+    {
+      "group": "一般规格",
+      "items": [
+        {
+          "name": "频率范围",
+          "value": "136-174MHz；350-400MHz；400-470MHz"
+        },
+        {
+          "name": "天线接口",
+          "value": "N-K，50Ω"
+        },
+        {
+          "name": "工作温度",
+          "value": "-20℃～+50℃"
+        },
+        {
+          "name": "工作湿度",
+          "value": "0～90℃无水凝"
+        },
+        {
+          "name": "机箱尺寸",
+          "value": "19 英寸 2U 机箱"
+        },
+        {
+          "name": "机箱重量",
+          "value": "＜20kg"
+        }
+      ]
+    },
+    {
+      "group": "下行链路",
+      "items": [
+        {
+          "name": "最大输出功率",
+          "value": "5W/10W"
+        },
+        {
+          "name": "最大增益",
+          "value": "55±2dBm"
+        },
+        {
+          "name": "AGC 控制范围",
+          "value": "31dB"
+        },
+        {
+          "name": "带内波动",
+          "value": "＜1dB"
+        },
+        {
+          "name": "双音互调抑制",
+          "value": "＜-20dBc@--40dBc@"
+        },
+        {
+          "name": "最大允许输入电平",
+          "value": "＜0dBm"
+        },
+        {
+          "name": "输入输出驻波比",
+          "value": "＜1.5dB"
+        }
+      ]
+    },
+    {
+      "group": "上行链路",
+      "items": [
+        {
+          "name": "双音互调抑制",
+          "value": "＜-40dBc@最大输出"
+        },
+        {
+          "name": "最大增益",
+          "value": "55±2dBm"
+        },
+        {
+          "name": "AGC 控制范围",
+          "value": "31dB"
+        },
+        {
+          "name": "带内波动",
+          "value": "＜1dB"
+        },
+        {
+          "name": "噪声系数",
+          "value": "＜3.5 dB"
+        },
+        {
+          "name": "最大允许输入电平",
+          "value": "＜-10dBm"
+        },
+        {
+          "name": "最大输出功率",
+          "value": "0±1dBm"
+        },
+        {
+          "name": "输入输出驻波比",
+          "value": "＜1.5dB"
+        }
+      ]
+    }
+  ],
+  "sortOrder": 23,
+  "published": true
+}

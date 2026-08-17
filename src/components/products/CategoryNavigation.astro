@@ -1,0 +1,161 @@
+---
+import { Network, Radio, RadioTower, Server } from '@lucide/astro';
+
+import { categoryVisuals } from '../../data/category-visuals';
+
+interface CategoryItem {
+  id: string;
+  name: string;
+  slug: string;
+  sortOrder: number;
+}
+
+interface Props {
+  categories: CategoryItem[];
+  currentCategoryId: string;
+}
+
+const { categories, currentCategoryId } = Astro.props;
+const icons = {
+  radio: Radio,
+  'radio-tower': RadioTower,
+  network: Network,
+  server: Server,
+};
+---
+
+<nav class="category-navigation" aria-label="产品分类" data-category-switcher>
+  <ul>
+    {
+      categories
+        .toSorted((left, right) => left.sortOrder - right.sortOrder)
+        .map((category) => {
+          const visual = categoryVisuals[category.id];
+          if (!visual) throw new Error(`Missing category visual for ${category.id}.`);
+          const Icon = icons[visual.icon];
+
+          return (
+            <li>
+              <a
+                href={`/${category.slug}/`}
+                aria-current={category.id === currentCategoryId ? 'page' : undefined}
+              >
+                <span class="icon-ring" data-category-icon aria-hidden="true">
+                  <Icon stroke-width={1.8} />
+                </span>
+                <span class="category-label">{category.name}</span>
+              </a>
+            </li>
+          );
+        })
+    }
+  </ul>
+</nav>
+
+<style>
+  .category-navigation ul {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1.25rem, 5vw, 4.5rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .category-navigation a {
+    position: relative;
+    display: grid;
+    min-width: 0;
+    justify-items: center;
+    gap: 0.7rem;
+    padding: 0.25rem 0.15rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .icon-ring {
+    display: grid;
+    width: min(72%, 9rem);
+    height: auto;
+    aspect-ratio: 1;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--brand-graphite);
+    place-items: center;
+    transition:
+      border-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .category-label {
+    position: relative;
+    color: inherit;
+    font-weight: 650;
+    white-space: nowrap;
+  }
+
+  .icon-ring :global(svg) {
+    width: 40%;
+    height: 40%;
+  }
+
+  a[aria-current='page'] {
+    color: var(--brand-teal-dark);
+  }
+
+  a[aria-current='page'] .icon-ring {
+    border-color: var(--brand-teal-dark);
+    color: var(--brand-teal-dark);
+  }
+
+  a[aria-current='page'] .category-label::after {
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    left: 25%;
+    width: 50%;
+    height: 0.1875rem;
+    border-radius: 999px;
+    background: var(--brand-teal-dark);
+    content: '';
+  }
+
+  @media (max-width: 47.999rem) {
+    .category-navigation ul {
+      gap: 0.2rem;
+    }
+
+    .category-navigation a {
+      gap: 0.4rem;
+      padding-bottom: 0.85rem;
+    }
+
+    .icon-ring {
+      width: 4.3125rem;
+      height: 4.3125rem;
+    }
+
+    .icon-ring :global(svg) {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .category-label {
+      font-size: clamp(0.68rem, 3vw, 0.78rem);
+    }
+  }
+
+  @media (max-width: 21.25rem) {
+    .category-navigation ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .category-navigation a {
+      min-height: 6.75rem;
+      padding: 0.75rem 0.25rem 1rem;
+      border: 1px solid var(--divider);
+      border-radius: 0.625rem;
+    }
+  }
+</style>

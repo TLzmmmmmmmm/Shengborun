@@ -1,0 +1,103 @@
+---
+import type { ResolvedProductFeature } from '../../lib/product-features';
+import ProductFeatureList from './ProductFeatureList.astro';
+
+interface Props {
+  name: string;
+  description?: string;
+  coverImage: string;
+  features: ResolvedProductFeature[];
+}
+
+const { name, description, coverImage, features } = Astro.props;
+---
+
+<section class="product-hero" data-product-hero>
+  <h1 class="product-title">{name}</h1>
+
+  <div class="product-media" data-product-media>
+    <img data-product-cover src={coverImage} alt={`${name} 产品图`} />
+  </div>
+
+  <div class="product-info" data-product-info>
+    {description && <p data-product-description>{description}</p>}
+    <ProductFeatureList features={features} />
+  </div>
+</section>
+
+<style>
+  .product-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 48%) minmax(0, 52%);
+    grid-template-areas:
+      "media title"
+      "media info";
+    align-items: center;
+    margin-inline: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .product-media {
+    grid-area: media;
+    display: grid;
+    aspect-ratio: 1;
+    place-items: center;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border-radius: var(--radius-medium);
+    background: var(--surface-muted);
+  }
+
+  .product-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 1.25rem;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08);
+  }
+
+  .product-info {
+    margin-inline: 1.25rem;
+    grid-area: info;
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    padding-left: clamp(2rem, 5vw, 5rem);
+  }
+
+  .product-title {
+    grid-area: title;
+    padding-left: clamp(2rem, 5vw, 5rem);
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--brand-graphite);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    letter-spacing: -0.04em;
+    line-height: 1.12;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+  }
+
+  @media (max-width: 47.999rem) {
+    .product-hero {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "title"
+        "media"
+        "info";
+      gap: 2rem;
+    }
+
+    .product-title {
+      padding-left: 0;
+      text-align: center;
+    }
+
+    .product-info {
+      padding-left: 0;
+    }
+  }
+</style>

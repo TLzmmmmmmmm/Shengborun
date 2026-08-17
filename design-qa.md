@@ -1,85 +1,143 @@
-# Shengborun Visual QA
+# Design QA — Product Overview and Category Pages
 
-**Findings**
+## Evidence
 
-- [P3, out-of-scope follow-up] Local development capture requests a missing favicon.
-  Location: local Astro development response for `/favicon.ico`.
-  Evidence: the required Chrome capture emitted `Failed to load resource: the server responded with a status of 404 (Not Found)` for `http://127.0.0.1:4321/favicon.ico`.
-  Impact: this is not caused by the scoped Header change and does not affect the Header interaction or divider-state evidence. The user explicitly approved recording it as a separate follow-up rather than blocking this Header QA result.
-  Fix: resolve the pre-existing favicon response in a separately approved task, then optionally recapture to obtain a console-clean development screenshot.
+- Source visual truth:
+  - `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-71b051ac-32e7-4a24-bcdb-81a4bd1b6519.png` (desktop reference board)
+  - `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-5ffeaa32-8d76-4d31-93fe-a3d005486af2.png` (mobile reference board)
+- Implementation screenshots:
+  - `docs/design-previews/product-category-pages/category-desktop-1440x900.png` — 1440 × 900 CSS px, device scale factor 1, 1440 × 900 PNG
+  - `docs/design-previews/product-category-pages/category-mobile-390x844.png` — 390 × 844 CSS px, device scale factor 1, 390 × 844 PNG
+  - `docs/design-previews/product-category-pages/category-narrow-320x800.png` — 320 × 800 CSS px, device scale factor 1, 320 × 800 PNG
+- State: default `/two-way-radio/` page, current category active, no menus open.
+- Density normalization: all implementation captures are 1× CSS pixel density. Reference boards include explanatory canvas and device framing, so comparison used the app-owned content region and approved follow-up decisions rather than the surrounding annotation canvas.
 
-**Evidence**
+## Full-view comparison
 
-- Source visual truth: `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-9b4a10cb-7cb7-4026-b020-a7df43430cb7.png`
-- Historical implementation screenshot (captured before the spacing refinement): `D:\Shengborun\.worktrees\site-foundation\docs\superpowers\qa\2026-08-11-mobile-header-navigation.png`
-- Screenshot decision: the user explicitly chose not to request a new screenshot for this spacing refinement.
-- Source dimensions: `214 × 473px` (measured from the local source file).
-- Implementation dimensions: `320 × 700px`.
-- Implementation CSS viewport: `320 × 700`; device scale factor: `1`; route: `/`; state: mobile menu open.
-- Density normalization: none. The source is a 214px-wide focused navigation crop while the required implementation evidence is a 320px-wide full viewport, so canvas size and visible surrounding content were not treated as visual regressions.
+- Desktop hierarchy matches the revised order: weak breadcrumb, centered title/description, four-item enlarged category navigation, 3:1 banner, and three-column cards with no intervening section heading.
+- At 390 px the four categories remain in one row without horizontal scrolling, with circles and glyphs enlarged by 50% from the earlier mobile design.
+- At 320 px the navigation falls back to 2 × 2; the banner remains 3:1 and product cards retain the left-image/right-content layout.
+- The original category banner remains in use; the new category-card crops are not substituted here.
 
-**Primary Interaction Checks**
+## Focused comparison
 
-- Menu open: passed in the focused browser regression and full E2E suite.
-- Hover state: passed; inactive rows become teal by border color only and retain their bounding-box height.
-- Current state: passed; the active first row and a programmatically selected final row become teal.
-- Escape close: passed in `keeps navigation usable and avoids horizontal overflow`.
-- Horizontal overflow: passed at 320, 768, 1440, 1920, and 2560px in the full E2E suite.
-- Console errors: Chrome emitted a favicon 404 during the required capture run; no page runtime error was observed. Per the user's explicit decision, this pre-existing unrelated response is recorded as a non-blocking, out-of-scope follow-up.
+- Navigation: desktop circles and glyphs are twice their earlier size; mobile circles and glyphs are 1.5 times their earlier size. The active item uses teal and a centered underline approximately half the label width.
+- Product cards: desktop cards are square; mobile cards are horizontal with approximately 38% media and 62% content. Each card is one link with a visible CTA and up to two feature strings.
+- Focused regions were readable in the full-resolution captures, so separate crops were unnecessary.
 
-**Full-View Comparison**
+## Required fidelity surfaces
 
-The source and implementation screenshots were opened together for comparison. Both depict the real Header navigation content; no image assets are used in the affected mobile-navigation rows. The implementation has one teal border below the active `首页` row, gray borders below inactive middle rows, and a transparent inactive final row. The source is a focused crop without the page header or surrounding page content, whereas the required implementation screenshot includes the complete 320 × 700 viewport; that framing difference is expected from the prescribed evidence sizes.
+- Fonts and typography: existing site font stack and heading weights are preserved; title, category labels, and CTA hierarchy match the established site system.
+- Spacing and layout rhythm: `/products/` and category pages use the homepage's 100rem content width; category navigation is deliberately separated from the centered title block; cards follow the banner directly with a normal section gap.
+- Colors and tokens: existing graphite, muted background, divider, and teal brand tokens are reused; active state contrast is clear.
+- Image quality and asset fidelity: original high-resolution category banners and formal product images are used with cover/contain behavior appropriate to their slots.
+- Copy and content: canonical category descriptions are sourced from category content; the removed product-series paragraph does not appear.
 
-**Focused Divider And Spacing Comparison**
+## Comparison history
 
-The focused navigation region confirms the intended state model: the old desktop pseudo-element is not displayed on mobile, each row has a stable 1px border, and the last inactive row does not show a bottom divider. The automated regression verifies `min-height: 43.2px` (10% tighter than 48px), exact teal/gray/transparent colors, hover stability, and final-row current behavior. Typography, copy, and existing Header tokens remain component-owned and unchanged; no raster, vector, icon, or generated image asset is involved.
+1. Initial implementation used a narrower 90rem container, left-aligned mobile overview copy, smaller navigation icons, 5:2/16:7 banners, and a visible “产品系列” heading.
+2. Revision: both page types now use the homepage's 100rem container; titles and descriptions are centered; icons are enlarged 100% desktop and 50% mobile; banners are 3:1; the section heading is removed.
+3. Post-fix evidence: all category screenshots above plus `docs/design-previews/products-overview/products-1366x768.png` and `products-390x844.png`. Automated width, alignment, geometry, ratio, and heading-absence checks pass.
+4. The mobile reference board shows 2 × 2 navigation and product-series description, but later approved requirements supersede both at 390 px: navigation remains one row and the description/title is removed. These are intentional differences, not defects.
 
-**Comparison History**
+## Findings
 
-1. Initial capture attempt: implementation screenshot was written, then the console gate observed `/favicon.ico` returning HTTP 404. No mobile-divider visual defect was found.
-2. Scope decision: the user explicitly classified the pre-existing favicon response as an out-of-scope follow-up. The Header QA result therefore evaluates the captured Header evidence and automated interaction checks, which have no actionable P0/P1/P2 differences.
+- No actionable P0, P1, or P2 visual mismatches remain.
+- P3 follow-up: after more products are populated, recheck very long model names in the mobile content column.
 
-**Open Questions**
+## Interaction and accessibility checks
 
-- The favicon response should be addressed only in a separately approved task; it is not part of this Header change.
+- Four category navigation destinations and full-card product links are covered by browser tests.
+- Active category exposes `aria-current="page"`.
+- The page has no horizontal overflow at 390 px or 320 px.
+- Browser console errors are asserted during representative category and product navigation.
 
-**Implementation Checklist**
+## Implementation checklist
 
-- [x] Add browser coverage for compact row height, stable single borders, hover/current states, and final-row transparency.
-- [x] Apply the mobile-only divider override and the scoped final-row state specificity needed by Astro.
-- [x] Run automated verification and browser interaction coverage.
-- [x] Record the unrelated favicon 404 as a separately approved follow-up; retain the capture and diagnostic evidence.
+- [x] 3:1 category banner crop on every breakpoint
+- [x] Homepage-equivalent 100rem page width
+- [x] Centered titles and descriptions
+- [x] Desktop icons enlarged 100%; mobile icons enlarged 50%
+- [x] Four navigation items at 390 px; 2 × 2 at 320 px
+- [x] Half-label active underline
+- [x] Desktop three-column square cards
+- [x] Mobile left-image/right-content cards
+- [x] Single full-card links with two-feature maximum
+- [x] Original category banners preserved
+- [x] “产品系列” heading removed
 
-**Follow-up Polish**
+## Latest responsive-detail verification
 
-- Separately resolve `/favicon.ico` for a console-clean local development capture.
+- Added a 1024 x 900 desktop capture at `docs/design-previews/product-category-pages/category-desktop-1024x900.png` to verify the intermediate desktop state.
+- Desktop category circles now scale with the viewport via `clamp(6rem, 10vw, 12rem)`; glyphs scale proportionally at half the circle size.
+- Desktop product-card spacing scales down without clipping key features. The CTA region measures 30%-37% of the complete card width at the tested desktop breakpoint.
+- Mobile CTA and key-feature text both render at 0.9rem; feature labels use the middle-dot separator.
+- Mobile breadcrumbs render at 14px, matching footer-detail hierarchy.
+- Footer accordion panels now honor the `hidden` state and respond to click, Enter, and Space interactions.
+- Verification: 20 unit tests, content validation, Astro diagnostics, 29-page production build, and 36 browser tests all pass.
 
-## Mobile Footer Detail Density QA
+## Desktop proportional-scaling correction
 
-**Evidence**
+- Source visual truth:
+  - `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-69472a92-4aa2-4b57-abee-7f850ceffa2f.png` (desktop card clipping and oversized CTA evidence)
+  - `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-cd2ec7d2-089e-41a9-aa72-29dc32d3f0ee.png` (desktop navigation proportion target)
+- Rendered evidence:
+  - `docs/design-previews/product-category-pages/category-desktop-1440x900.png` (1440 x 900 CSS px, device scale factor 1)
+  - `docs/design-previews/product-category-pages/category-desktop-1024x900.png` (1024px-wide full-page capture, device scale factor 1)
+  - `docs/design-previews/product-category-pages/category-mobile-390x844.png` (390 x 844 CSS px, device scale factor 1)
+- Earlier P2 findings: feature text progressively clipped as the desktop card narrowed; CTA inherited a larger body size; navigation rings and glyphs used independent viewport clamps, so their proportions and scaling diverged.
+- Fixes: feature text now wraps without flex shrinking or horizontal clipping; desktop CTA uses the same 0.9rem size as feature text; each ring occupies 72% of its navigation column and each glyph occupies 48% of its ring, so both layers scale together.
+- Post-fix evidence: browser assertions cover 800, 900, 1024, 1200, and 1440px desktop widths. Complete feature content remains inside the card, CTA and feature sizes match, ring size follows column width, and glyph-to-ring ratio remains stable. The 390px mobile rules remain unchanged.
+- Focused comparison: the navigation region and complete product-card rows are readable in the 1024px full-page capture; no additional crops are required.
+- Findings: no actionable P0, P1, or P2 mismatch remains for the reported desktop issues.
 
-- Source visual truth: `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-880c456e-68a4-4d97-8cf6-14a1d436ff94.png` (`648 × 347px`).
-- Implementation screenshot: `C:\Users\Lenovo\AppData\Local\Temp\shengborun-mobile-footer-detail-density.png` (`647 × 315px`).
-- Same-input comparison evidence: `C:\Users\Lenovo\AppData\Local\Temp\shengborun-mobile-footer-detail-density-comparison.png`; the source and implementation were opened together before this result was recorded.
-- Route: `/`; CSS viewport: `647 × 900`; device scale factor: `1`; state: first two Footer detail groups open.
-- Density normalization: none. Both captures use one-device-pixel-per-CSS-pixel. The source is one pixel wider and includes a slight extra top framing band omitted by the implementation crop, so computed values—not total canvas height—establish the exact 10% compaction.
+## Product detail page — Task 5 visual QA
 
-**Computed And Interaction Checks**
+### Evidence
 
-- Passed: expanded child links compute to `14px` font size and `36px` minimum height; child-list row gap computes to `9.36px`.
-- Preserved: Footer section titles compute to `16px` with `16px` block padding; child-list bottom padding remains `17.6px`.
-- Pointer and keyboard: a summary opens by pointer, closes with `Enter`, and reopens with `Space` in the focused browser regression.
-- Desktop preservation: at `768px`, the open state remains, child-list gap is `10.4px`, and child links retain their `16px` font size.
-- Overflow: the full browser suite passed its mobile through ultra-wide horizontal-overflow coverage.
-- Console: the capture emitted only the known `/favicon.ico` 404; it remains the accepted, out-of-scope P3 follow-up recorded above. No page runtime error was observed.
+- Source visual truth: `C:\Users\Lenovo\AppData\Local\Temp\codex-clipboard-b5ebcb15-76a6-493e-9efd-e159f5dadbb1.png` — 1024 × 1535 PNG.
+- Desktop implementation: `docs/design-previews/product-detail/product-detail-desktop-1440x900.png` — 1440 × 2012 full-page PNG from a 1440 × 900 CSS viewport, device scale factor 1.
+- Mobile implementation: `docs/design-previews/product-detail/product-detail-mobile-390x844.png` — 390 × 1746 full-page PNG from a 390 × 844 CSS viewport, device scale factor 1.
+- Focused multi-tab fixture: `docs/design-previews/product-detail/product-detail-parameters-focused-1440x900.png` — 1224 × 272 element PNG from a 1440 × 900 CSS viewport, device scale factor 1.
+- Density normalization: all implementation evidence is captured at 1× CSS density. The 1024 px source is a narrower desktop reference, so the comparison normalizes by page-owned regions and responsive intent rather than treating its pixel width as the 1440 px implementation viewport.
+- State: default `/two-way-radio/ly198/` product detail route for normal captures; desktop navigation visible; mobile menu closed; no hover or focus state forced. The focused evidence uses an isolated Playwright fixture that clones the route's existing parameter DOM into three groups before the real component client script initializes, with the second group selected.
 
-**Visual Comparison**
+### Full-view comparison
 
-The same expanded Footer state shows a stronger title/link hierarchy through smaller child text and approximately 10% tighter link rhythm. The title typography and padding, muted link color, teal controls, and gray dividers remain stable. The following title moves upward naturally with the denser child rows. No actionable P0, P1, or P2 difference was found in the scoped mobile Footer detail hierarchy.
+- The implementation retains the source hierarchy and rhythm: compact Header, breadcrumbs, left product image/right product information, four lightweight Feature icons, technical parameters, centered teal CTA, and Footer.
+- Desktop keeps the overview balanced at 48%/52%, the cover image contained and uncropped, and the CTA centered between the parameter content and Footer.
+- Mobile stacks media before information, lays Features out in two columns, merges parameters into one table, keeps the CTA centered, and preserves Header/body/Footer separation without horizontal overflow at 390 px or the checked 320 px minimum.
+- The source uses a different LY198 packshot and more bordered surfaces. The implementation intentionally uses the canonical site product asset and existing muted-surface/table tokens; subject, containment, hierarchy, and density remain faithful to the approved non-pixel-replication brief.
 
-**Focused Region Decision**
+### Focused comparison
 
-The two expanded detail groups are the focused region because the acceptance criteria are link typography, row rhythm, title metrics, dividers, and the next-title movement; no additional asset-focused region is needed because this Footer surface contains no image assets.
+- Hero: full-resolution evidence confirms a contained, uncropped cover, readable title/description, balanced two-column desktop placement, and clean stacked mobile wrapping. The 277 × 277 source asset is visibly soft when enlarged on desktop; this is recorded below as a P3 content limitation.
+- Features: all four Lucide library icons are visible, aligned, consistent in stroke weight, teal, and paired with readable labels; the mobile 2 × 2 grid does not collide or clip.
+- Parameters and CTA: the focused fixture capture shows three real component tab nodes, distinct selected/unselected affordances, and the selected panel's ruled table at readable resolution. Automated checks prove pointer selection, ArrowDown focus/selection, hidden inactive panels, and a six-row mobile merge with group navigation hidden. The black-on-teal CTA remains centered.
+
+### Required fidelity surfaces
+
+- Fonts and typography: the site font stack, graphite heading hierarchy, body line height, optical weight, wrapping, and small-label sizing are coherent across desktop and mobile; no truncation or cramped copy is visible.
+- Spacing and layout rhythm: breadcrumbs, overview, Features, parameter heading/table, CTA, and Footer use distinct section gaps; desktop and mobile alignments preserve the source reading order.
+- Colors and visual tokens: graphite text, secondary gray copy, muted media surface, subtle row dividers, and brand teal icons/CTA use the established site tokens with sufficient visible contrast.
+- Image quality and asset fidelity: the canonical LY198 image is only 277 × 277 pixels and is visibly soft in the much larger desktop media slot. It still uses `contain`, has no gallery control, and shows no stretch or crop. Replacing it with a higher-resolution canonical asset is a P3 content follow-up outside this task's permitted scope.
+- Copy and content: the product name, description, four Feature labels, parameter values, breadcrumbs, and `立即咨询` CTA render as real product content rather than placeholders.
+
+### Comparison history
+
+1. Initial capture finding — P2: the Astro development toolbar appeared in both full-page screenshots, covering part of the desktop parameter area and the mobile `技术参数` heading. This was a capture-only artifact, not a production component.
+2. Fix: conditional screenshot capture now hides the `astro-dev-toolbar` host before capture while leaving the product page implementation unchanged.
+3. Post-fix evidence: the source, revised desktop screenshot, and revised mobile screenshot were opened together with `view_image`. The obstruction is gone and no actionable P0, P1, or P2 visual mismatch remains.
+
+### Findings and verification limits
+
+- P0: none.
+- P1: none.
+- P2: none after the capture-artifact fix above.
+- P3 content follow-up: replace the 277 × 277 LY198 source image with a higher-resolution canonical asset; the current desktop enlargement is visibly softer than the reference. This task was explicitly prohibited from modifying product images.
+- P3 follow-up: recheck very long imported parameter labels once the in-progress product content set is finalized.
+- Representative capture coverage passes for desktop and mobile, including four library icons, contained cover image, two-column/stacked layouts, 390 px and 320 px overflow checks, and the link-free centered CTA.
+- Multi-tab regression uses a stable test-level fixture on the valid LY198 route rather than mutable product content. A document-start `MutationObserver` clones the component's own scoped DOM before its client script initializes; the passing click, keyboard-focus, panel-visibility, and mobile-merge assertions demonstrate that the actual `TechnicalParameters` script and CSS own the behavior.
+- External regression remains limited to imported content validation/build and category-card-count expectations; no product JSON, product image, or Feature-library data was changed.
 
 final result: passed

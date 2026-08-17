@@ -41,7 +41,7 @@ export async function getProductPresentation(): Promise<ProductsPageCategory[]> 
       return {
         id: category.id,
         name: category.name,
-        description: category.shortDescription ?? fallback?.description ?? '',
+        description: category.shortDescription ?? '',
         banner:
           fallback?.banner ?? `/images/products/${category.slug}-banner.png`,
         bannerAlt: fallback?.bannerAlt ?? `${category.name}产品场景`,

@@ -1,0 +1,45 @@
+<section class="product-inquiry" aria-label={'\u4ea7\u54c1\u54a8\u8be2'}>
+  <a
+    class="product-inquiry__button"
+    href="/about/#contact"
+    data-product-inquiry-cta
+  >
+    {'\u7acb\u5373\u54a8\u8be2'}
+  </a>
+</section>
+
+<style>
+  .product-inquiry {
+    margin-top: 1rem;
+    display: grid;
+    justify-items: center;
+  }
+
+  .product-inquiry__button {
+    display: grid;
+    width: fit-content;
+    padding-inline: 2rem;
+    min-height: 3rem;
+    place-items: center;
+    margin: 2rem auto 0;
+
+    background: var(--brand-teal);
+    color: var(--text-primary);
+    font-weight: 700;
+    border-radius: var(--radius-small);
+
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  @media (max-width: 47.999rem) {
+    .product-inquiry__button {
+      width: fit-content;
+      padding-inline: 2rem;
+    }
+
+    .product-inquiry {
+      margin-top: -1.5rem;
+    }
+  }
+</style>

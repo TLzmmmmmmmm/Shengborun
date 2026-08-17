@@ -1,12 +1,13 @@
 # 盛博润网站项目状态
 
-最后更新：2026-08-12
+最后更新：2026-08-13
 
 ## 当前依据
 
 - 现行站点结构：`SiteMap.md`
 - 本轮设计规范：`docs/superpowers/specs/2026-08-12-site-structure-and-support-redesign.md`
 - 本轮实施计划：`docs/superpowers/plans/2026-08-12-site-structure-and-support-redesign.md`
+- 产品概览导航计划：`docs/superpowers/plans/2026-08-13-products-overview-navigation.md`
 
 旧规范和计划属于历史记录；与以上文件冲突时不得作为当前实现依据。
 
@@ -20,9 +21,11 @@
 ## 2026-08-12 结构调整
 
 - 首页 `/` 已使用原 `/products/` 的产品展示内容。
-- `/products/` 作为临时产品中心页面继续保留；它与首页是两个独立页面文件。
-- Header“产品中心”进入 `/two-way-radio/`。
+- `/products/` 作为产品中心概览；它与首页是两个独立页面文件。
+- Header 和 Footer 标题“产品中心”均进入 `/products/`。
+- Footer 的四个产品类别明细继续直接进入对应顶层类别路径。
 - 四个产品类别使用顶层路径；产品详情使用 `/{category-slug}/{product-slug}/`。
+- 产品类别面包屑为“首页 > 产品中心 > 类别”，产品详情面包屑为“首页 > 产品中心 > 类别 > 产品”。
 - 产品类别和详情当前只使用 `BaseLayout` 占位，不开发正式功能或正文。
 - `/support/` 和六项服务页面均使用 `BaseLayout` 占位；六个服务路径由 `src/data/support-services.ts` 集中维护。
 - 旧说明文档和 FAQ 内容集合、校验规则及入口已删除。
@@ -34,7 +37,7 @@
 
 ```text
 首页              /
-临时产品中心      /products/
+产品中心概览      /products/
 产品类别          /{category-slug}/
 产品详情          /{category-slug}/{product-slug}/
 解决方案          /solutions/

@@ -1,0 +1,175 @@
+---
+import { ArrowRight } from '@lucide/astro';
+
+interface Props {
+  name: string;
+  summary: string;
+  image: string;
+  imageAlt: string;
+  imageWidth: number;
+  imageHeight: number;
+  imagePosition?: string;
+  href: string;
+}
+
+const {
+  name,
+  summary,
+  image,
+  imageAlt,
+  imageWidth,
+  imageHeight,
+  imagePosition = 'center',
+  href,
+} = Astro.props;
+---
+
+<article class="solution-card">
+  <a href={href} aria-label={`查看${name}`}>
+    <span class="solution-card__image">
+      <img
+        src={image}
+        alt={imageAlt}
+        width={imageWidth}
+        height={imageHeight}
+        loading="lazy"
+        decoding="async"
+        style={`object-position: ${imagePosition};`}
+      />
+    </span>
+
+    <span class="solution-card__content">
+      <span class="solution-card__title">{name}</span>
+      <span class="solution-card__summary">{summary}</span>
+      <span class="solution-card__action">
+        查看方案
+        <ArrowRight aria-hidden="true" size={18} stroke-width={2} />
+      </span>
+    </span>
+  </a>
+</article>
+
+<style>
+  .solution-card {
+    min-width: 0;
+  }
+
+  .solution-card > a {
+    display: flex;
+    overflow: hidden;
+    height: 100%;
+    min-height: 30rem;
+    flex-direction: column;
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-medium);
+    background: var(--surface);
+    box-shadow: 0 0.5rem 1.5rem rgb(29 29 31 / 4%);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .solution-card > a:hover {
+    border-color: rgb(0 124 123 / 45%);
+    box-shadow: 0 1rem 2.5rem rgb(29 29 31 / 10%);
+    color: var(--text-primary);
+    transform: translateY(-0.25rem);
+  }
+
+  .solution-card > a:focus-visible {
+    outline-offset: 0.25rem;
+  }
+
+  .solution-card__image {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    background: var(--surface-muted);
+  }
+
+  .solution-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 300ms ease;
+  }
+
+  .solution-card > a:hover .solution-card__image img {
+    transform: scale(1.025);
+  }
+
+  .solution-card__content {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    padding: clamp(1.35rem, 2vw, 1.75rem);
+  }
+
+  .solution-card__title,
+  .solution-card__summary,
+  .solution-card__action {
+    display: block;
+  }
+
+  .solution-card__title {
+    color: var(--brand-graphite);
+    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+  }
+
+  .solution-card__summary {
+    margin-top: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.975rem;
+    line-height: 1.75;
+  }
+
+  .solution-card__action {
+    display: inline-flex;
+    gap: 0.45rem;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: 1.35rem;
+    color: var(--brand-teal-dark);
+    font-weight: 700;
+  }
+
+  .solution-card__action :global(svg) {
+    transition: transform var(--transition-fast);
+  }
+
+  .solution-card > a:hover .solution-card__action :global(svg) {
+    transform: translateX(0.2rem);
+  }
+
+  @media (max-width: 63.999rem) {
+    .solution-card > a {
+      min-height: 29rem;
+    }
+  }
+
+  @media (max-width: 47.999rem) {
+    .solution-card > a {
+      min-height: 0;
+    }
+
+    .solution-card__image {
+      aspect-ratio: 2 / 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .solution-card > a,
+    .solution-card__image img,
+    .solution-card__action :global(svg) {
+      transition: none;
+    }
+  }
+</style>

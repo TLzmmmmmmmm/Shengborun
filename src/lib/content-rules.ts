@@ -1,13 +1,6 @@
 import { z } from 'astro/zod';
 
-export const PRODUCT_TAG_COLORS = [
-  'teal',
-  'blue',
-  'green',
-  'amber',
-  'violet',
-  'gray',
-] as const;
+import { PRODUCT_FEATURE_ICONS } from './product-features.ts';
 
 const slugSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
@@ -26,16 +19,7 @@ export const productSchema = z
     categoryId: z.string().min(1),
     coverImage: z.string().min(1),
     galleryImages: z.array(z.string().min(1)).default([]),
-    keyFeatures: z
-      .array(
-        z
-          .object({
-            label: z.string().min(1),
-            color: z.enum(PRODUCT_TAG_COLORS),
-          })
-          .strict(),
-      )
-      .default([]),
+    keyFeatures: z.array(z.string().min(1)).default([]),
     productFeatures: z.string().min(1).optional(),
     technicalParameters: z
       .array(
@@ -83,6 +67,11 @@ export const solutionSchema = z
     name: z.string().min(1),
     slug: slugSchema,
     summary: z.string().min(1),
+    coverImage: z.string().min(1),
+    coverImageAlt: z.string().min(1),
+    coverImageWidth: z.number().int().positive(),
+    coverImageHeight: z.number().int().positive(),
+    coverImagePosition: z.string().min(1).optional(),
     coreNeeds: z.array(z.string().min(1)).default([]),
     solutionDesign: z.string().min(1),
     features: z.array(z.string().min(1)).default([]),
@@ -101,20 +90,32 @@ export const siteSettingsSchema = z
   })
   .strict();
 
-type ProductTagColor = (typeof PRODUCT_TAG_COLORS)[number];
+export const productFeatureLibrarySchema = z
+  .array(
+    z
+      .object({
+        name: z.string().min(1),
+        icon: z.enum(PRODUCT_FEATURE_ICONS),
+      })
+      .strict(),
+  )
+  .min(1);
 
 interface ContentReferences {
   categories: Array<{ id: string; slug: string }>;
   products: Array<{
     id: string;
     categoryId: string;
-    keyFeatures?: Array<{ label: string; color: ProductTagColor }>;
+    keyFeatures?: string[];
+    published: boolean;
   }>;
+  features: Array<{ name: string; icon: string }>;
 }
 
 export function validateContentReferences({
   categories,
   products,
+  features,
 }: ContentReferences): string[] {
   const errors: string[] = [];
   const categoryIds = new Set(categories.map((category) => category.id));
@@ -151,26 +152,28 @@ export function validateContentReferences({
     }
   }
 
-  const featureColors = new Map<string, ProductTagColor>();
-  const reportedFeatureConflicts = new Set<string>();
+  const featureNames = new Set(features.map((feature) => feature.name));
+  const seenFeatureNames = new Set<string>();
+  const reportedFeatureNames = new Set<string>();
+  for (const feature of features) {
+    if (
+      seenFeatureNames.has(feature.name) &&
+      !reportedFeatureNames.has(feature.name)
+    ) {
+      errors.push(`Duplicate product feature name: ${feature.name}`);
+      reportedFeatureNames.add(feature.name);
+    }
+    seenFeatureNames.add(feature.name);
+  }
 
   for (const product of products) {
-    for (const feature of product.keyFeatures ?? []) {
-      const existingColor = featureColors.get(feature.label);
+    if (!product.published) continue;
 
-      if (!existingColor) {
-        featureColors.set(feature.label, feature.color);
-        continue;
-      }
-
-      if (
-        existingColor !== feature.color &&
-        !reportedFeatureConflicts.has(feature.label)
-      ) {
+    for (const featureName of product.keyFeatures ?? []) {
+      if (!featureNames.has(featureName)) {
         errors.push(
-          `Feature label "${feature.label}" uses both "${existingColor}" and "${feature.color}".`,
+          `Unknown product feature "${featureName}" referenced by product "${product.id}"`,
         );
-        reportedFeatureConflicts.add(feature.label);
       }
     }
   }

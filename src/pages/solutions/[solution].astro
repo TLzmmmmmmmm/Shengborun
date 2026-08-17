@@ -1,13 +1,204 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+
 export async function getStaticPaths() {
   const entries = await getCollection('solutions', ({ data }) => data.published);
-  return entries.map(({ data }) => ({ params: { solution: data.slug }, props: { solution: data } }));
+  return entries.map((entry) => ({
+    params: { solution: entry.data.slug },
+    props: { solution: entry },
+  }));
 }
+
 const { solution } = Astro.props;
-const canonicalPath = `/solutions/${solution.slug}/`;
+const { data } = solution;
+const { Content } = await render(solution);
+const canonicalPath = `/solutions/${data.slug}/`;
+const breadcrumbs = [
+  { label: '解决方案', href: '/solutions/' },
+  { label: data.name, href: canonicalPath },
+];
 ---
-<BaseLayout title={solution.seoTitle ?? `${solution.name} | 北京盛博润通讯设备有限公司`} description={solution.seoDescription ?? solution.summary} canonicalPath={canonicalPath} breadcrumbs={[{ label: '解决方案', href: '/solutions/' }, { label: solution.name, href: canonicalPath }]}>
-  <section class="foundation-placeholder site-container"><div><h1>{solution.name}</h1><p>页面将在后续阶段完成。</p></div></section>
+
+<BaseLayout
+  title={data.seoTitle ?? `${data.name} | 北京盛博润通信设备有限公司`}
+  description={data.seoDescription ?? data.summary}
+  canonicalPath={canonicalPath}
+  breadcrumbs={breadcrumbs}
+  image={data.seoImage ?? data.coverImage}
+>
+  <div class="solution-page">
+    <header class="solution-hero site-container">
+      <div class="solution-hero__inner">
+        <Breadcrumbs items={[{ label: '首页', href: '/' }, ...breadcrumbs]} />
+
+        <div class="solution-hero__copy">
+          <h1>{data.name}</h1>
+          <p class="solution-hero__summary">{data.summary}</p>
+        </div>
+
+        <figure class="solution-hero__media">
+          <img
+            src={data.coverImage}
+            alt={data.coverImageAlt}
+            width={data.coverImageWidth}
+            height={data.coverImageHeight}
+            fetchpriority="high"
+            decoding="async"
+            style={`object-position: ${data.coverImagePosition ?? 'center'};`}
+          />
+        </figure>
+      </div>
+    </header>
+
+    <main class="solution-main site-container">
+      <article class="solution-body">
+        <Content />
+      </article>
+    </main>
+  </div>
 </BaseLayout>
+
+<style>
+  .solution-page {
+    background: var(--surface);
+  }
+
+  .solution-hero {
+    padding-block: 1.5rem 0;
+  }
+
+  .solution-hero__inner {
+    max-width: 90rem;
+    margin-inline: auto;
+  }
+
+  .solution-hero__copy {
+    max-width: 64rem;
+    margin-top: clamp(2.25rem, 5vw, 4.5rem);
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--brand-graphite);
+    font-size: clamp(2.25rem, 4.5vw, 4.25rem);
+    letter-spacing: -0.04em;
+    line-height: 1.12;
+  }
+
+  .solution-hero__summary {
+    max-width: 52rem;
+    margin: 1.25rem 0 0;
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    line-height: 1.8;
+  }
+
+  .solution-hero__media {
+    overflow: hidden;
+    margin: clamp(2rem, 4vw, 3.5rem) 0 0;
+    border-radius: var(--radius-medium);
+    background: var(--surface-muted);
+  }
+
+  .solution-hero__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .solution-main {
+    padding-block: clamp(3.5rem, 7vw, 6.5rem);
+  }
+
+  .solution-body {
+    max-width: 64rem;
+    margin-inline: auto;
+    color: #34343a;
+    font-size: clamp(1rem, 1.1vw, 1.075rem);
+    line-height: 1.9;
+  }
+
+  .solution-body :global(h2) {
+    margin: clamp(3rem, 6vw, 4.5rem) 0 1.5rem;
+    padding-left: 1rem;
+    border-left: 0.35rem solid var(--brand-teal-dark);
+    color: var(--brand-graphite);
+    font-size: clamp(1.65rem, 2.8vw, 2.25rem);
+    letter-spacing: -0.025em;
+    line-height: 1.35;
+  }
+
+  .solution-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .solution-body :global(h3) {
+    margin: 2.5rem 0 1rem;
+    color: var(--brand-graphite);
+    font-size: clamp(1.25rem, 2vw, 1.55rem);
+    line-height: 1.45;
+  }
+
+  .solution-body :global(p) {
+    margin: 0 0 1.25rem;
+    text-align: justify;
+  }
+
+  .solution-body :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .solution-body :global(ol),
+  .solution-body :global(ul) {
+    display: grid;
+    gap: 0.85rem;
+    margin: 1.5rem 0 2rem;
+    padding-left: 1.5rem;
+  }
+
+  .solution-body :global(li) {
+    padding-left: 0.35rem;
+  }
+
+  .solution-body :global(li::marker) {
+    color: var(--brand-teal-dark);
+    font-weight: 700;
+  }
+
+  .solution-body :global(li > ul),
+  .solution-body :global(li > ol) {
+    margin-block: 0.75rem 0.25rem;
+  }
+
+  .solution-body :global(strong) {
+    color: var(--brand-graphite);
+  }
+
+  @media (max-width: 47.999rem) {
+    .solution-hero {
+      padding-top: 1.25rem;
+    }
+
+    .solution-hero__copy {
+      margin-top: 2rem;
+    }
+
+    .solution-hero__media {
+      margin-top: 2rem;
+      border-radius: var(--radius-small);
+    }
+
+    .solution-main {
+      padding-block: 3.5rem 4.5rem;
+    }
+
+    .solution-body :global(p) {
+      text-align: left;
+    }
+  }
+</style>

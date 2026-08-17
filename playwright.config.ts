@@ -22,8 +22,8 @@ export default defineConfig({
   webServer: usesExternalServer
     ? undefined
     : {
-        command: 'node ./node_modules/astro/bin/astro.mjs dev --host 127.0.0.1',
-        url: 'http://127.0.0.1:4321/@vite/client',
+        command: 'node ./node_modules/astro/bin/astro.mjs preview --host 127.0.0.1',
+        url: 'http://127.0.0.1:4321/',
         reuseExistingServer: false,
         env: {
           ASTRO_TELEMETRY_DISABLED: '1',

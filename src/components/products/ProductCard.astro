@@ -4,31 +4,60 @@ interface Props {
   image: string;
   imageAlt: string;
   href: string;
+  featureSummary?: string[];
 }
 
-const { name, image, imageAlt, href } = Astro.props;
+const { name, image, imageAlt, href, featureSummary = [] } = Astro.props;
+const visibleFeatures = featureSummary.filter((feature) => feature.trim()).slice(0, 2);
 ---
 
-<article class="product-card" data-product-card>
+<a
+  class:list={['product-card', { 'has-features': visibleFeatures.length > 0 }]}
+  data-product-card
+  href={href}
+  aria-label={`${name}，查看详情`}
+>
   <div class="product-media" data-product-media>
     <img src={image} alt={imageAlt} loading="lazy" decoding="async" />
   </div>
-  <div class="product-card-content">
+  <div class="product-card-content" data-product-content>
     <h3>{name}</h3>
-    <a href={href}>了解更多</a>
+    {
+      visibleFeatures.length > 0 && (
+        <p class="product-features">
+          {visibleFeatures.map((feature) => (
+            <span data-product-feature>{feature}</span>
+          ))}
+        </p>
+      )
+    }
+    <span class="product-cta" aria-hidden="true">查看详情 <b>→</b></span>
   </div>
-</article>
+</a>
 
 <style>
   .product-card {
     display: grid;
     aspect-ratio: 1;
+    overflow: hidden;
     border: 1px solid var(--divider);
     border-radius: 0.75rem;
     background: var(--surface);
     box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 6%);
-    grid-template-rows: 1fr 1fr;
-    overflow: hidden;
+    color: var(--text-primary);
+    grid-template-rows: 48% 52%;
+    text-decoration: none;
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .product-card:hover {
+    border-color: rgb(0 183 181 / 45%);
+    color: var(--text-primary);
+    box-shadow: 0 0.75rem 1.75rem rgb(0 0 0 / 10%);
+    transform: translateY(-0.15rem);
   }
 
   .product-media {
@@ -51,8 +80,8 @@ const { name, image, imageAlt, href } = Astro.props;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.2rem;
-    padding: 1.75rem 1.5rem;
+    gap: clamp(0.45rem, 1vw, 1rem);
+    padding: clamp(0.75rem, 1.5vw, 1.5rem);
     text-align: center;
   }
 
@@ -62,16 +91,90 @@ const { name, image, imageAlt, href } = Astro.props;
     line-height: 1.35;
   }
 
-  a {
+  .product-features {
+    display: block;
+    max-width: 100%;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .product-features span + span::before {
+    margin-inline: 0.35rem;
+    color: var(--border);
+    content: '·';
+  }
+
+  .product-cta {
+    display: inline-flex;
+    width: 37%;
+    min-width: max-content;
+    align-items: center;
+    justify-content: center;
     color: var(--brand-teal-dark);
+    font-size: 0.9rem;
     font-weight: 700;
-    text-decoration: none;
+  }
+
+  .product-cta b {
+    display: inline-block;
+    margin-left: 0.25rem;
+    transition: transform var(--transition-fast);
+  }
+
+  .product-card:hover .product-cta b {
+    transform: translateX(0.2rem);
   }
 
   @media (max-width: 47.999rem) {
-    .product-card-content {
-      gap: 0.75rem;
+    .product-card {
+      min-height: 10.5rem;
+      aspect-ratio: auto;
+      grid-template-columns: minmax(0, 38%) minmax(0, 62%);
+      grid-template-rows: none;
+    }
+
+    .product-media {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: auto;
+      align-self: stretch;
       padding: 1rem;
+    }
+
+    .product-card-content {
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0.65rem;
+      padding: 1.1rem 1rem;
+      text-align: left;
+    }
+
+    .product-features {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      white-space: normal;
+    }
+
+    .product-features span + span::before {
+      content: ' · ';
+    }
+
+    .product-cta {
+      width: auto;
+      min-width: 0;
+      justify-content: flex-start;
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .product-card,
+    .product-cta b {
+      transition: none;
     }
   }
 </style>

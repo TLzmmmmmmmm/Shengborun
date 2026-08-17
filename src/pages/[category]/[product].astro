@@ -1,7 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import ProductHero from '../../components/products/ProductHero.astro';
+import ProductInquiryCta from '../../components/products/ProductInquiryCta.astro';
+import TechnicalParameters from '../../components/products/TechnicalParameters.astro';
+import productFeatureLibrary from '../../content/product-features/features.json';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { ProductFeatureDefinition } from '../../lib/product-features';
+import { resolveProductFeatures } from '../../lib/product-features';
 import { buildPublishedProductRoutes } from '../../lib/products';
 
 export async function getStaticPaths() {
@@ -23,21 +30,98 @@ export async function getStaticPaths() {
 const { category, product } = Astro.props;
 const categoryPath = `/${category.slug}/`;
 const canonicalPath = `${categoryPath}${product.slug}/`;
+const resolvedFeatures = resolveProductFeatures(
+  product.keyFeatures,
+  productFeatureLibrary as ProductFeatureDefinition[],
+);
+const breadcrumbs = [
+  { label: '\u4ea7\u54c1\u4e2d\u5fc3', href: '/products/' },
+  { label: category.name, href: categoryPath },
+  { label: product.name, href: canonicalPath },
+];
 ---
 
 <BaseLayout
-  title={`${product.name} | 北京盛博润通讯设备有限公司`}
-  description={`${product.name}页面将在后续阶段完成。`}
+  title={product.name + ' | \u5317\u4eac\u76db\u535a\u6da6\u901a\u8baf\u8bbe\u5907\u6709\u9650\u516c\u53f8'}
+  description={product.productFeatures ?? product.name + '\u4ea7\u54c1\u4fe1\u606f\u4e0e\u6280\u672f\u53c2\u6570\u3002'}
   canonicalPath={canonicalPath}
-  breadcrumbs={[
-    { label: category.name, href: categoryPath },
-    { label: product.name, href: canonicalPath },
-  ]}
+  breadcrumbs={breadcrumbs}
 >
-  <section class="foundation-placeholder site-container">
-    <div>
-      <h1>{product.name}</h1>
-      <p>页面将在后续阶段完成。</p>
+  <section class="product-detail-page" data-product-detail>
+    <div class="product-detail-content site-container">
+      <div class="product-breadcrumb">
+        <Breadcrumbs
+          items={[{ label: '\u9996\u9875', href: '/' }, ...breadcrumbs]}
+        />
+      </div>
+
+      <ProductHero
+        name={product.name}
+        description={product.productFeatures}
+        coverImage={product.coverImage}
+        features={resolvedFeatures}
+      />
+
+      <TechnicalParameters parameters={product.technicalParameters} />
+
+      <ProductInquiryCta />
+
+      <section class="product-note" aria-label="产品信息说明">
+        <h2>产品信息说明</h2>
+
+        <p>
+          本页面所展示的产品图片、功能及技术参数仅供参考，
+          具体配置、规格及外观可能因产品批次、型号或供应情况有所调整，
+          请以实际交付产品及正式技术资料为准。
+        </p>
+
+        <p>
+          无线通信产品的实际通信距离、信号质量及使用效果可能受到地形、
+          建筑环境、频率设置、天线配置及其他无线环境因素影响。
+          如需确认具体产品信息，请联系我们。
+        </p>
+      </section>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .product-detail-page {
+    padding-block: 1.5rem 4rem;
+    background: var(--surface-muted);
+  }
+
+  .product-detail-content {
+    display: grid;
+    max-width: 100rem;
+    gap: 2rem;
+  }
+
+  .product-breadcrumb {
+    margin-bottom: -1rem;
+  }
+
+  .product-note {
+  margin-top: clamp(1.5rem, 4vw, 3rem);
+  margin-bottom: -2rem;
+  margin-inline: clamp(1.5rem, 4vw, 3rem);
+  color: var(--text-secondary);
+  font-size: clamp(0.75rem, 1vw, 0.875rem);
+  line-height: 1.7;
+}
+
+.product-note h2 {
+  margin: 0 0 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.product-note p {
+  margin: 0;
+}
+
+.product-note p + p {
+  margin-top: 0.35rem;
+}
+</style>

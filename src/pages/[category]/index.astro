@@ -1,39 +1,183 @@
 ---
 import { getCollection } from 'astro:content';
 
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import CategoryBanner from '../../components/products/CategoryBanner.astro';
+import CategoryNavigation from '../../components/products/CategoryNavigation.astro';
+import ProductCard from '../../components/products/ProductCard.astro';
+import { categoryVisuals } from '../../data/category-visuals';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { buildPublishedProductRoutes } from '../../lib/products';
+import {
+  buildPublishedProductRoutes,
+  selectAllPublishedProducts,
+} from '../../lib/products';
 
 export async function getStaticPaths() {
   const [categoryEntries, productEntries] = await Promise.all([
     getCollection('productCategories'),
     getCollection('products'),
   ]);
-  const routes = buildPublishedProductRoutes(
-    categoryEntries.map((entry) => entry.data),
-    productEntries.map((entry) => entry.data),
-  );
+  const categoryData = categoryEntries.map((entry) => entry.data);
+  const productData = productEntries.map((entry) => entry.data);
+  const routes = buildPublishedProductRoutes(categoryData, productData);
 
   return routes.categories.map((category) => ({
     params: { category: category.slug },
-    props: { category },
+    props: {
+      category,
+      categories: routes.categories,
+      products: selectAllPublishedProducts(productData, category.id),
+    },
   }));
 }
 
-const { category } = Astro.props;
+const { category, categories, products } = Astro.props;
 const canonicalPath = `/${category.slug}/`;
+const visual = categoryVisuals[category.id];
+if (!visual) throw new Error(`Missing category visual for ${category.id}.`);
+const breadcrumbs = [
+  { label: '产品中心', href: '/products/' },
+  { label: category.name, href: canonicalPath },
+];
 ---
 
 <BaseLayout
   title={`${category.name} | 北京盛博润通讯设备有限公司`}
-  description={`${category.name}页面将在后续阶段完成。`}
+  description={category.shortDescription ?? category.name}
   canonicalPath={canonicalPath}
-  breadcrumbs={[{ label: category.name, href: canonicalPath }]}
+  breadcrumbs={breadcrumbs}
 >
-  <section class="foundation-placeholder site-container">
-    <div>
-      <h1>{category.name}</h1>
-      <p>页面将在后续阶段完成。</p>
+  <div class="category-page">
+    <div class="category-content site-container">
+      <div class="category-breadcrumb">
+        <Breadcrumbs items={[{ label: '首页', href: '/' }, ...breadcrumbs]} />
+      </div>
+
+      <header class="category-header">
+        <h1>{category.name}</h1>
+        <p data-category-description>{category.shortDescription}</p>
+      </header>
+
+      <div class="category-navigation-wrap">
+        <CategoryNavigation
+          categories={categories}
+          currentCategoryId={category.id}
+        />
+      </div>
+
+      <CategoryBanner
+        src={visual.banner}
+        alt={visual.bannerAlt}
+        objectPosition={visual.objectPosition}
+      />
+
+      <section class="product-series" aria-label={`${category.name}产品`}>
+        {
+          products.length > 0 ? (
+            <div class="product-grid">
+              {products.map((product) => (
+                <ProductCard
+                  name={product.name}
+                  image={product.coverImage}
+                  imageAlt={`${product.name}产品图`}
+                  href={`/${category.slug}/${product.slug}/`}
+                  featureSummary={product.keyFeatures}
+                />
+              ))}
+            </div>
+          ) : (
+            <p class="product-empty">产品资料整理中</p>
+          )
+        }
+      </section>
     </div>
-  </section>
+  </div>
 </BaseLayout>
+
+<style>
+  .category-page {
+    background: var(--surface-muted);
+  }
+
+  .category-content {
+    max-width: 100rem;
+    padding-block: 1.5rem clamp(4rem, 7vw, 6rem);
+  }
+
+  .category-breadcrumb {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  .category-header {
+    margin-top: 1.75rem;
+    text-align: center;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--brand-graphite);
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .category-header p {
+    margin: 0.85rem 0 0;
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+  }
+
+  .category-navigation-wrap {
+    margin-block: clamp(2.75rem, 5vw, 4rem) clamp(1.5rem, 2.5vw, 2rem);
+  }
+
+  .product-series {
+    margin-top: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.25rem, 2vw, 1.75rem);
+    margin-top: 0;
+  }
+
+  .product-empty {
+    margin: 0;
+    padding: 2.5rem;
+    border: 1px solid var(--divider);
+    border-radius: 0.75rem;
+    background: var(--surface);
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  @media (max-width: 47.999rem) {
+    .category-content {
+      padding-block: 1.25rem 4rem;
+    }
+
+    .category-breadcrumb {
+      font-size: 0.8rem;
+    }
+
+    .category-header {
+      margin-top: 1.5rem;
+    }
+
+    .category-navigation-wrap {
+      margin-block: 2.5rem 1.25rem;
+    }
+
+    .product-series {
+      margin-top: 2rem;
+    }
+
+    .product-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+      margin-top: 0;
+    }
+  }
+</style>

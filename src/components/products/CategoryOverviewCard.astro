@@ -1,0 +1,134 @@
+---
+import type { ProductCategoryOverviewItem } from '../../data/product-category-overview';
+
+type Props = ProductCategoryOverviewItem;
+
+const { id, name, description, image, imageAlt, href } = Astro.props;
+---
+
+<a
+  class="category-card"
+  href={href}
+  data-category-overview-card={id}
+  aria-label={`${name}：${description} 查看产品`}
+>
+  <div class="category-card__media">
+    <img
+      src={image}
+      alt={imageAlt}
+      width="1400"
+      height="840"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <div class="category-card__content">
+    <h2>{name}</h2>
+    <p>{description}</p>
+    <span class="category-card__cta" aria-hidden="true">查看产品 <b>→</b></span>
+  </div>
+</a>
+
+<style>
+  .category-card {
+    display: flex;
+    min-width: 0;
+    overflow: hidden;
+    flex-direction: column;
+    border: 1px solid var(--divider);
+    border-radius: 0.875rem;
+    background: var(--surface);
+    box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 6%);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .category-card:hover {
+    border-color: rgb(0 183 181 / 45%);
+    color: var(--text-primary);
+    box-shadow: 0 0.75rem 1.75rem rgb(0 0 0 / 11%);
+    transform: translateY(-0.1875rem);
+  }
+
+  .category-card__media {
+    overflow: hidden;
+    aspect-ratio: 5 / 3;
+    background: var(--surface-dark);
+  }
+
+  .category-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 320ms ease;
+  }
+
+  .category-card:hover .category-card__media img {
+    transform: scale(1.015);
+  }
+
+  .category-card__content {
+    display: flex;
+    min-height: 9.25rem;
+    flex: 1;
+    flex-direction: column;
+    padding: clamp(1.15rem, 1.75vw, 1.5rem) clamp(1.25rem, 2vw, 1.75rem);
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--brand-graphite);
+    font-size: clamp(1.25rem, 1.65vw, 1.5rem);
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  p {
+    margin: 0.55rem 0 0;
+    color: var(--text-secondary);
+    font-size: 0.975rem;
+    line-height: 1.6;
+  }
+
+  .category-card__cta {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 0.35rem;
+    margin-top: auto;
+    padding-top: 0.7rem;
+    color: var(--brand-teal-dark);
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+
+  .category-card__cta b {
+    font-size: 1.1em;
+    transition: transform var(--transition-fast);
+  }
+
+  .category-card:hover .category-card__cta b {
+    transform: translateX(0.2rem);
+  }
+
+  @media (max-width: 47.999rem) {
+    .category-card__media {
+      aspect-ratio: 2 / 1;
+    }
+    .category-card__content {
+      min-height: 8.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .category-card,
+    .category-card__media img,
+    .category-card__cta b {
+      transition: none;
+    }
+  }
+</style>

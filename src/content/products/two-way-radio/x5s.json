@@ -1,0 +1,52 @@
+{
+  "id": "x5s",
+  "name": "雷曼克斯 X5S",
+  "slug": "x5s",
+  "categoryId": "two-way-radio",
+  "coverImage": "/images/products/two-way-radio/x5s/image.png",
+  "galleryImages": [],
+  "keyFeatures": [
+    "腔体设计",
+    "声控功能",
+    "语音加密",
+    "电量提示"
+  ],
+  "productFeatures": "X5S是一款模拟对讲机，该型对讲机具备VOX声控功能，可实现免提通话。本机自带的电量播报功能，能让客户了解对讲机的实时电量情况。",
+  "technicalParameters": [
+    {
+      "group": "一般规格",
+      "items": [
+        {
+          "name": "频率范围",
+          "value": "400-480MHz"
+        },
+        {
+          "name": "输出功率",
+          "value": "≤5W"
+        },
+        {
+          "name": "电池容量",
+          "value": "1600mAh"
+        },
+        {
+          "name": "信道数量",
+          "value": "16"
+        },
+        {
+          "name": "整机尺寸",
+          "value": "137*60*35mm"
+        },
+        {
+          "name": "工作温度",
+          "value": "-20℃- 55℃"
+        },
+        {
+          "name": "整机重量",
+          "value": "270g"
+        }
+      ]
+    }
+  ],
+  "sortOrder": 4,
+  "published": true
+}

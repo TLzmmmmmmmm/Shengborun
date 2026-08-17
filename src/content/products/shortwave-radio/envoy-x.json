@@ -1,0 +1,38 @@
+{
+  "id": "envoy-x",
+  "name": "柯顿 ENVOY X",
+  "slug": "envoy-x",
+  "categoryId": "shortwave-radio",
+  "coverImage": "/images/products/shortwave-radio/envoy-x/image.png",
+  "galleryImages": [],
+  "keyFeatures": [
+    "固定短波",
+    "维和免检"
+  ],
+  "productFeatures": "ENVOY X系列短波数字化软件无线电台可模拟和数字语音通信，125W射频输出功率，多国语言的图形用户界面。",
+  "technicalParameters": [
+    {
+      "group": "一般规格",
+      "items": [
+        {
+          "name": "频率范围",
+          "value": "1.6MHz～30MHz"
+        },
+        {
+          "name": "输出功率",
+          "value": "125W"
+        },
+        {
+          "name": "外形尺寸",
+          "value": "210×270×65mm"
+        },
+        {
+          "name": "重量",
+          "value": "4.2kg"
+        }
+      ]
+    }
+  ],
+  "sortOrder": 6,
+  "published": true
+}

@@ -15,14 +15,16 @@ export interface ProductsPageCategory {
   products: ProductsPageItem[];
 }
 
-export const placeholderProductCategories: ProductsPageCategory[] = [
+type ProductsPagePlaceholder = Pick<
+  ProductsPageCategory,
+  'id' | 'banner' | 'bannerAlt' | 'products'
+>;
+
+export const placeholderProductCategories: ProductsPagePlaceholder[] = [
   {
     id: 'shortwave-radio',
-    name: '短波通信',
-    description: '面向远距离与复杂环境的短波通信设备',
     banner: '/images/products/shortwave-radio-banner.png',
     bannerAlt: '远距离短波通信设备与山地通信场景',
-    href: '/shortwave-radio/',
     products: [
       {
         name: '短波产品 01',
@@ -46,11 +48,8 @@ export const placeholderProductCategories: ProductsPageCategory[] = [
   },
   {
     id: 'mesh-network',
-    name: '自组网通信',
-    description: '快速部署、灵活组网的无线通信产品',
     banner: '/images/products/mesh-network-banner.png',
     bannerAlt: '应急现场中的无线自组网通信设备',
-    href: '/mesh-network/',
     products: [
       {
         name: '自组网产品 01',
@@ -74,11 +73,8 @@ export const placeholderProductCategories: ProductsPageCategory[] = [
   },
   {
     id: 'ict-integration',
-    name: 'ICT 集成',
-    description: '面向行业客户的一体化信息与通信能力',
     banner: '/images/products/ict-integration-banner.png',
     bannerAlt: '数据中心内的信息与通信基础设施',
-    href: '/ict-integration/',
     products: [
       {
         name: 'ICT 产品 01',

@@ -1,8 +1,6 @@
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import yaml from 'js-yaml';
-
 import { validateContentReferences } from '../src/lib/content-rules.ts';
 
 const contentRoot = process.argv[2]
@@ -32,46 +30,26 @@ async function readJsonDirectory(directoryName) {
 
   return Promise.all(
     filePaths.map(async (filePath) => {
-      return JSON.parse(await readFile(filePath, 'utf8'));
+      const source = await readFile(filePath, 'utf8');
+      return source.trim().length === 0 ? undefined : JSON.parse(source);
     }),
-  );
+  ).then((items) => items.filter(Boolean));
 }
 
-function parseFrontmatter(source, filePath) {
-  const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
-
-  if (!match) {
-    throw new Error(`Missing YAML frontmatter: ${filePath}`);
-  }
-
-  const data = yaml.load(match[1]);
-
-  if (!data || typeof data !== 'object' || Array.isArray(data)) {
-    throw new Error(`Invalid YAML frontmatter: ${filePath}`);
-  }
-
-  return data;
-}
-
-async function readMarkdownDirectory(directoryName) {
-  const directory = path.join(contentRoot, directoryName);
-  const filePaths = await findFiles(directory, ['.md', '.mdx']);
-
-  return Promise.all(
-    filePaths.map(async (filePath) => {
-      return parseFrontmatter(await readFile(filePath, 'utf8'), filePath);
-    }),
-  );
+async function readJsonFile(relativePath) {
+  return JSON.parse(await readFile(path.join(contentRoot, relativePath), 'utf8'));
 }
 
 async function main() {
-  const [categories, products] = await Promise.all([
+  const [categories, products, features] = await Promise.all([
     readJsonDirectory('product-categories'),
-    readMarkdownDirectory('products'),
+    readJsonDirectory('products'),
+    readJsonFile(path.join('product-features', 'features.json')),
   ]);
   const errors = validateContentReferences({
     categories,
     products,
+    features,
   });
 
   if (errors.length > 0) {
