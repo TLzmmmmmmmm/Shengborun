@@ -1,5 +1,10 @@
+export type SupportServiceId =
+  | 'solution-design'
+  | 'project-implementation'
+  | 'delivery-training';
+
 export interface SupportService {
-  id: string;
+  id: SupportServiceId;
   name: string;
   href: string;
   summary: string;
