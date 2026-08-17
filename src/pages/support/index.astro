@@ -2,6 +2,18 @@
 import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
 import { supportServices } from '../../data/support-services';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  Globe,
+  Cog,
+  Wrench,
+  GraduationCap,
+} from '@lucide/astro';
+
+const serviceIcons = {
+  'solution-design': Globe,
+  'project-implementation': Cog,
+  'delivery-training': GraduationCap,
+};
 ---
 
 <BaseLayout
@@ -22,35 +34,36 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
   <main class="support-content site-container" aria-label="技术支持服务">
     <div class="support-list">
-      {supportServices.map((service) => (
-        <article class="service-card" id={service.id} aria-labelledby={`${service.id}-heading`}>
-          <div class="service-visual">
-            <img
-              src={service.image}
-              alt={service.imageAlt}
-              width={service.imageWidth}
-              height={service.imageHeight}
-              loading="lazy"
-              decoding="async"
-            />
-            <div class="service-visual__copy" aria-hidden="true">
-              <h2>{service.name}</h2>
-              <p>{service.summary}</p>
-            </div>
-          </div>
+      {supportServices.map((service) => {
+        const ServiceIcon = serviceIcons[service.id];
 
-          <div class="service-copy">
-            <h2 id={`${service.id}-heading`}>{service.name}</h2>
-            <p>{service.body}</p>
-          </div>
-        </article>
-      ))}
+        return(
+          <article class="service-card" id={service.id} aria-labelledby={`${service.id}-heading`}>
+            <div class="service-visual">
+              <ServiceIcon
+                class="service-icon"
+                aria-hidden="true"
+                stroke-width={1.5}
+              />
+              <div class="service-visual__copy" aria-hidden="true">
+                <h2>{service.name}</h2>
+                <p>{service.summary}</p>
+              </div>
+            </div>
+
+            <div class="service-copy">
+              <h2 id={`${service.id}-heading`}>{service.name}</h2>
+              <p>{service.body}</p>
+            </div>
+          </article>
+        )
+      })}
     </div>
 
     <section class="support-cta" aria-labelledby="support-cta-heading">
-      <h2 id="support-cta-heading">需要技术支持？</h2>
-      <p>欢迎联系我们，获取适合您项目需求的技术服务与支持。</p>
-      <a href="/about/#contact">联系技术支持</a>
+      <h2 id="support-cta-heading">获取技术支持</h2>
+      <p>欢迎联系我们，我们将根据您的项目需求提供相应的技术服务与支持</p>
+      <a href="/about/#contact">联系我们</a>
     </section>
   </main>
 </BaseLayout>
@@ -100,12 +113,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   .service-card {
     display: grid;
     overflow: hidden;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    min-height: clamp(19rem, 25vw, 23rem);
-    border: 1px solid var(--divider);
-    border-radius: var(--radius-small);
-    background: var(--surface);
+    grid-template-columns: minmax(0, 44%) minmax(0, 56%);
+    min-height: clamp(18rem, 22vw, 21rem);
+    border: 1px solid #edf0f2;
+    border-radius: var(--radius-medium);
+    background: transparent;
     scroll-margin-top: 6rem;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 3%);
+  }
+
+  .service-card:nth-child(even) {
+    grid-template-columns: minmax(0, 56%) minmax(0, 44%);
   }
 
   .service-card:nth-child(even) .service-visual {
@@ -116,12 +134,22 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     order: 1;
   }
 
+  .service-icon {
+    color: var(--brand-teal-dark);
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    width: clamp(5.5rem, 7vw, 7.25rem);
+    height: auto;
+    transform: translate(-50%, -50%);
+  }
+
   .service-visual {
     position: relative;
     display: grid;
     overflow: hidden;
-    min-height: 19rem;
-    background: #f4f4f6;
+    min-height: 18rem;
+    background: #f5f7f8;
   }
 
   .service-visual img {
@@ -140,6 +168,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     margin-inline: auto;
     padding: 1.25rem clamp(1.25rem, 3vw, 2.5rem) clamp(1.75rem, 3.5vw, 2.75rem);
     text-align: center;
+    transform: translateY(-1rem);
   }
 
   .service-visual__copy h2,
@@ -151,6 +180,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     color: var(--brand-graphite);
     font-size: clamp(1.35rem, 2vw, 1.75rem);
     line-height: 1.25;
+    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+    font-weight: 700;
   }
 
   .service-visual__copy p {
@@ -158,6 +189,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     color: var(--text-secondary);
     font-size: clamp(0.9375rem, 1.25vw, 1.0625rem);
     line-height: 1.65;
+    max-width: 18rem;
   }
 
   .service-copy {
@@ -165,7 +197,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     min-width: 0;
     flex-direction: column;
     justify-content: center;
-    padding: clamp(2rem, 4vw, 3.5rem);
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+    background: var(--surface);
   }
 
   .service-copy h2 {
@@ -179,17 +212,18 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   }
 
   .service-copy p {
-    margin: clamp(1.25rem, 2vw, 1.75rem) 0 0;
+    margin: clamp(1rem, 1.5vw, 1.4rem) 0 0;
     color: #404047;
     font-size: clamp(1rem, 1.25vw, 1.125rem);
-    line-height: 1.85;
+    line-height: 1.75;
     text-align: justify;
+    max-width: 40rem;
   }
 
   .support-cta {
     max-width: 90rem;
-    margin: clamp(2.5rem, 5vw, 4.5rem) auto 0;
-    padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 6vw, 5rem);
+    margin: clamp(2.5rem, 4vw, 3.5rem) auto 0;
+    padding: clamp(2rem, 3.5vw, 3rem) clamp(1.5rem, 6vw, 5rem);
     border-radius: var(--radius-medium);
     background: var(--brand-graphite);
     color: var(--surface);
@@ -202,29 +236,33 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   }
 
   .support-cta h2 {
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    letter-spacing: -0.025em;
+    font-size: clamp(1.625rem, 2.4vw, 2.125rem);
+    letter-spacing: -0.02em;
     line-height: 1.25;
   }
 
   .support-cta p {
-    margin-top: 0.75rem;
+    max-width: 34rem;
+    margin: 0.625rem auto 0;
     color: #d7dadd;
-    font-size: clamp(0.9375rem, 1.25vw, 1.0625rem);
+    font-size: clamp(0.9375rem, 1.15vw, 1rem);
+    line-height: 1.6;
   }
 
   .support-cta a {
     display: inline-grid;
-    min-height: 3rem;
-    margin-top: 1.75rem;
-    padding-inline: 2rem;
+    min-height: 2.875rem;
+    margin-top: 1.4rem;
+    padding-inline: 1.75rem;
     border-radius: var(--radius-small);
     background: var(--brand-teal);
     color: var(--brand-graphite);
     font-weight: 700;
     place-items: center;
     text-decoration: none;
-    transition: background var(--transition-fast), transform var(--transition-fast);
+    transition:
+      background var(--transition-fast),
+      transform var(--transition-fast);
   }
 
   .support-cta a:hover {

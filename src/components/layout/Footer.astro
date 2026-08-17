@@ -24,7 +24,7 @@ const footerGroups: FooterGroup[] = [
   {
     title: '解决方案',
     titleHref: '/solutions/',
-    links: sortedSolutions.map(({ data }) => ({ label: data.name, href: `/solutions/${data.slug}/` })),
+    links: sortedSolutions.map(({ data }) => ({ label: data.name.replace(/解决方案$/, ''), href: `/solutions/${data.slug}/` })),
   },
   {
     title: '技术支持',
