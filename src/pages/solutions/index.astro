@@ -26,7 +26,7 @@ const solutions = (await getCollection('solutions', ({ data }) => data.published
         <p>面向不同行业与应用场景的通信及 ICT 解决方案，帮助客户实现高效协同与稳定运行</p>
       </header>
 
-      <main class="solutions-grid" aria-label="行业解决方案">
+      <section class="solutions-grid" aria-label="行业解决方案">
         {solutions.map(({ data }) => (
           <SolutionCard
             name={data.name}
@@ -39,7 +39,7 @@ const solutions = (await getCollection('solutions', ({ data }) => data.published
             href={`/solutions/${data.slug}/`}
           />
         ))}
-      </main>
+      </section>
     </div>
   </div>
 </BaseLayout>

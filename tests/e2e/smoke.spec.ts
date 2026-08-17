@@ -4,9 +4,13 @@ test('serves the initial Shengborun homepage', async ({ page }) => {
   const response = await page.goto('/');
 
   expect(response?.status()).toBe(200);
-  await expect(page).toHaveTitle('北京盛博润通讯设备有限公司');
+  await expect(page).toHaveTitle('北京盛博润通信设备有限公司');
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute(
+    'content',
+    '北京盛博润通信设备有限公司',
+  );
   await expect(
-    page.getByRole('heading', { level: 1, name: '产品中心' }),
+    page.getByRole('heading', { level: 1, name: '让关键通信始终可靠' }),
   ).toBeVisible();
 });
 

@@ -132,7 +132,7 @@ The reference screenshot defines the information hierarchy rather than a pixel-p
 
 ## Metadata
 
-- Page title uses `{product.name} | 北京盛博润通讯设备有限公司`.
+- Page title uses `{product.name} | 北京盛博润通信设备有限公司`.
 - Meta description uses `product.productFeatures` when present, with a concise product-name fallback.
 - Canonical URL remains `/{category-slug}/{product-slug}/`.
 
