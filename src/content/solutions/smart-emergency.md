@@ -1,7 +1,7 @@
 ---
 name: 智慧应急解决方案
 slug: smart-emergency
-summary: 依托云数据中心、通信网络与全域感知体系，构建技术、数据与业务三大中台，为应急管理提供态势感知、辅助决策与协同指挥能力。
+summary: 依托云数据中心、通信网络与全域感知体系，构建技术、数据与业务三大中台，为应急管理提供态势感知、辅助决策与协同指挥能力
 coverImage: /images/solutions/smart-emergency.png
 coverImageAlt: 智慧城市数字化应急管理场景
 coverImageWidth: 435

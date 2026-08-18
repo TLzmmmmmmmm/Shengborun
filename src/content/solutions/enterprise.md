@@ -1,7 +1,7 @@
 ---
 name: 企事业单位行业无线对讲解决方案
 slug: enterprise
-summary: 采用数字双时隙 TDMA 与 IP 互联技术，在不增加频点的基础上扩充容量，实现跨部门互通、通话分组和统一调度。
+summary: 采用数字双时隙 TDMA 与 IP 互联技术，在不增加频点的基础上扩充容量，实现跨部门互通、通话分组和统一调度
 coverImage: /images/solutions/enterprise.png
 coverImageAlt: 企事业单位现代办公园区
 coverImageWidth: 770

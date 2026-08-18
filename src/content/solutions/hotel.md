@@ -1,7 +1,7 @@
 ---
 name: 酒店行业无线对讲解决方案
 slug: hotel
-summary: 通过控制中心、IP 网络和数字基站统一管理酒店对讲终端，为不同部门提供分组呼叫、紧急呼叫、录音追溯与远程调度能力。
+summary: 通过控制中心、IP 网络和数字基站统一管理酒店对讲终端，为不同部门提供分组呼叫、紧急呼叫、录音追溯与远程调度能力
 coverImage: /images/solutions/hotel.avif
 coverImageAlt: 酒店客房与公共区域
 coverImageWidth: 4000

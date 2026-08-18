@@ -1,7 +1,7 @@
 ---
 name: 人防行业宽带自组网解决方案
 slug: civil-defense
-summary: 以人防通信指挥车为核心，连接机动车与现场处置人员，构建无中心、多跳中继的动态宽带网络，实时回传高清视频、语音和定位数据。
+summary: 以人防通信指挥车为核心，连接机动车与现场处置人员，构建无中心、多跳中继的动态宽带网络，实时回传高清视频、语音和定位数据
 coverImage: /images/solutions/civil-defense.jpg
 coverImageAlt: 人防通信车辆与无人机协同作业
 coverImageWidth: 2705

@@ -1,7 +1,7 @@
 ---
 name: 石油石化行业无线对讲解决方案
 slug: petrochemical
-summary: 针对石油石化厂区的信号盲区、防爆等级和统一调度需求，构建具备动态信道分配、室内覆盖、网管录音及电话互联能力的数字集群系统。
+summary: 针对石油石化厂区的信号盲区、防爆等级和统一调度需求，构建具备动态信道分配、室内覆盖、网管录音及电话互联能力的数字集群系统
 coverImage: /images/solutions/petrochemical.jpg
 coverImageAlt: 石油石化生产区抽油设备
 coverImageWidth: 800
