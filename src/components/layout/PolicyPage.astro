@@ -26,7 +26,6 @@ const { title, description, canonicalPath, effectiveDate, updatedDate, summary, 
     <div class="site-container policy-hero__inner">
       <Breadcrumbs items={[{ label: '首页', href: '/' }, { label: title }]} />
       <div class="policy-hero__heading">
-        <p class="policy-kicker">POLICY &amp; TERMS</p>
         <h1>{title}</h1>
         <p class="policy-summary">{summary}</p>
         <dl class="policy-dates">
@@ -38,16 +37,6 @@ const { title, description, canonicalPath, effectiveDate, updatedDate, summary, 
   </header>
 
   <div class="site-container policy-shell">
-    <aside class="policy-aside">
-      <nav class="policy-toc" aria-label="页面目录">
-        <p>页面目录</p>
-        <ol>
-          {sections.map((section, index) => (
-            <li><a href={`#${section.id}`}><span>{String(index + 1).padStart(2, '0')}</span>{section.label}</a></li>
-          ))}
-        </ol>
-      </nav>
-    </aside>
     <article class="policy-content"><slot /></article>
   </div>
 </BaseLayout>
