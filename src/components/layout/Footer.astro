@@ -78,8 +78,14 @@ const footerGroups: FooterGroup[] = [
     <div class="footer-legal">
       <span>版权所有 © 2026 北京盛博润通信设备有限公司</span>
       <div class="footer-legal-secondary">
-        <span data-link-pending>ICP备案（待确认）</span>
-        <span data-link-pending>公安联网备案（待确认）</span>
+        <a
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          京ICP备2021002788号-2
+        </a>
+        {/* 公安联网备案（待确认）*/}
         <a href="/legal/">法律声明</a>
         <a href="/privacy/">隐私政策</a>
       </div>
@@ -136,8 +142,23 @@ const footerGroups: FooterGroup[] = [
   [data-footer-panel][hidden] { display: none; }
   li a, li span { color: var(--text-secondary); font-size: 1rem; text-decoration: none; }
   li a:hover { color: var(--text-primary); }
-  .footer-legal { display: flex; align-items: center; justify-content: space-between; gap: 1rem 2rem; padding-block: 1.25rem; border-top: 1px solid var(--footer-divider); font-size: .875rem; text-align: left; }
-  .footer-legal-secondary { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 1rem 2rem; }
+  .footer-legal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.75rem;
+    padding-block: 1.25rem;
+    border-top: 1px solid var(--footer-divider);
+    font-size: .875rem;
+    text-align: left;
+  }
+
+  .footer-legal-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.75rem;
+  }
   .footer-legal a { color: var(--text-secondary); text-decoration: none; }
   @media (max-width: 47.999rem) {
     .footer-navigation { display: block; padding-block: 1rem 0; }

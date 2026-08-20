@@ -81,7 +81,7 @@ const iconMap = {
       </div>
     </section>
 
-    <section class="home-section" aria-labelledby="products-title">
+    <section class="home-section products-section" aria-labelledby="products-title">
       <div class="site-container section-container">
         <div class="section-heading">
           <h2 id="products-title">产品中心</h2>
@@ -200,7 +200,7 @@ const iconMap = {
   .section-container { max-width: 100rem; }
   .hero {
     position: relative;
-    min-height: clamp(30rem, 40vw, 40rem);
+    min-height: clamp(27rem, 36vw, 36rem);
     background-image:
       linear-gradient(
         90deg,
@@ -211,6 +211,7 @@ const iconMap = {
       ),
       url('/images/home/hero.png');
     background-position: center;
+    background-repeat: no-repeat;
     background-size: cover;
   }
   .hero-inner {
@@ -224,6 +225,7 @@ const iconMap = {
   .hero-copy {
     width: min(41rem, 55%);
     padding-bottom: 5.5rem;
+    transform: translateY(-2rem);
   }
   .hero-kicker {
     margin: 0 0 .8rem;
@@ -278,6 +280,9 @@ const iconMap = {
   .hero-benefit { display: flex; align-items: center; gap: .45rem; color: #16354f; font-size: .93rem; font-weight: 700; }
   .hero-benefit :global(svg) { flex: 0 0 auto; color: var(--brand-teal); }
   .home-section, .support-section, .reasons-section { padding-block: clamp(3.75rem, 6vw, 5.5rem); }
+  .products-section {
+    padding-top: clamp(2rem, 3vw, 4rem);
+  }
   .solutions-section { padding-top: 0; }
   .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; }
   .section-heading h2, .centered-heading h2, .cta-copy h2 {
@@ -395,7 +400,7 @@ const iconMap = {
   }
   @media (max-width: 55.999rem) {
     .hero {
-      min-height: 38rem;
+      min-height: 34.2rem;
       background-image: linear-gradient(90deg, rgb(244 250 253 / 98%) 0%, rgb(244 250 253 / 88%) 55%, rgb(244 250 253 / 35%) 100%), url('/images/home/hero.png');
       background-position: 62% center;
     }
@@ -426,6 +431,7 @@ const iconMap = {
     .hero-copy {
       width: 100%;
       padding-bottom: 0;
+      transform: none;
     }
 
     .hero-actions {
