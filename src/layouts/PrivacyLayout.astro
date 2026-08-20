@@ -1,0 +1,122 @@
+---
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description: string;
+  };
+}
+
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout
+  title={`${frontmatter.title} - 北京盛博润通信设备有限公司`}
+  description={frontmatter.description}
+  canonicalPath="/privacy/"
+  breadcrumbs={[{ label: frontmatter.title, href: '/privacy/' }]}
+>
+  <div class="privacy-page site-container">
+    <div class="privacy-breadcrumb">
+      <Breadcrumbs items={[{ label: '首页', href: '/' }, { label: frontmatter.title }]} />
+    </div>
+    <article class="privacy-document"><slot /></article>
+  </div>
+</BaseLayout>
+
+<style>
+  .privacy-page {
+    max-width: 100rem;
+    padding-block: 1.5rem clamp(4rem, 7vw, 7rem);
+  }
+
+  .privacy-breadcrumb {
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .privacy-document {
+    max-width: 58rem;
+    margin-inline: auto;
+    color: #333;
+  }
+
+  .privacy-document :global(h1) {
+    margin: 0 0 1.5rem;
+    color: var(--brand-graphite);
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    letter-spacing: -0.035em;
+    line-height: 1.2;
+  }
+
+  .privacy-document :global(h2) {
+    margin: 3.5rem 0 1.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--divider);
+    color: var(--brand-graphite);
+    font-size: clamp(1.5rem, 2.4vw, 1.875rem);
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+  }
+
+  .privacy-document :global(h3) {
+    margin: 2.25rem 0 1rem;
+    color: var(--brand-graphite);
+    font-size: clamp(1.125rem, 1.8vw, 1.25rem);
+    line-height: 1.5;
+  }
+
+  .privacy-document :global(p),
+  .privacy-document :global(li) {
+    font-size: 1rem;
+    line-height: 1.9;
+  }
+
+  .privacy-document :global(p) {
+    margin: 0 0 1rem;
+    white-space: pre-line;
+  }
+
+  .privacy-document :global(h1 + p) {
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+    line-height: 1.85;
+  }
+
+  .privacy-document :global(h1 + p strong) {
+    color: var(--text-primary);
+    font-weight: 650;
+  }
+
+  .privacy-document :global(ul) {
+    display: grid;
+    gap: 0.5rem;
+    margin: 1rem 0 1.5rem;
+    padding-left: 1.4rem;
+  }
+
+  .privacy-document :global(a) {
+    overflow-wrap: anywhere;
+    font-weight: 600;
+  }
+
+  @media (max-width: 47.999rem) {
+    .privacy-page {
+      padding-block: 1.25rem 4rem;
+    }
+
+    .privacy-breadcrumb {
+      margin-bottom: 2.75rem;
+    }
+
+    .privacy-document :global(h2) {
+      margin-top: 2.75rem;
+      padding-top: 1.75rem;
+    }
+
+    .privacy-document :global(h3) {
+      margin-top: 2rem;
+    }
+  }
+</style>
