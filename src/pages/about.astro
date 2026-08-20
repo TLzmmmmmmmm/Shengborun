@@ -10,52 +10,9 @@ import {
 import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const certificates = [
-  {
-    src: '/images/about/certificates/motorola-authorization-2026.jpg',
-    alt: '摩托罗拉解决方案2026白金授权证书',
-    organization: '摩托罗拉系统（中国）有限公司',
-    label: '白金授权证书',
-    width: 1144,
-    height: 814,
-  },
-  {
-    src: '/images/about/certificates/hytera-authorization-2026.jpg',
-    alt: '海能达通信股份有限公司2026授权证书',
-    organization: '海能达通信股份有限公司',
-    label: '授权证书',
-    width: 577,
-    height: 800,
-  },
-  {
-    src: '/images/about/certificates/huawei-authorization-2026.jpg',
-    alt: '华为技术有限公司2026金牌经销商认证证书',
-    organization: '华为技术有限公司',
-    label: '金牌经销商认证证书',
-    width: 565,
-    height: 800,
-  },
-  {
-    src: '/images/about/certificates/h3c-authorization-2026.jpg',
-    alt: '新华三集团2026金牌代理商认证证书',
-    organization: '新华三集团',
-    label: '金牌代理商认证证书',
-    width: 591,
-    height: 836,
-  },
-  {
-    src: '/images/about/certificates/codan-authorization-2026.jpg',
-    alt: 'Codan Radio Communications 2026独家经销授权证书',
-    organization: 'Codan Radio Communications',
-    label: '独家经销授权证书',
-    width: 448,
-    height: 629,
-  },
-] as const;
-
 const contactItems = [
   { icon: Building2, label: '公司名称', value: '北京盛博润通信设备有限公司', href: undefined, external: false },
-  { icon: Smartphone, label: '值班电话', value: '13911733859（微信）', href: 'tel:+8613911733859', external: false },
+  { icon: Smartphone, label: '值班电话', value: '13911733859', href: 'tel:+8613911733859', external: false },
   { icon: Mail, label: '电子邮箱', value: 'lsk777@sina.com', href: 'mailto:lsk777@sina.com', external: false },
   { icon: MapPin, label: '公司地址', value: '北京市朝阳区红军营东路8号', href: undefined, external: false },
 ] as const;
@@ -89,28 +46,10 @@ const contactItems = [
     <div class="about-section__inner">
       <h2 id="company-heading">公司简介</h2>
       <div class="company-copy">
-        <p>北京盛博润通信设备有限公司成立于2011年，公司立足于北京，通过多年来的不断积累，逐步成长为拥有自主品牌的对讲机、通信周边相关设备的厂家，服务于客户的通信相关领域需求。</p>
-        <p>目前公司拥有“润信达”和“雷曼克斯”两个自主品牌，主要研发生产无线对讲机、宽带自组网、及其相关周边产品。在全国各地拥有上百家合作代理商，产品经过市场检验质量过硬。</p>
-        <p>我公司还代理摩托罗拉、建伍、海能达等公司的无线对讲产品，以及柯顿、海格、烽火、鹤壁天海的第三、第四代国产短波电台，同时也代理华为、新华三、浪潮的ICT相关产品；通过我公司的团队合作系统集成方式满足客户的实际需求。</p>
+        <p>北京盛博润通信设备有限公司成立于2011年，公司立足于北京，专注于政府和企事业单位的通信行业需求，提供从设计、工程实施、网络优化、日常运维、通信保障等一站式服务。</p>
+        <p>公司汇聚通信行业的专业人才，聚焦国内外行业先进技术和创新理念，主要研发生产无线对讲机、宽带自组网、及其相关周边产品。</p>
+        <p>除经营自主研发的产品外，我们同国内外主要通信行业厂家建立密切联系，凝聚了一批经验丰富、技术过硬的技术支持团队和工程实施团队，为客户提供丰富的系统集成服务，快速响应客户的各类需求，为客户的网络保驾护航。</p>
         <p>我公司积极响应客户的需求，提供满足客户需求的完善解决方案和相关产品，秉承弱水三千只取一瓢饮的经营理念，脚踏实地回报公司员工、股东和社会。</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="about-section about-section--muted site-container" id="qualifications" aria-labelledby="qualifications-heading">
-    <div class="about-section__inner">
-      <h2 id="qualifications-heading">诚信与资质</h2>
-      <p class="section-intro">我们重视长期合作与规范经营，并与多家通信及 ICT 厂商保持合作关系。以下为部分 2026 年授权及资质文件。</p>
-      <div class="certificate-grid">
-        {certificates.map((certificate) => (
-          <a class="certificate-card" href={certificate.src} target="_blank" rel="noreferrer" aria-label={`查看${certificate.alt}原图`}>
-            <span class="certificate-card__image">
-              <img src={certificate.src} alt={certificate.alt} width={certificate.width} height={certificate.height} loading="lazy" decoding="async" />
-            </span>
-            <span class="certificate-card__organization">{certificate.organization}</span>
-            <span class="certificate-card__label">{certificate.label}</span>
-          </a>
-        ))}
       </div>
     </div>
   </section>
@@ -187,7 +126,7 @@ const contactItems = [
   }
 
   .about-section {
-    padding-block: clamp(4rem, 8vw, 7rem);
+    padding-block: clamp(2.5rem, 4vw, 4rem);
     scroll-margin-top: 6rem;
   }
 
@@ -296,10 +235,6 @@ const contactItems = [
     margin-top: 0.5rem;
     color: var(--text-secondary);
     font-size: 0.9375rem;
-  }
-
-  #contact {
-    padding-block: clamp(3rem, 6vw, 5rem);
   }
 
   .contact-grid {
