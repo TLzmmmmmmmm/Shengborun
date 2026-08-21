@@ -50,6 +50,10 @@ Nginx 始终读取：
 
 ### 2.1 Build
 
+```powershell
+$env:Path = "C:\Users\Lenovo\.cache\codex-runtimes\codex-primary-runtime\dependencies\bin\fallback;$env:Path"
+```
+
 在本地项目根目录：
 
 ```powershell
