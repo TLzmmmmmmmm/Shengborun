@@ -1,6 +1,6 @@
 ---
 layout: ../layouts/LegalLayout.astro
-title: 法律声明
+title: 法律声明｜北京盛博润通信设备有限公司
 description: 北京盛博润通信设备有限公司网站法律声明。
 ---
 
