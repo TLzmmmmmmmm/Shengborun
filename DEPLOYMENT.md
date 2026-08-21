@@ -78,7 +78,7 @@ git rev-parse HEAD
 登录服务器：
 
 ```powershell
-ssh shengborun-prod
+ssh shengborun-lzm
 ```
 
 清空上一轮 staging：
@@ -96,7 +96,7 @@ rm -rf /var/www/shengborun-next/*
 在本地 Windows PowerShell：
 
 ```powershell
-scp -r .\dist\* shengborun-prod:/var/www/shengborun-next/
+scp -r .\dist\* shengborun-lzm:/var/www/shengborun-next/
 ```
 
 上传后检查：
