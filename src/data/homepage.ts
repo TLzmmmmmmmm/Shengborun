@@ -132,36 +132,3 @@ export const reasons: readonly HomepageIconItem[] = [
     icon: 'heart-handshake',
   },
 ];
-
-export const partners: readonly HomepagePartner[] = [
-  {
-    name: '摩托罗拉系统',
-    image: '/images/home/partners/motorola.png',
-    imageAlt: 'Motorola Solutions 标志',
-    imageClass: 'partner-motorola',
-  },
-  {
-    name: '海能达',
-    image: '/images/home/partners/hytera.png',
-    imageAlt: 'Hytera 海能达标志',
-    imageClass: 'partner-hytera',
-  },
-  {
-    name: '华为',
-    image: '/images/home/partners/huawei.png',
-    imageAlt: 'Huawei 华为标志',
-    imageClass: 'partner-huawei',
-  },
-  {
-    name: '新华三集团',
-    image: '/images/home/partners/h3c.png',
-    imageAlt: 'H3C 新华三集团标志',
-    imageClass: 'partner-h3c',
-  },
-  {
-    name: '柯顿通信',
-    image: '/images/home/partners/codan.png',
-    imageAlt: 'Codan Radio Communications 标志',
-    imageClass: 'partner-codan',
-  },
-];
