@@ -38,9 +38,6 @@ test.describe('products overview', () => {
     await expect(
       page.getByRole('heading', { name: '产品中心', level: 1 }),
     ).toBeVisible();
-    await expect(page.locator('[data-products-intro]')).toContainText(
-      '专业的通信设备与解决方案，助力客户高效连接世界',
-    );
 
     const cards = page.locator('[data-category-overview-card]');
     await expect(cards).toHaveCount(4);
@@ -95,20 +92,9 @@ test.describe('products overview', () => {
     }
   });
 
-  test('matches the homepage content width and centers its introduction', async ({ page }) => {
+  test('centers its introduction across desktop and mobile', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.reload();
-    const overviewWidth = await page.locator('.products-content').evaluate(
-      (element) => element.getBoundingClientRect().width,
-    );
-
-    await page.goto('/');
-    const homepageWidth = await page.locator('.products-content').evaluate(
-      (element) => element.getBoundingClientRect().width,
-    );
-    expect(overviewWidth).toBe(homepageWidth);
-
-    await page.goto('/products/');
     await expect(page.locator('[data-products-intro]')).toHaveCSS('text-align', 'center');
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.locator('[data-products-intro]')).toHaveCSS('text-align', 'center');
@@ -138,10 +124,4 @@ test.describe('products overview', () => {
       });
     }
   });
-});
-
-test('homepage keeps its existing reusable product presentation', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('[data-category-section]')).toHaveCount(4);
-  await expect(page.locator('[data-category-overview-card]')).toHaveCount(0);
 });

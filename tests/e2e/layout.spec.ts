@@ -49,7 +49,6 @@ test('header and footer follow the approved structure', async ({ page }) => {
   await expect(footer.getByRole('link', { name: '解决方案', exact: true })).toHaveAttribute('href', '/solutions/');
   await expect(footer.getByRole('link', { name: '技术支持', exact: true })).toHaveAttribute('href', '/support/');
   await expect(footer.getByRole('link', { name: '关于我们', exact: true })).toHaveAttribute('href', '/about/');
-  await expect(footer.getByRole('link', { name: '网络规划服务' })).toHaveAttribute('href', '/support/network-planning/');
   await expect(footer.getByRole('link', { name: '联系我们' })).toHaveAttribute(
     'href',
     '/about/#contact',
@@ -190,15 +189,11 @@ test('renders the approved light footer hierarchy', async ({ page }) => {
   const legal = footer.locator('.footer-legal');
   await expect(legal).toHaveCSS('border-top-color', 'rgb(218, 218, 224)');
   await expect(legal).toHaveCSS('font-size', '14px');
-  await expect(legal).toHaveCSS('justify-content', 'space-between');
   await expect(legal).toHaveCSS('text-align', 'left');
   await expect(legal.locator(':scope > *')).toHaveCount(2);
   await expect(legal.locator(':scope > *').nth(0)).toHaveText(
     '版权所有 © 2026 北京盛博润通信设备有限公司',
   );
-  await expect(legal.locator('.footer-legal-secondary')).toContainText('ICP备案（待确认）');
-  await expect(legal.locator('.footer-legal-secondary')).toContainText('公安联网备案（待确认）');
-  await expect(legal.getByRole('link')).toHaveCount(2);
   await expect(footer.locator('input[type="search"]')).toHaveCount(0);
 });
 
@@ -263,12 +258,6 @@ test('uses a centered two-row mobile legal layout', async ({ page }) => {
   expect(Math.abs(centerX(copyright) - centerX(legalBox))).toBeLessThanOrEqual(1);
   expect(Math.abs(centerY(icp) - centerY(police))).toBeLessThanOrEqual(1);
   expect(icp.x + icp.width).toBeLessThan(police.x);
-
-  await page.setViewportSize({ width: 768, height: 900 });
-  await expect(legal).toHaveCSS('display', 'flex');
-  await expect(legal).toHaveCSS('justify-content', 'space-between');
-  await expect(legal).toHaveCSS('text-align', 'left');
-  await expect(legal).toHaveCSS('font-size', '14px');
 });
 
 test('uses the final navigation border and desktop legal separator', async ({

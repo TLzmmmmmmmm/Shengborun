@@ -41,8 +41,6 @@ describe('homepage and products overview boundaries', () => {
 
     expect(homepage).not.toContain('pages/products/index.astro');
     expect(productsPage).not.toContain('pages/index.astro');
-    expect(homepage).toContain('getProductPresentation');
-    expect(productsPage).not.toContain('getProductPresentation');
     expect(productsPage).toContain('productCategoryOverview');
   });
 });

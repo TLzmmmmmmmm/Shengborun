@@ -1,6 +1,6 @@
 ---
 layout: ../layouts/PrivacyLayout.astro
-title: 隐私政策｜北京盛博润通信设备有限公司
+title: 隐私政策
 description: 了解北京盛博润通信设备有限公司网站如何处理相关信息、保护个人信息以及您依法享有的权利。
 ---
 
