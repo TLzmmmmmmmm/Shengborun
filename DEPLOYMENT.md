@@ -99,7 +99,7 @@ rm -rf /var/www/shengborun-next/*
 scp -r .\dist\* shengborun-lzm:/var/www/shengborun-next/
 ```
 
-上传后检查：
+上传后回到远程服务器检查：
 
 ```bash
 ls -lah /var/www/shengborun-next
@@ -252,7 +252,7 @@ sudo systemctl reload nginx
 SSH：
 
 ```powershell
-ssh shengborun-prod
+ssh shengborun-lzm
 ```
 
 Nginx：
