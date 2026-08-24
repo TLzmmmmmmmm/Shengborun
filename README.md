@@ -103,7 +103,6 @@ Requirements:
 
 - Node.js version supported by Astro 6
 - pnpm
-- Google Chrome for the configured Playwright project
 
 ```bash
 git clone https://github.com/TLzmmmmmmmm/Shengborun.git
