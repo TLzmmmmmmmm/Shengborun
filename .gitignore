@@ -8,6 +8,10 @@ coverage/
 playwright-report/
 test-results/
 
+# Local project and development-tool files
+.superpowers/
+/DEPLOYMENT.md
+
 # Local environment files
 .env
 .env.*

@@ -1,5 +1,7 @@
 # Shengborun Communications Website
 
+[![CI](https://github.com/TLzmmmmmmmm/Shengborun/actions/workflows/ci.yml/badge.svg)](https://github.com/TLzmmmmmmmm/Shengborun/actions/workflows/ci.yml)
+
 A production corporate website built with **Astro** and **TypeScript**, featuring a content-driven catalog of **49 products across 4 categories** and **6 industry solution pages**.
 
 I independently designed and developed the project end to end, covering information architecture, responsive UI, content modeling, SEO, validation, testing, and production deployment.
