@@ -1,5 +1,6 @@
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import type { Loader } from 'astro/loaders';
 
@@ -19,19 +20,36 @@ async function findJsonFiles(directory: string): Promise<string[]> {
 export function jsonProductLoader({ base }: { base: string }): Loader {
   return {
     name: 'shengborun-json-products',
-    async load({ store, parseData, generateDigest }) {
+
+    async load({ config, store, parseData, generateDigest }) {
       store.clear();
 
-      for (const filePath of await findJsonFiles(path.resolve(base))) {
-        const source = await readFile(filePath, 'utf8');
+      const siteRoot = fileURLToPath(config.root);
+      const basePath = path.resolve(siteRoot, base);
+
+      for (const absoluteFilePath of await findJsonFiles(basePath)) {
+        const source = await readFile(absoluteFilePath, 'utf8');
         if (source.trim().length === 0) continue;
 
         const raw = JSON.parse(source) as Record<string, unknown>;
+
         if (typeof raw.id !== 'string' || raw.id.length === 0) {
-          throw new Error(`Product JSON is missing a valid id: ${filePath}`);
+          throw new Error(
+            `Product JSON is missing a valid id: ${absoluteFilePath}`,
+          );
         }
 
-        const data = await parseData({ id: raw.id, data: raw, filePath });
+        const filePath = path
+          .relative(siteRoot, absoluteFilePath)
+          .split(path.sep)
+          .join('/');
+
+        const data = await parseData({
+          id: raw.id,
+          data: raw,
+          filePath,
+        });
+
         store.set({
           id: raw.id,
           data,
