@@ -20,7 +20,7 @@ features:
 bodyImages: []
 sortOrder: 6
 published: true
-seoTitle: 智慧应急解决方案 | 盛博润
+seoTitle: 智慧应急解决方案
 seoDescription: 基于技术、数据与业务三大中台，为应急管理提供态势感知、地理信息、多灾种辅助决策和智能视频分析能力。
 seoPath: /solutions/smart-emergency/
 seoImage: /images/solutions/smart-emergency.png

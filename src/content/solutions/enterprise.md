@@ -20,7 +20,7 @@ features:
 bodyImages: []
 sortOrder: 2
 published: true
-seoTitle: 企事业单位行业无线对讲解决方案 | 盛博润
+seoTitle: 企事业单位行业无线对讲解决方案
 seoDescription: 面向大型企事业单位的数字常规通信、跨部门互联、通话分组与统一调度解决方案。
 seoPath: /solutions/enterprise/
 seoImage: /images/solutions/enterprise.png

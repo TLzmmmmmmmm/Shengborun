@@ -20,7 +20,7 @@ features:
 bodyImages: []
 sortOrder: 4
 published: true
-seoTitle: 人防行业宽带自组网解决方案 | 盛博润
+seoTitle: 人防行业宽带自组网解决方案
 seoDescription: 面向人防应急现场的通信指挥车、人员终端、多跳中继与高清视频回传解决方案。
 seoPath: /solutions/civil-defense/
 seoImage: /images/solutions/civil-defense.jpg

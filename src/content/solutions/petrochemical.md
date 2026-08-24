@@ -20,7 +20,7 @@ features:
 bodyImages: []
 sortOrder: 3
 published: true
-seoTitle: 石油石化行业无线对讲解决方案 | 盛博润
+seoTitle: 石油石化行业无线对讲解决方案
 seoDescription: 面向石油石化厂区的数字集群覆盖、防爆终端、统一调度、录音网管与电话互联解决方案。
 seoPath: /solutions/petrochemical/
 seoImage: /images/solutions/petrochemical.jpg

@@ -20,7 +20,7 @@ features:
 bodyImages: []
 sortOrder: 5
 published: true
-seoTitle: 宽带自组网应急管理行业解决方案 | 盛博润
+seoTitle: 宽带自组网应急管理行业解决方案
 seoDescription: 通过单兵、室外布控和无人机终端快速建立应急宽带自组网，保障复杂灾区现场通信。
 seoPath: /solutions/emergency-mesh/
 seoImage: /images/solutions/emergency-mesh.jpg

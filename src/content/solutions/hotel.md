@@ -20,7 +20,7 @@ features:
 bodyImages: []
 sortOrder: 1
 published: true
-seoTitle: 酒店行业无线对讲解决方案 | 盛博润
+seoTitle: 酒店行业无线对讲解决方案
 seoDescription: 面向酒店跨部门协作的数字无线对讲、紧急呼叫、录音追溯与远程调度解决方案。
 seoPath: /solutions/hotel/
 seoImage: /images/solutions/hotel.avif
