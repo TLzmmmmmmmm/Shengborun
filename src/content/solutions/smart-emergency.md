@@ -2,7 +2,7 @@
 name: 智慧应急解决方案
 slug: smart-emergency
 summary: 依托云数据中心、通信网络与全域感知体系，构建技术、数据与业务三大中台，为应急管理提供态势感知、辅助决策与协同指挥能力
-coverImage: /images/solutions/smart-emergency.png
+coverImage: /images/solutions/smart-emergency.webp
 coverImageAlt: 智慧城市数字化应急管理场景
 coverImageWidth: 435
 coverImageHeight: 238
@@ -23,7 +23,7 @@ published: true
 seoTitle: 智慧应急解决方案
 seoDescription: 基于技术、数据与业务三大中台，为应急管理提供态势感知、地理信息、多灾种辅助决策和智能视频分析能力。
 seoPath: /solutions/smart-emergency/
-seoImage: /images/solutions/smart-emergency.png
+seoImage: /images/solutions/smart-emergency.webp
 ---
 
 ## 建设背景
@@ -71,7 +71,7 @@ seoImage: /images/solutions/smart-emergency.png
 
 智慧应急解决方案依托云数据中心、通信网络和全域感知体系，构建技术中台、数据中台与业务中台，连接前端感知设备、数据资源和应急业务应用，为风险监测、分析研判、资源调度和协同指挥提供统一的数字化能力支撑。
 
-![智慧应急三大数字中台架构](/images/solutions/smart-emergency/smart-digital-platforms.png)
+![智慧应急三大数字中台架构](/images/solutions/smart-emergency/smart-digital-platforms.webp)
 
 ### 1. 业务中台：地理信息服务
 

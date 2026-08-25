@@ -2,7 +2,7 @@
 name: 宽带自组网应急管理行业解决方案
 slug: emergency-mesh
 summary: 救援人员可携带单兵、室外布控和无人机终端快速搭建宽带应急专网，在基础设施受损和复杂遮挡环境下持续传输现场图像、语音与数据
-coverImage: /images/solutions/emergency-mesh.jpg
+coverImage: /images/solutions/emergency-mesh.webp
 coverImageAlt: 灾区宽带自组网应急通信节点部署示意
 coverImageWidth: 1083
 coverImageHeight: 721
@@ -23,7 +23,7 @@ published: true
 seoTitle: 宽带自组网应急管理行业解决方案
 seoDescription: 通过单兵、室外布控和无人机终端快速建立应急宽带自组网，保障复杂灾区现场通信。
 seoPath: /solutions/emergency-mesh/
-seoImage: /images/solutions/emergency-mesh.jpg
+seoImage: /images/solutions/emergency-mesh.webp
 ---
 
 ## 应急救援解决方案

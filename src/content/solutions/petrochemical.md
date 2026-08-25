@@ -2,7 +2,7 @@
 name: 石油石化行业无线对讲解决方案
 slug: petrochemical
 summary: 针对石油石化厂区的信号盲区、防爆等级和统一调度需求，构建具备动态信道分配、室内覆盖、网管录音及电话互联能力的数字集群系统
-coverImage: /images/solutions/petrochemical.jpg
+coverImage: /images/solutions/petrochemical.webp
 coverImageAlt: 石油石化生产区抽油设备
 coverImageWidth: 800
 coverImageHeight: 533
@@ -23,7 +23,7 @@ published: true
 seoTitle: 石油石化行业无线对讲解决方案
 seoDescription: 面向石油石化厂区的数字集群覆盖、防爆终端、统一调度、录音网管与电话互联解决方案。
 seoPath: /solutions/petrochemical/
-seoImage: /images/solutions/petrochemical.jpg
+seoImage: /images/solutions/petrochemical.webp
 ---
 
 ## 行业背景

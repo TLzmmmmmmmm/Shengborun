@@ -2,7 +2,7 @@
 name: 人防行业宽带自组网解决方案
 slug: civil-defense
 summary: 以人防通信指挥车为核心，连接机动车与现场处置人员，构建无中心、多跳中继的动态宽带网络，实时回传高清视频、语音和定位数据
-coverImage: /images/solutions/civil-defense.jpg
+coverImage: /images/solutions/civil-defense.webp
 coverImageAlt: 人防通信车辆与无人机协同作业
 coverImageWidth: 2705
 coverImageHeight: 1803
@@ -23,7 +23,7 @@ published: true
 seoTitle: 人防行业宽带自组网解决方案
 seoDescription: 面向人防应急现场的通信指挥车、人员终端、多跳中继与高清视频回传解决方案。
 seoPath: /solutions/civil-defense/
-seoImage: /images/solutions/civil-defense.jpg
+seoImage: /images/solutions/civil-defense.webp
 ---
 
 ## 方案概述
@@ -32,4 +32,4 @@ seoImage: /images/solutions/civil-defense.jpg
 
 人防系统通信指挥车搭载无线宽带传输设备，与人防机动车、现场处置人员互联互通，形成无中心、多跳中继的动态无线通信网络。人防机动车深入应急事故现场，通过现场处置人员，将应急事故现场高清视频、数字语音、人员定位等数据实时回传给后方各级指挥员，指挥员根据现场情况快速作出准确判断，从而提升整个人防系统在应对突发事故或应急演练下的通信指挥能力，以及应急事态下前方事发现场、机动指挥现场、后方指挥中心之间的快速连通、互联互通能力。
 
-![人防行业无线宽带自组网示意图](/images/solutions/civil-defense/civil-defense.png)
+![人防行业无线宽带自组网示意图](/images/solutions/civil-defense/civil-defense.webp)

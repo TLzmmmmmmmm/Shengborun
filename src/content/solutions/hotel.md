@@ -2,7 +2,7 @@
 name: 酒店行业无线对讲解决方案
 slug: hotel
 summary: 通过控制中心、IP 网络和数字基站统一管理酒店对讲终端，为不同部门提供分组呼叫、紧急呼叫、录音追溯与远程调度能力
-coverImage: /images/solutions/hotel.avif
+coverImage: /images/solutions/hotel.webp
 coverImageAlt: 酒店客房与公共区域
 coverImageWidth: 4000
 coverImageHeight: 2667
@@ -23,14 +23,14 @@ published: true
 seoTitle: 酒店行业无线对讲解决方案
 seoDescription: 面向酒店跨部门协作的数字无线对讲、紧急呼叫、录音追溯与远程调度解决方案。
 seoPath: /solutions/hotel/
-seoImage: /images/solutions/hotel.avif
+seoImage: /images/solutions/hotel.webp
 ---
 
 ## 方案概述
 
 酒店建设一个控制中心，通过 IP 网络与数字基站互联，对基站设备和系统内的终端用户进行集中管理和监控。
 
-![酒店无线对讲系统组网示意图](/images/solutions/hotel/system-overview.jpg)
+![酒店无线对讲系统组网示意图](/images/solutions/hotel/system-overview.webp)
 
 ## 系统功能
 

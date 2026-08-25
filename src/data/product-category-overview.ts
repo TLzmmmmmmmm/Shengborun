@@ -12,22 +12,22 @@ export interface ProductCategoryOverviewItem {
 const overviewVisuals = [
   {
     id: 'two-way-radio',
-    image: '/images/products/category-cards/two-way-radio.png',
+    image: '/images/products/category-cards/two-way-radio.webp',
     imageAlt: '专业对讲机通信设备',
   },
   {
     id: 'shortwave-radio',
-    image: '/images/products/category-cards/shortwave-radio.png',
+    image: '/images/products/category-cards/shortwave-radio.webp',
     imageAlt: '远距离短波通信设备与应用场景',
   },
   {
     id: 'mesh-network',
-    image: '/images/products/category-cards/mesh-network.png',
+    image: '/images/products/category-cards/mesh-network.webp',
     imageAlt: '多节点无线自组网通信设备',
   },
   {
     id: 'ict-integration',
-    image: '/images/products/category-cards/ict-integration.png',
+    image: '/images/products/category-cards/ict-integration.webp',
     imageAlt: '由多种网络与计算设备组成的 ICT 集成系统',
   },
 ] as const;
