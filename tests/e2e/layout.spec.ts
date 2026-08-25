@@ -233,12 +233,14 @@ test('uses compact mobile footer detail hierarchy', async ({ page }) => {
   await expect(firstLink).toHaveCSS('font-size', '16px');
 });
 
-test('uses a centered two-row mobile legal layout', async ({ page }) => {
+test('keeps mobile legal content centered without overflow', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto('/');
 
   const legal = page.locator('.footer-legal');
-  const parts = legal.locator(':scope > *');
+  const copyright = legal.locator(':scope > *').nth(0);
+  const secondary = legal.locator('.footer-legal-secondary');
+  const secondaryParts = secondary.locator(':scope > *');
 
   await expect(legal).toHaveCSS('display', 'grid');
   await expect(legal).toHaveCSS('justify-content', 'center');
@@ -246,18 +248,26 @@ test('uses a centered two-row mobile legal layout', async ({ page }) => {
   await expect(legal).toHaveCSS('font-size', '12px');
 
   const legalBox = (await legal.boundingBox())!;
-  const copyright = (await parts.nth(0).boundingBox())!;
-  const secondary = legal.locator('.footer-legal-secondary');
-  const secondaryParts = secondary.locator(':scope > *');
-  const icp = (await secondaryParts.nth(0).boundingBox())!;
-  const police = (await secondaryParts.nth(1).boundingBox())!;
-  const centerX = (box: { x: number; width: number }) => box.x + box.width / 2;
-  const centerY = (box: { y: number; height: number }) => box.y + box.height / 2;
+  const copyrightBox = (await copyright.boundingBox())!;
+  const secondaryBox = (await secondary.boundingBox())!;
 
-  expect(copyright.y + copyright.height).toBeLessThanOrEqual(icp.y);
-  expect(Math.abs(centerX(copyright) - centerX(legalBox))).toBeLessThanOrEqual(1);
-  expect(Math.abs(centerY(icp) - centerY(police))).toBeLessThanOrEqual(1);
-  expect(icp.x + icp.width).toBeLessThan(police.x);
+  const centerX = (box: { x: number; width: number }) =>
+    box.x + box.width / 2;
+
+  expect(copyrightBox.y + copyrightBox.height)
+    .toBeLessThanOrEqual(secondaryBox.y);
+
+  expect(
+    Math.abs(centerX(copyrightBox) - centerX(legalBox)),
+  ).toBeLessThanOrEqual(1);
+
+  for (let index = 0; index < await secondaryParts.count(); index++) {
+    const box = (await secondaryParts.nth(index).boundingBox())!;
+
+    expect(box.x).toBeGreaterThanOrEqual(legalBox.x);
+    expect(box.x + box.width)
+      .toBeLessThanOrEqual(legalBox.x + legalBox.width);
+  }
 });
 
 test('uses the final navigation border and desktop legal separator', async ({

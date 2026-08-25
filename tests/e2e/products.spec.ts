@@ -57,7 +57,7 @@ test.describe('products overview', () => {
       await expect(card).toContainText('查看产品');
       await expect(card.getByRole('img')).toHaveAttribute(
         'src',
-        `/images/products/category-cards/${category.id}.png`,
+        `/images/products/category-cards/${category.id}.webp`,
       );
     }
 

@@ -44,7 +44,7 @@ test.describe('product category pages', () => {
     const banner = page.locator('[data-category-banner]');
     await expect(banner).toHaveAttribute(
       'src',
-      '/images/products/two-way-radio-banner.png',
+      '/images/products/two-way-radio-banner.webp',
     );
     await expect(page.getByRole('heading', { name: '产品系列' })).toHaveCount(0);
     await expect(page.locator('[data-product-series-description]')).toHaveCount(0);
