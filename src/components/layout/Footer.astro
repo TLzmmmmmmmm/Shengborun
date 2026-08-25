@@ -84,7 +84,14 @@ const footerGroups: FooterGroup[] = [
         >
           京ICP备2021002788号-2
         </a>
-        {/* 公安联网备案（待确认）*/}
+
+        <a href="https://beian.mps.gov.cn/#/query/webSearch?code=11010502062570" rel="noreferrer" target="_blank" class="public-security-record">
+          <img
+            src="/beian.png"
+            alt=""
+          />
+          <span>京公网安备 11010102000001号</span>
+        </a >
         <a href="/legal/">法律声明</a>
         <a href="/privacy/">隐私政策</a>
       </div>
@@ -159,6 +166,25 @@ const footerGroups: FooterGroup[] = [
     gap: 1.75rem;
   }
   .footer-legal a { color: var(--text-secondary); text-decoration: none; }
+
+  .public-security-record {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .public-security-record img {
+    display: block;
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+  }
+
+  .public-security-record:hover {
+    text-decoration: underline;
+  }
   @media (max-width: 47.999rem) {
     .footer-navigation { display: block; padding-block: 1rem 0; }
     .footer-group { border-bottom: 1px solid var(--footer-divider); }
