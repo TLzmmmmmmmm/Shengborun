@@ -6,7 +6,7 @@ A production corporate website built with **Astro** and **TypeScript**, featurin
 
 I independently designed and developed the project end to end, covering information architecture, responsive UI, content modeling, SEO, validation, testing, and production deployment.
 
-Visit Shengborun live website: [https://www.shengborun.com/](https://www.shengborun.com/)
+Live Website: [https://www.shengborun.com/](https://www.shengborun.com/)
 
 [中文说明](./README.zh-CN.md)
 

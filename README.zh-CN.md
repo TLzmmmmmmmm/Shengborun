@@ -4,7 +4,7 @@
 
 本项目由我独立完成从设计到开发的全流程工作，涵盖信息架构、响应式 UI、内容建模、SEO、内容校验、自动化测试和生产部署。
 
-访问盛博润线上网站：[https://www.shengborun.com/](https://www.shengborun.com/) 
+盛博润官网：[https://www.shengborun.com/](https://www.shengborun.com/) 
 
 [English README](./README.md)
 
