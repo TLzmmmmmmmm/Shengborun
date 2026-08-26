@@ -17,6 +17,7 @@ const { frontmatter } = Astro.props;
   description={frontmatter.description}
   canonicalPath="/privacy/"
   breadcrumbs={[{ label: frontmatter.title, href: '/privacy/' }]}
+  showChatWidget={false}
 >
   <div class="privacy-page site-container">
     <div class="privacy-breadcrumb">

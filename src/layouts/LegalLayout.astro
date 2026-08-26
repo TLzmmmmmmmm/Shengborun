@@ -17,6 +17,7 @@ const { frontmatter } = Astro.props;
   description={frontmatter.description}
   canonicalPath="/legal/"
   breadcrumbs={[{ label: frontmatter.title, href: '/legal/' }]}
+  showChatWidget={false}
 >
   <div class="legal-page site-container">
     <div class="legal-breadcrumb">

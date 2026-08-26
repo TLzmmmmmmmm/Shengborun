@@ -1,0 +1,86 @@
+---
+import { Bot, MessageCircle, Send, X } from '@lucide/astro';
+---
+
+<section class="chat-widget" data-chat-widget>
+  <button
+    class="chat-launcher"
+    type="button"
+    aria-label="打开 AI 客服"
+    aria-controls="ai-customer-support-panel"
+    aria-expanded="false"
+    data-chat-launcher
+  >
+    <MessageCircle aria-hidden="true" />
+  </button>
+
+  <div
+    id="ai-customer-support-panel"
+    class="chat-panel"
+    role="dialog"
+    aria-labelledby="ai-customer-support-title"
+    data-chat-panel
+    hidden
+  >
+    <header class="chat-header">
+      <span class="chat-identity" aria-hidden="true"><Bot /></span>
+      <h2 id="ai-customer-support-title">AI 客服</h2>
+      <button type="button" aria-label="关闭 AI 客服" data-chat-close>
+        <X aria-hidden="true" />
+      </button>
+    </header>
+
+    <ol class="chat-messages" aria-label="对话消息" data-chat-messages>
+      <li class="chat-message chat-message--assistant">您好，请问有什么可以帮助您？</li>
+    </ol>
+
+    <form class="chat-composer" data-chat-form>
+      <label class="visually-hidden" for="ai-customer-support-input">输入问题</label>
+      <textarea
+        id="ai-customer-support-input"
+        rows="1"
+        placeholder="输入您的问题..."
+        data-chat-input
+      ></textarea>
+      <button type="submit" aria-label="发送问题" data-chat-send disabled>
+        <Send aria-hidden="true" />
+      </button>
+    </form>
+  </div>
+</section>
+
+<style>
+  .chat-widget {
+    position: relative;
+    z-index: 300;
+  }
+
+  .chat-launcher {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    display: grid;
+    width: 3.25rem;
+    height: 3.25rem;
+    place-items: center;
+    border: 0;
+    border-radius: 999px;
+    background: var(--brand-teal-dark);
+    color: var(--surface);
+    cursor: pointer;
+  }
+
+  .chat-panel[hidden] {
+    display: none;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>
