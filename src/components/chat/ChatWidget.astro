@@ -355,7 +355,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     scroll-behavior: smooth;
   }
 
-  .chat-message,
+  .chat-messages :global(.chat-message),
   .chat-status,
   .chat-error {
     max-width: 84%;
@@ -367,7 +367,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     white-space: pre-wrap;
   }
 
-  .chat-message--assistant,
+  .chat-messages :global(.chat-message--assistant),
   .chat-status,
   .chat-error {
     align-self: flex-start;
@@ -377,7 +377,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     color: var(--text-primary);
   }
 
-  .chat-message--user {
+  .chat-messages :global(.chat-message--user) {
     align-self: flex-end;
     border-bottom-right-radius: 0.25rem;
     background: var(--brand-teal-soft);
@@ -481,7 +481,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
       padding: 1rem 0.875rem;
     }
 
-    .chat-message,
+    .chat-messages :global(.chat-message),
     .chat-status {
       max-width: 88%;
     }

@@ -88,6 +88,24 @@ test('sends with Enter and renders loading followed by the local answer', async 
   await expect(send).toBeDisabled();
 });
 
+test('styles dynamically appended messages as left and right bubbles', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: '打开 AI 客服' }).click();
+  const input = page.getByRole('textbox', { name: '输入问题' });
+  await input.fill('气泡样式');
+  await input.press('Enter');
+
+  const userMessage = page.locator('[data-chat-message="user"]');
+  const assistantMessage = page.locator('[data-chat-message="assistant"]').last();
+  await expect(userMessage).toHaveCSS('align-self', 'flex-end');
+  await expect(userMessage).toHaveCSS('background-color', 'rgb(229, 248, 247)');
+  await expect(assistantMessage).toHaveText(/\u524d\u7aef\u5f00\u53d1\u6f14\u793a\u56de\u590d/);
+  await expect(assistantMessage).toHaveCSS('align-self', 'flex-start');
+  await expect(assistantMessage).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+});
+
 test('uses Shift+Enter for a newline and rejects whitespace-only input', async ({
   page,
 }) => {
