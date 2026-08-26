@@ -49,6 +49,38 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   </div>
 </section>
 
+<script>
+  const root = document.querySelector<HTMLElement>('[data-chat-widget]');
+  const launcher = root?.querySelector<HTMLButtonElement>('[data-chat-launcher]');
+  const panel = root?.querySelector<HTMLElement>('[data-chat-panel]');
+  const closeButton = root?.querySelector<HTMLButtonElement>('[data-chat-close]');
+  const input = root?.querySelector<HTMLTextAreaElement>('[data-chat-input]');
+
+  let isOpen = false;
+
+  const setOpen = (open: boolean) => {
+    if (!launcher || !panel) return;
+
+    isOpen = open;
+    launcher.setAttribute('aria-expanded', String(open));
+    launcher.setAttribute('aria-label', open ? 'AI 客服已打开' : '打开 AI 客服');
+    panel.hidden = !open;
+
+    if (open) {
+      input?.focus();
+    } else {
+      launcher.focus();
+    }
+  };
+
+  launcher?.addEventListener('click', () => setOpen(true));
+  closeButton?.addEventListener('click', () => setOpen(false));
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && isOpen) setOpen(false);
+  });
+</script>
+
 <style>
   .chat-widget {
     position: relative;
