@@ -80,6 +80,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   const messageList = root?.querySelector<HTMLOListElement>('[data-chat-messages]');
   const loadingNode = root?.querySelector<HTMLElement>('[data-chat-loading]');
   const errorNode = root?.querySelector<HTMLElement>('[data-chat-error]');
+  const mobileMedia = window.matchMedia('(max-width: 47.999rem)');
 
   const messages: Message[] = [
     { role: 'assistant', content: '您好，请问有什么可以帮助您？' },
@@ -126,6 +127,12 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     scrollMessagesToEnd();
   };
 
+  const syncMobileState = () => {
+    const isMobileDialogOpen = isOpen && mobileMedia.matches;
+    document.body.toggleAttribute('data-chat-widget-open', isMobileDialogOpen);
+    panel?.toggleAttribute('aria-modal', isMobileDialogOpen);
+  };
+
   const setOpen = (open: boolean) => {
     if (!launcher || !panel) return;
 
@@ -133,6 +140,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     launcher.setAttribute('aria-expanded', String(open));
     launcher.setAttribute('aria-label', open ? 'AI 客服已打开' : '打开 AI 客服');
     panel.hidden = !open;
+    syncMobileState();
 
     if (open) {
       input?.focus();
@@ -185,7 +193,36 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   });
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && isOpen) setOpen(false);
+    if (!isOpen) return;
+
+    if (event.key === 'Escape') {
+      setOpen(false);
+      return;
+    }
+
+    if (event.key !== 'Tab' || !mobileMedia.matches || !panel) return;
+
+    const focusable = Array.from(
+      panel.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((element) => !element.hidden);
+    const first = focusable.at(0);
+    const last = focusable.at(-1);
+
+    if (!first || !last) return;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  mobileMedia.addEventListener('change', syncMobileState);
+  window.addEventListener('pagehide', () => {
+    document.body.removeAttribute('data-chat-widget-open');
   });
 
   syncComposer();
@@ -199,17 +236,210 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
 
   .chat-launcher {
     position: fixed;
-    right: 1.25rem;
-    bottom: 1.25rem;
+    right: max(1.25rem, env(safe-area-inset-right));
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
     display: grid;
     width: 3.25rem;
     height: 3.25rem;
     place-items: center;
-    border: 0;
+    border: 0.0625rem solid rgb(255 255 255 / 32%);
     border-radius: 999px;
     background: var(--brand-teal-dark);
     color: var(--surface);
+    box-shadow: 0 0.75rem 2rem rgb(0 68 67 / 24%);
     cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .chat-launcher:hover {
+    background: var(--brand-teal-hover);
+    box-shadow: 0 0.9rem 2.25rem rgb(0 68 67 / 28%);
+    transform: translateY(-0.125rem);
+  }
+
+  .chat-launcher :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .chat-panel {
+    position: fixed;
+    right: max(1.25rem, env(safe-area-inset-right));
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    display: flex;
+    width: min(25rem, calc(100vw - 2.5rem));
+    height: min(38.75rem, calc(100dvh - 2.5rem));
+    min-height: min(30rem, calc(100dvh - 2.5rem));
+    flex-direction: column;
+    overflow: hidden;
+    border: 0.0625rem solid var(--border);
+    border-radius: var(--radius-medium);
+    background: var(--surface);
+    box-shadow: 0 1.25rem 3.5rem rgb(32 43 51 / 22%);
+  }
+
+  .chat-header {
+    display: grid;
+    min-height: 4rem;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem 0.625rem 1rem;
+    background: var(--brand-teal-dark);
+    color: var(--surface);
+  }
+
+  .chat-header h2 {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.2;
+  }
+
+  .chat-identity {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 16%);
+  }
+
+  .chat-identity :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .chat-header button,
+  .chat-composer button {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .chat-header button {
+    background: transparent;
+    color: inherit;
+  }
+
+  .chat-header button:hover {
+    background: rgb(255 255 255 / 14%);
+  }
+
+  .chat-header button :global(svg),
+  .chat-composer button :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .chat-messages {
+    display: flex;
+    min-height: 0;
+    margin: 0;
+    padding: 1rem;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--surface-muted);
+    list-style: none;
+    scroll-behavior: smooth;
+  }
+
+  .chat-message,
+  .chat-status,
+  .chat-error {
+    max-width: 84%;
+    padding: 0.6875rem 0.8125rem;
+    border-radius: 0.875rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .chat-message--assistant,
+  .chat-status,
+  .chat-error {
+    align-self: flex-start;
+    border: 0.0625rem solid var(--divider);
+    border-bottom-left-radius: 0.25rem;
+    background: var(--surface);
+    color: var(--text-primary);
+  }
+
+  .chat-message--user {
+    align-self: flex-end;
+    border-bottom-right-radius: 0.25rem;
+    background: var(--brand-teal-soft);
+    color: var(--brand-graphite);
+  }
+
+  .chat-status {
+    color: var(--text-secondary);
+  }
+
+  .chat-error {
+    max-width: 100%;
+    border-color: #efc9c6;
+    background: #fff5f4;
+    color: #8b2f2a;
+  }
+
+  .chat-composer {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-end;
+    gap: 0.625rem;
+    padding: 0.75rem;
+    border-top: 0.0625rem solid var(--divider);
+    background: var(--surface);
+  }
+
+  .chat-composer textarea {
+    min-width: 0;
+    min-height: 2.75rem;
+    max-height: 8rem;
+    flex: 1 1 auto;
+    resize: vertical;
+    border: 0.0625rem solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--surface);
+    color: var(--text-primary);
+    line-height: 1.45;
+    padding: 0.625rem 0.75rem;
+  }
+
+  .chat-composer textarea::placeholder {
+    color: var(--text-secondary);
+  }
+
+  .chat-composer textarea:focus-visible {
+    border-color: var(--focus);
+  }
+
+  .chat-composer button {
+    background: var(--brand-teal-dark);
+    color: var(--surface);
+  }
+
+  .chat-composer button:hover:not(:disabled) {
+    background: var(--brand-teal-hover);
+  }
+
+  .chat-composer button:disabled {
+    background: var(--border);
+    color: var(--text-secondary);
+    cursor: not-allowed;
   }
 
   .chat-panel[hidden] {
@@ -224,5 +454,46 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     clip: rect(0 0 0 0);
     clip-path: inset(50%);
     white-space: nowrap;
+  }
+
+  :global(body[data-chat-widget-open]) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 47.999rem) {
+    .chat-launcher {
+      right: max(1rem, env(safe-area-inset-right));
+      bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+
+    .chat-panel {
+      top: max(0.5rem, env(safe-area-inset-top));
+      right: max(0.5rem, env(safe-area-inset-right));
+      bottom: max(0.5rem, env(safe-area-inset-bottom));
+      left: max(0.5rem, env(safe-area-inset-left));
+      width: auto;
+      height: auto;
+      min-height: 0;
+      border-radius: 0.875rem;
+    }
+
+    .chat-messages {
+      padding: 1rem 0.875rem;
+    }
+
+    .chat-message,
+    .chat-status {
+      max-width: 88%;
+    }
+
+    .chat-composer {
+      padding: 0.75rem max(0.75rem, env(safe-area-inset-right))
+        max(0.75rem, env(safe-area-inset-bottom))
+        max(0.75rem, env(safe-area-inset-left));
+    }
+
+    .chat-composer textarea {
+      resize: none;
+    }
   }
 </style>

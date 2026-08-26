@@ -153,3 +153,73 @@ test('preserves submitted messages after close and scrolls new content into view
   await launcher.click();
   await expect(page.getByText('保留这条消息', { exact: true })).toBeVisible();
 });
+
+test('keeps the desktop panel fluid and inside the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await page.getByRole('button', { name: '打开 AI 客服' }).click();
+
+  const bounds = await page.getByRole('dialog', { name: 'AI 客服' }).boundingBox();
+  expect(bounds).not.toBeNull();
+  expect(bounds!.width).toBeGreaterThanOrEqual(380);
+  expect(bounds!.width).toBeLessThanOrEqual(420);
+  expect(bounds!.x).toBeGreaterThanOrEqual(0);
+  expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(1440);
+  expect(bounds!.y).toBeGreaterThanOrEqual(0);
+  expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(900);
+});
+
+test('switches to a near-full-screen panel only below 47.999rem', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 767, height: 700 });
+  await page.goto('/');
+  await page.getByRole('button', { name: '打开 AI 客服' }).click();
+  const mobileBounds = await page
+    .getByRole('dialog', { name: 'AI 客服' })
+    .boundingBox();
+  expect(mobileBounds).not.toBeNull();
+  expect(mobileBounds!.width).toBeGreaterThanOrEqual(735);
+  expect(mobileBounds!.height).toBeGreaterThanOrEqual(665);
+
+  await page.setViewportSize({ width: 768, height: 700 });
+  const desktopBounds = await page
+    .getByRole('dialog', { name: 'AI 客服' })
+    .boundingBox();
+  expect(desktopBounds).not.toBeNull();
+  expect(desktopBounds!.width).toBeLessThanOrEqual(420);
+});
+
+test('locks the page and keeps mobile controls keyboard accessible', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 700 });
+  await page.goto('/');
+  await page.getByRole('button', { name: '打开 AI 客服' }).click();
+
+  const body = page.locator('body');
+  const close = page.getByRole('button', { name: '关闭 AI 客服' });
+  const input = page.getByRole('textbox', { name: '输入问题' });
+  const send = page.getByRole('button', { name: '发送问题' });
+
+  await expect(body).toHaveAttribute('data-chat-widget-open', '');
+  await expect(body).toHaveCSS('overflow', 'hidden');
+  await expect(input).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(close).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(input).toBeFocused();
+
+  for (const control of [close, send]) {
+    const box = await control.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.width).toBeGreaterThanOrEqual(44);
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+  }
+
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+    320,
+  );
+  await close.click();
+  await expect(body).not.toHaveAttribute('data-chat-widget-open');
+});
