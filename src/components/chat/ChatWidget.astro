@@ -30,8 +30,21 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
       </button>
     </header>
 
-    <ol class="chat-messages" aria-label="对话消息" data-chat-messages>
-      <li class="chat-message chat-message--assistant">您好，请问有什么可以帮助您？</li>
+    <ol
+      class="chat-messages"
+      aria-label="对话消息"
+      aria-live="polite"
+      aria-relevant="additions text"
+      data-chat-messages
+    >
+      <li
+        class="chat-message chat-message--assistant"
+        data-chat-message="assistant"
+      >您好，请问有什么可以帮助您？</li>
+      <li class="chat-status" data-chat-loading hidden>AI 正在回复...</li>
+      <li class="chat-error" role="status" data-chat-error hidden>
+        当前 AI 客服暂时无法响应，请稍后重试或通过电话/邮箱联系我们。
+      </li>
     </ol>
 
     <form class="chat-composer" data-chat-form>
@@ -50,13 +63,68 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
 </section>
 
 <script>
+  import { requestMockChatAnswer } from './chat-transport';
+
+  type Message = {
+    role: 'user' | 'assistant';
+    content: string;
+  };
+
   const root = document.querySelector<HTMLElement>('[data-chat-widget]');
   const launcher = root?.querySelector<HTMLButtonElement>('[data-chat-launcher]');
   const panel = root?.querySelector<HTMLElement>('[data-chat-panel]');
   const closeButton = root?.querySelector<HTMLButtonElement>('[data-chat-close]');
   const input = root?.querySelector<HTMLTextAreaElement>('[data-chat-input]');
+  const form = root?.querySelector<HTMLFormElement>('[data-chat-form]');
+  const sendButton = root?.querySelector<HTMLButtonElement>('[data-chat-send]');
+  const messageList = root?.querySelector<HTMLOListElement>('[data-chat-messages]');
+  const loadingNode = root?.querySelector<HTMLElement>('[data-chat-loading]');
+  const errorNode = root?.querySelector<HTMLElement>('[data-chat-error]');
 
+  const messages: Message[] = [
+    { role: 'assistant', content: '您好，请问有什么可以帮助您？' },
+  ];
   let isOpen = false;
+  let isLoading = false;
+  let error: string | null = null;
+  let inputValue = '';
+
+  const syncComposer = () => {
+    if (!sendButton) return;
+    sendButton.disabled = isLoading || inputValue.trim().length === 0;
+  };
+
+  const scrollMessagesToEnd = () => {
+    requestAnimationFrame(() => {
+      messageList?.scrollTo({ top: messageList.scrollHeight });
+    });
+  };
+
+  const appendMessage = (message: Message) => {
+    if (!messageList || !loadingNode) return;
+
+    messages.push(message);
+    const item = document.createElement('li');
+    item.className = `chat-message chat-message--${message.role}`;
+    item.dataset.chatMessage = message.role;
+    item.textContent = message.content;
+    messageList.insertBefore(item, loadingNode);
+    scrollMessagesToEnd();
+  };
+
+  const setLoading = (loading: boolean) => {
+    isLoading = loading;
+    if (loadingNode) loadingNode.hidden = !loading;
+    syncComposer();
+    scrollMessagesToEnd();
+  };
+
+  const setError = (message: string | null) => {
+    error = message;
+    if (!errorNode) return;
+    errorNode.hidden = error === null;
+    scrollMessagesToEnd();
+  };
 
   const setOpen = (open: boolean) => {
     if (!launcher || !panel) return;
@@ -76,9 +144,51 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   launcher?.addEventListener('click', () => setOpen(true));
   closeButton?.addEventListener('click', () => setOpen(false));
 
+  const submitMessage = async () => {
+    if (!input || isLoading) return;
+
+    const message = input.value.trim();
+    if (!message) return;
+
+    appendMessage({ role: 'user', content: message });
+    input.value = '';
+    inputValue = '';
+    setError(null);
+    setLoading(true);
+
+    try {
+      const response = await requestMockChatAnswer(message);
+      appendMessage({ role: 'assistant', content: response.answer });
+    } catch {
+      setError('当前 AI 客服暂时无法响应，请稍后重试或通过电话/邮箱联系我们。');
+    } finally {
+      setLoading(false);
+      input.focus();
+    }
+  };
+
+  input?.addEventListener('input', () => {
+    inputValue = input.value;
+    syncComposer();
+  });
+
+  input?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      void submitMessage();
+    }
+  });
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    void submitMessage();
+  });
+
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && isOpen) setOpen(false);
   });
+
+  syncComposer();
 </script>
 
 <style>
