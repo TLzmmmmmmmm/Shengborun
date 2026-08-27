@@ -13,6 +13,20 @@ export type ChatMessage = {
   content: string;
 };
 
+type ChatStreamEvent =
+  | {
+      type: 'delta';
+      content: string;
+    }
+  | {
+      type: 'done';
+    }
+  | {
+      type: 'error';
+      code: string;
+      message: string;
+    };
+
 export async function* streamChatAnswer(messages: readonly ChatMessage[]): AsyncGenerator<string> {
   const response = await fetch('http://127.0.0.1:8000/api/chat-stream', {
     method: 'POST',
@@ -35,6 +49,8 @@ export async function* streamChatAnswer(messages: readonly ChatMessage[]): Async
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
 
+  let buffer = '';
+
   try {
     while (true) {
       const { value, done } = await reader.read();
@@ -43,19 +59,37 @@ export async function* streamChatAnswer(messages: readonly ChatMessage[]): Async
         break;
       }
 
-      const text = decoder.decode(value, {
+      buffer += decoder.decode(value, {
         stream: true,
       });
 
-      if (text) {
-        yield text;
+      while (true) {
+        const newlineIndex = buffer.indexOf('\n');
+
+        if (newlineIndex === -1) {
+          break;
+        }
+
+        const line = buffer
+          .slice(0, newlineIndex)
+          .trim();
+
+        buffer = buffer.slice(newlineIndex + 1);
+
+        if (!line) {
+          continue;
+        }
+
+        const event = JSON.parse(line) as ChatStreamEvent;
+
+        if (event.type === 'delta') {
+          yield event.content;
+        } else if (event.type === 'error') {
+          throw new Error(event.message);
+        } else if (event.type === 'done') {
+          return;
+        }
       }
-    }
-
-    const remainingText = decoder.decode();
-
-    if (remainingText) {
-      yield remainingText;
     }
   } finally {
     reader.releaseLock();
