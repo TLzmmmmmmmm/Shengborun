@@ -83,6 +83,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   const mobileMedia = window.matchMedia('(max-width: 47.999rem)');
 
   const messages: Message[] = []
+  const MAX_HISTORY_MESSAGES = 20;
   let isOpen = false;
   let isLoading = false;
   let error: string | null = null;
@@ -165,7 +166,16 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     setLoading(true);
 
     try {
-      const requestMessages = messages.map((item) => ({
+      let requestMessages = messages.slice(-MAX_HISTORY_MESSAGES);
+
+      if (
+        requestMessages.length > 0 &&
+        requestMessages[0].role === 'assistant'
+      ) {
+        requestMessages = requestMessages.slice(1);
+      }
+
+      requestMessages = requestMessages.map((item) => ({
         ...item,
       }));
 
