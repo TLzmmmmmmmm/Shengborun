@@ -63,12 +63,12 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
 </section>
 
 <script>
-  import { streamChatAnswer } from './chat-transport';
+  import {
+    streamChatAnswer,
+    type ChatMessage,
+  } from './chat-transport';
 
-  type Message = {
-    role: 'user' | 'assistant';
-    content: string;
-  };
+  type Message = ChatMessage;
 
   const root = document.querySelector<HTMLElement>('[data-chat-widget]');
   const launcher = root?.querySelector<HTMLButtonElement>('[data-chat-launcher]');
@@ -82,9 +82,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   const errorNode = root?.querySelector<HTMLElement>('[data-chat-error]');
   const mobileMedia = window.matchMedia('(max-width: 47.999rem)');
 
-  const messages: Message[] = [
-    { role: 'assistant', content: '您好，请问有什么可以帮助您？' },
-  ];
+  const messages: Message[] = []
   let isOpen = false;
   let isLoading = false;
   let error: string | null = null;
@@ -167,6 +165,10 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     setLoading(true);
 
     try {
+      const requestMessages = messages.map((item) => ({
+        ...item,
+      }));
+
       const assistantMessage: Message = {
         role: 'assistant',
         content: '',
@@ -178,7 +180,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
         throw new Error('Unable to create assistant message');
       }
 
-      for await (const chunk of streamChatAnswer(message)) {
+      for await (const chunk of streamChatAnswer(requestMessages)) {
         assistantMessage.content += chunk;
         assistantNode.textContent = assistantMessage.content;
         scrollMessagesToEnd();
