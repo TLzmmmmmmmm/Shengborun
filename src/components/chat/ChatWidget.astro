@@ -87,7 +87,6 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   const MAX_MESSAGE_CHARACTERS = 4000;
   let isOpen = false;
   let isLoading = false;
-  let error: string | null = null;
   let inputValue = '';
 
   const syncComposer = () => {
@@ -128,8 +127,6 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   };
 
   const setError = (message: string | null) => {
-    error = message;
-
     if (!errorNode) return;
 
     if (message === null) {
