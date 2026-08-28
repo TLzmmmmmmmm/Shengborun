@@ -1,12 +1,3 @@
-export interface ChatAnswer {
-  answer: string;
-}
-
-export type ChatTransport = (message: string) => Promise<ChatAnswer>;
-
-export const MOCK_FAILURE_INPUT = '__mock_error__';
-export const MOCK_RESPONSE_DELAY_MS = 700;
-
 export class ChatServiceError extends Error {
   code: string;
   status: number | null;
@@ -61,8 +52,12 @@ type ChatStreamEvent =
       request_id?: string;
     };
 
+const CHAT_API_URL = import.meta.env.DEV
+  ? 'http://127.0.0.1:8000/api/chat-stream'
+  : '/api/chat-stream';
+
 export async function* streamChatAnswer(messages: readonly ChatMessage[]): AsyncGenerator<string> {
-  const response = await fetch('http://127.0.0.1:8000/api/chat-stream', {
+  const response = await fetch(CHAT_API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -93,7 +88,13 @@ export async function* streamChatAnswer(messages: readonly ChatMessage[]): Async
   }
 
   if (!response.body) {
-    throw new Error('Streaming response body is unavailable');
+    throw new ChatServiceError(
+      '当前 AI 客服暂时无法响应，请稍后再试。',
+      {
+        code: 'stream_unavailable',
+        status: response.status,
+      },
+    );
   }
 
   const reader = response.body.getReader();
@@ -106,7 +107,12 @@ export async function* streamChatAnswer(messages: readonly ChatMessage[]): Async
       const { value, done } = await reader.read();
 
       if (done) {
-        break;
+        throw new ChatServiceError(
+          'AI 响应意外中断，请重新尝试。',
+          {
+            code: 'stream_interrupted',
+          },
+        );
       }
 
       buffer += decoder.decode(value, {
