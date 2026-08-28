@@ -82,7 +82,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   const errorNode = root?.querySelector<HTMLElement>('[data-chat-error]');
   const mobileMedia = window.matchMedia('(max-width: 47.999rem)');
 
-  const messages: Message[] = []
+  const conversationHistory: Message[] = [];
   const MAX_HISTORY_MESSAGES = 20;
   const MAX_MESSAGE_CHARACTERS = 4000;
   let isOpen = false;
@@ -108,7 +108,6 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   const appendMessage = (message: Message) => {
     if (!messageList || !loadingNode) return null;
 
-    messages.push(message);
     const item = document.createElement('li');
     item.className = `chat-message chat-message--${message.role}`;
     item.dataset.chatMessage = message.role;
@@ -176,14 +175,23 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
       return;
     }
 
-    appendMessage({ role: 'user', content: message });
+    const userMessage: Message = {
+      role: 'user',
+      content: message,
+    };
+
+    appendMessage(userMessage);
     input.value = '';
     inputValue = '';
     setError(null);
     setLoading(true);
 
+    let assistantNode: HTMLElement | null = null;
+
     try {
-      let requestMessages = messages.slice(-MAX_HISTORY_MESSAGES);
+      let requestMessages = conversationHistory.slice(
+        -(MAX_HISTORY_MESSAGES - 1),
+      );
 
       if (
         requestMessages.length > 0 &&
@@ -192,27 +200,50 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
         requestMessages = requestMessages.slice(1);
       }
 
-      requestMessages = requestMessages.map((item) => ({
-        ...item,
-      }));
+      requestMessages = [
+        ...requestMessages,
+        userMessage,
+      ].map((item) => ({ ...item }));
 
       const assistantMessage: Message = {
         role: 'assistant',
         content: '',
       };
 
-      const assistantNode = appendMessage(assistantMessage);
-
-      if (!assistantNode) {
-        throw new Error('Unable to create assistant message');
-      }
-
       for await (const chunk of streamChatAnswer(requestMessages)) {
         assistantMessage.content += chunk;
-        assistantNode.textContent = assistantMessage.content;
+
+        if (!assistantNode) {
+          assistantNode = appendMessage(assistantMessage);
+
+          if (!assistantNode) {
+            throw new Error('Unable to create assistant message');
+          }
+        } else {
+          assistantNode.textContent = assistantMessage.content;
+        }
+
         scrollMessagesToEnd();
       }
+
+      if (!assistantMessage.content) {
+        throw new Error('Assistant response was empty');
+      }
+
+      conversationHistory.push(
+        userMessage,
+        { ...assistantMessage },
+      );
+
+      if (conversationHistory.length > MAX_HISTORY_MESSAGES) {
+        conversationHistory.splice(
+          0,
+          conversationHistory.length - MAX_HISTORY_MESSAGES,
+        );
+      }
     } catch (error) {
+      assistantNode?.remove();
+
       if (error instanceof ChatServiceError) {
         setError(error.message);
       } else {

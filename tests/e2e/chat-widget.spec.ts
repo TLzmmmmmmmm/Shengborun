@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import type { ChatMessage } from '../../src/components/chat/chat-transport';
 
 type ChatStreamEvent =
   | { type: 'delta'; content: string }
@@ -233,6 +234,120 @@ test('shows a structured HTTP error without exposing internal details', async ({
 
   await expect(page.getByText('请求过于频繁，请稍后再试。')).toBeVisible();
   await expect(page.getByText('request-rate-limit')).toHaveCount(0);
+});
+
+test('rolls back API history when a turn fails before the first delta', async ({
+  page,
+}) => {
+  const requestBodies: Array<{ messages: ChatMessage[] }> = [];
+
+  await page.route('**/api/chat-stream', async (route) => {
+    requestBodies.push(route.request().postDataJSON() as { messages: ChatMessage[] });
+
+    const events: ChatStreamEvent[] = requestBodies.length === 1
+      ? [
+          {
+            type: 'error',
+            code: 'connection_error',
+            message: '服务暂时不可用，请稍后再试。',
+            request_id: 'request-before-delta',
+          },
+        ]
+      : [
+          { type: 'delta', content: '第二次请求成功。' },
+          { type: 'done' },
+        ];
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/x-ndjson',
+      body: encodeStream(events),
+    });
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: '打开 AI 客服' }).click();
+  const input = page.getByRole('textbox', { name: '输入问题' });
+
+  await input.fill('首轮失败');
+  await input.press('Enter');
+  await expect(page.getByText('服务暂时不可用，请稍后再试。')).toBeVisible();
+  await expect(page.getByText('首轮失败', { exact: true })).toBeVisible();
+  await expect(page.locator('[data-chat-message="assistant"]')).toHaveCount(1);
+
+  await input.fill('第二轮重试');
+  await input.press('Enter');
+  await expect(page.getByText('第二次请求成功。')).toBeVisible();
+
+  expect(requestBodies).toHaveLength(2);
+  expect(requestBodies[1]).toEqual({
+    messages: [
+      { role: 'user', content: '第二轮重试' },
+    ],
+  });
+});
+
+test('rolls back partial assistant output and preserves only successful API history', async ({
+  page,
+}) => {
+  const requestBodies: Array<{ messages: ChatMessage[] }> = [];
+
+  await page.route('**/api/chat-stream', async (route) => {
+    requestBodies.push(route.request().postDataJSON() as { messages: ChatMessage[] });
+
+    const responses: ChatStreamEvent[][] = [
+      [
+        { type: 'delta', content: '已完成的 AI 回复。' },
+        { type: 'done' },
+      ],
+      [
+        { type: 'delta', content: '不完整回复' },
+        {
+          type: 'error',
+          code: 'timeout',
+          message: '响应超时，请重新尝试。',
+          request_id: 'request-after-delta',
+        },
+      ],
+      [
+        { type: 'delta', content: '重试后的完整回复。' },
+        { type: 'done' },
+      ],
+    ];
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/x-ndjson',
+      body: encodeStream(responses[requestBodies.length - 1]),
+    });
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: '打开 AI 客服' }).click();
+  const input = page.getByRole('textbox', { name: '输入问题' });
+
+  await input.fill('成功轮次');
+  await input.press('Enter');
+  await expect(page.getByText('已完成的 AI 回复。')).toBeVisible();
+
+  await input.fill('会在中途失败');
+  await input.press('Enter');
+  await expect(page.getByText('响应超时，请重新尝试。')).toBeVisible();
+  await expect(page.getByText('会在中途失败', { exact: true })).toBeVisible();
+  await expect(page.getByText('不完整回复')).toHaveCount(0);
+
+  await input.fill('失败后重试');
+  await input.press('Enter');
+  await expect(page.getByText('重试后的完整回复。')).toBeVisible();
+
+  expect(requestBodies).toHaveLength(3);
+  expect(requestBodies[2]).toEqual({
+    messages: [
+      { role: 'user', content: '成功轮次' },
+      { role: 'assistant', content: '已完成的 AI 回复。' },
+      { role: 'user', content: '失败后重试' },
+    ],
+  });
 });
 
 test('preserves submitted messages after close and scrolls new content into view', async ({
