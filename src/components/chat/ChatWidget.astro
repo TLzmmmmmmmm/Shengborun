@@ -52,6 +52,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
       <textarea
         id="ai-customer-support-input"
         rows="1"
+        maxlength="4000"
         placeholder="输入您的问题..."
         data-chat-input
       ></textarea>
@@ -84,6 +85,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
 
   const messages: Message[] = []
   const MAX_HISTORY_MESSAGES = 20;
+  const MAX_MESSAGE_CHARACTERS = 4000;
   let isOpen = false;
   let isLoading = false;
   let error: string | null = null;
@@ -91,7 +93,12 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
 
   const syncComposer = () => {
     if (!sendButton) return;
-    sendButton.disabled = isLoading || inputValue.trim().length === 0;
+    const length = inputValue.trim().length;
+
+    sendButton.disabled =
+      isLoading ||
+      length === 0 ||
+      length > MAX_MESSAGE_CHARACTERS;
   };
 
   const scrollMessagesToEnd = () => {
@@ -159,6 +166,11 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     const message = input.value.trim();
     if (!message) return;
 
+    if (message.length > MAX_MESSAGE_CHARACTERS) {
+      setError('单次提问最多支持 4000 个字符，请缩短后重试。');
+      return;
+    }
+
     appendMessage({ role: 'user', content: message });
     input.value = '';
     inputValue = '';
@@ -195,8 +207,19 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
         assistantNode.textContent = assistantMessage.content;
         scrollMessagesToEnd();
       }
-    } catch {
-      setError('当前 AI 客服暂时无法响应，请稍后重试或通过电话/邮箱联系我们。');
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === 'INVALID_INPUT'
+      ) {
+        setError(
+          '提交内容过长或格式不正确，请调整后重新发送。',
+        );
+      } else {
+        setError(
+          '当前 AI 客服暂时无法响应，请稍后重试。',
+        );
+      }
     } finally {
       setLoading(false);
       input.focus();

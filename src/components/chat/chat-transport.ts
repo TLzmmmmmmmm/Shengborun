@@ -38,6 +38,10 @@ export async function* streamChatAnswer(messages: readonly ChatMessage[]): Async
     }),
   });
 
+  if (response.status === 422) {
+    throw new Error('INVALID_INPUT');
+  }
+
   if (!response.ok) {
     throw new Error(`Chat request failed: ${response.status}`);
   }
