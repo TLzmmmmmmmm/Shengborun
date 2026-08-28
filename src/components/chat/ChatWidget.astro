@@ -1,0 +1,582 @@
+---
+import { Bot, MessageCircle, Send, X } from '@lucide/astro';
+---
+
+<section class="chat-widget" data-chat-widget>
+  <button
+    class="chat-launcher"
+    type="button"
+    aria-label="打开 AI 客服"
+    aria-controls="ai-customer-support-panel"
+    aria-expanded="false"
+    data-chat-launcher
+  >
+    <MessageCircle aria-hidden="true" />
+  </button>
+
+  <div
+    id="ai-customer-support-panel"
+    class="chat-panel"
+    role="dialog"
+    aria-labelledby="ai-customer-support-title"
+    data-chat-panel
+    hidden
+  >
+    <header class="chat-header">
+      <span class="chat-identity" aria-hidden="true"><Bot /></span>
+      <h2 id="ai-customer-support-title">AI 客服</h2>
+      <button type="button" aria-label="关闭 AI 客服" data-chat-close>
+        <X aria-hidden="true" />
+      </button>
+    </header>
+
+    <ol
+      class="chat-messages"
+      aria-label="对话消息"
+      aria-live="polite"
+      aria-relevant="additions"
+      data-chat-messages
+    >
+      <li
+        class="chat-message chat-message--assistant"
+        data-chat-message="assistant"
+      >您好，请问有什么可以帮助您？</li>
+      <li class="chat-status" data-chat-loading hidden>正在回复...</li>
+      <li class="chat-error" role="status" data-chat-error hidden></li>
+    </ol>
+
+    <form class="chat-composer" data-chat-form>
+      <label class="visually-hidden" for="ai-customer-support-input">输入问题</label>
+      <textarea
+        id="ai-customer-support-input"
+        rows="1"
+        maxlength="4000"
+        placeholder="输入您的问题..."
+        data-chat-input
+      ></textarea>
+      <button type="submit" aria-label="发送问题" data-chat-send disabled>
+        <Send aria-hidden="true" />
+      </button>
+    </form>
+  </div>
+</section>
+
+<script>
+  import {
+    streamChatAnswer,
+    type ChatMessage,
+    ChatServiceError,
+  } from './chat-transport';
+
+  type Message = ChatMessage;
+
+  const root = document.querySelector<HTMLElement>('[data-chat-widget]');
+  const launcher = root?.querySelector<HTMLButtonElement>('[data-chat-launcher]');
+  const panel = root?.querySelector<HTMLElement>('[data-chat-panel]');
+  const closeButton = root?.querySelector<HTMLButtonElement>('[data-chat-close]');
+  const input = root?.querySelector<HTMLTextAreaElement>('[data-chat-input]');
+  const form = root?.querySelector<HTMLFormElement>('[data-chat-form]');
+  const sendButton = root?.querySelector<HTMLButtonElement>('[data-chat-send]');
+  const messageList = root?.querySelector<HTMLOListElement>('[data-chat-messages]');
+  const loadingNode = root?.querySelector<HTMLElement>('[data-chat-loading]');
+  const errorNode = root?.querySelector<HTMLElement>('[data-chat-error]');
+  const mobileMedia = window.matchMedia('(max-width: 47.999rem)');
+
+  const conversationHistory: Message[] = [];
+  const MAX_HISTORY_MESSAGES = 20;
+  const MAX_MESSAGE_CHARACTERS = 4000;
+  let isOpen = false;
+  let isLoading = false;
+  let inputValue = '';
+
+  const syncComposer = () => {
+    if (!sendButton) return;
+    const length = inputValue.trim().length;
+
+    sendButton.disabled =
+      isLoading ||
+      length === 0 ||
+      length > MAX_MESSAGE_CHARACTERS;
+  };
+
+  const scrollMessagesToEnd = () => {
+    requestAnimationFrame(() => {
+      messageList?.scrollTo({ top: messageList.scrollHeight });
+    });
+  };
+
+  const appendMessage = (message: Message) => {
+    if (!messageList || !loadingNode) return null;
+
+    const item = document.createElement('li');
+    item.className = `chat-message chat-message--${message.role}`;
+    item.dataset.chatMessage = message.role;
+    item.textContent = message.content;
+    messageList.insertBefore(item, loadingNode);
+    scrollMessagesToEnd();
+
+    return item;
+  };
+
+  const setLoading = (loading: boolean) => {
+    isLoading = loading;
+    if (loadingNode) loadingNode.hidden = !loading;
+    syncComposer();
+    scrollMessagesToEnd();
+  };
+
+  const setError = (message: string | null) => {
+    if (!errorNode) return;
+
+    if (message === null) {
+      errorNode.textContent = '';
+      errorNode.hidden = true;
+    } else {
+      errorNode.textContent = message;
+      errorNode.hidden = false;
+    }
+
+    scrollMessagesToEnd();
+  };
+
+  const syncMobileState = () => {
+    const isMobileDialogOpen = isOpen && mobileMedia.matches;
+    document.body.toggleAttribute('data-chat-widget-open', isMobileDialogOpen);
+    panel?.toggleAttribute('aria-modal', isMobileDialogOpen);
+  };
+
+  const setOpen = (open: boolean) => {
+    if (!launcher || !panel) return;
+
+    isOpen = open;
+    launcher.setAttribute('aria-expanded', String(open));
+    launcher.setAttribute('aria-label', open ? 'AI 客服已打开' : '打开 AI 客服');
+    panel.hidden = !open;
+    syncMobileState();
+
+    if (open) {
+      input?.focus();
+    } else {
+      launcher.focus();
+    }
+  };
+
+  launcher?.addEventListener('click', () => setOpen(true));
+  closeButton?.addEventListener('click', () => setOpen(false));
+
+  const submitMessage = async () => {
+    if (!input || isLoading) return;
+
+    const message = input.value.trim();
+    if (!message) return;
+
+    if (message.length > MAX_MESSAGE_CHARACTERS) {
+      setError('单次提问最多支持 4000 个字符，请缩短后重试。');
+      return;
+    }
+
+    const userMessage: Message = {
+      role: 'user',
+      content: message,
+    };
+
+    appendMessage(userMessage);
+    input.value = '';
+    inputValue = '';
+    setError(null);
+    setLoading(true);
+
+    let assistantNode: HTMLElement | null = null;
+
+    try {
+      let requestMessages = conversationHistory.slice(
+        -(MAX_HISTORY_MESSAGES - 1),
+      );
+
+      if (
+        requestMessages.length > 0 &&
+        requestMessages[0].role === 'assistant'
+      ) {
+        requestMessages = requestMessages.slice(1);
+      }
+
+      requestMessages = [
+        ...requestMessages,
+        userMessage,
+      ].map((item) => ({ ...item }));
+
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: '',
+      };
+
+      for await (const chunk of streamChatAnswer(requestMessages)) {
+        assistantMessage.content += chunk;
+
+        if (!assistantNode) {
+          assistantNode = appendMessage(assistantMessage);
+
+          if (!assistantNode) {
+            throw new Error('Unable to create assistant message');
+          }
+        } else {
+          assistantNode.textContent = assistantMessage.content;
+        }
+
+        scrollMessagesToEnd();
+      }
+
+      if (!assistantMessage.content) {
+        throw new Error('Assistant response was empty');
+      }
+
+      conversationHistory.push(
+        userMessage,
+        { ...assistantMessage },
+      );
+
+      if (conversationHistory.length > MAX_HISTORY_MESSAGES) {
+        conversationHistory.splice(
+          0,
+          conversationHistory.length - MAX_HISTORY_MESSAGES,
+        );
+      }
+    } catch (error) {
+      assistantNode?.remove();
+
+      if (error instanceof ChatServiceError) {
+        setError(error.message);
+      } else {
+        setError(
+          '当前客服暂时无法响应，请稍后再试。',
+        );
+      }
+    } finally {
+      setLoading(false);
+      input.focus();
+    }
+  };
+
+  input?.addEventListener('input', () => {
+    inputValue = input.value;
+    syncComposer();
+  });
+
+  input?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      void submitMessage();
+    }
+  });
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    void submitMessage();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (!isOpen) return;
+
+    if (event.key === 'Escape') {
+      setOpen(false);
+      return;
+    }
+
+    if (event.key !== 'Tab' || !mobileMedia.matches || !panel) return;
+
+    const focusable = Array.from(
+      panel.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((element) => !element.hidden);
+    const first = focusable.at(0);
+    const last = focusable.at(-1);
+
+    if (!first || !last) return;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  mobileMedia.addEventListener('change', syncMobileState);
+  window.addEventListener('pagehide', () => {
+    document.body.removeAttribute('data-chat-widget-open');
+  });
+
+  syncComposer();
+</script>
+
+<style>
+  .chat-widget {
+    position: relative;
+    z-index: 300;
+  }
+
+  .chat-launcher {
+    position: fixed;
+    right: max(1.25rem, env(safe-area-inset-right));
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    display: grid;
+    width: 3.25rem;
+    height: 3.25rem;
+    place-items: center;
+    border: 0.0625rem solid rgb(255 255 255 / 32%);
+    border-radius: 999px;
+    background: var(--brand-teal-dark);
+    color: var(--surface);
+    box-shadow: 0 0.75rem 2rem rgb(0 68 67 / 24%);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .chat-launcher:hover {
+    background: var(--brand-teal-hover);
+    box-shadow: 0 0.9rem 2.25rem rgb(0 68 67 / 28%);
+    transform: translateY(-0.125rem);
+  }
+
+  .chat-launcher :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .chat-panel {
+    position: fixed;
+    right: max(1.25rem, env(safe-area-inset-right));
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    display: flex;
+    width: min(25rem, calc(100vw - 2.5rem));
+    height: min(38.75rem, calc(100dvh - 2.5rem));
+    min-height: min(30rem, calc(100dvh - 2.5rem));
+    flex-direction: column;
+    overflow: hidden;
+    border: 0.0625rem solid var(--border);
+    border-radius: var(--radius-medium);
+    background: var(--surface);
+    box-shadow: 0 1.25rem 3.5rem rgb(32 43 51 / 22%);
+  }
+
+  .chat-header {
+    display: grid;
+    min-height: 4rem;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem 0.625rem 1rem;
+    background: var(--brand-teal-dark);
+    color: var(--surface);
+  }
+
+  .chat-header h2 {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.2;
+  }
+
+  .chat-identity {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 16%);
+  }
+
+  .chat-identity :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .chat-header button,
+  .chat-composer button {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .chat-header button {
+    background: transparent;
+    color: inherit;
+  }
+
+  .chat-header button:hover {
+    background: rgb(255 255 255 / 14%);
+  }
+
+  .chat-header button :global(svg),
+  .chat-composer button :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .chat-messages {
+    display: flex;
+    min-height: 0;
+    margin: 0;
+    padding: 1rem;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--surface-muted);
+    list-style: none;
+    scroll-behavior: smooth;
+  }
+
+  .chat-messages :global(.chat-message),
+  .chat-status,
+  .chat-error {
+    max-width: 84%;
+    padding: 0.6875rem 0.8125rem;
+    border-radius: 0.875rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .chat-messages :global(.chat-message--assistant),
+  .chat-status,
+  .chat-error {
+    align-self: flex-start;
+    border: 0.0625rem solid var(--divider);
+    border-bottom-left-radius: 0.25rem;
+    background: var(--surface);
+    color: var(--text-primary);
+  }
+
+  .chat-messages :global(.chat-message--user) {
+    align-self: flex-end;
+    border-bottom-right-radius: 0.25rem;
+    background: var(--brand-teal-soft);
+    color: var(--brand-graphite);
+  }
+
+  .chat-status {
+    color: var(--text-secondary);
+  }
+
+  .chat-error {
+    max-width: 100%;
+    border-color: #efc9c6;
+    background: #fff5f4;
+    color: #8b2f2a;
+    white-space: normal;
+  }
+
+  .chat-composer {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-end;
+    gap: 0.625rem;
+    padding: 0.75rem;
+    border-top: 0.0625rem solid var(--divider);
+    background: var(--surface);
+  }
+
+  .chat-composer textarea {
+    min-width: 0;
+    min-height: 2.75rem;
+    max-height: 8rem;
+    flex: 1 1 auto;
+    resize: vertical;
+    border: 0.0625rem solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--surface);
+    color: var(--text-primary);
+    line-height: 1.45;
+    padding: 0.625rem 0.75rem;
+  }
+
+  .chat-composer textarea::placeholder {
+    color: var(--text-secondary);
+  }
+
+  .chat-composer textarea:focus-visible {
+    border-color: var(--focus);
+  }
+
+  .chat-composer button {
+    background: var(--brand-teal-dark);
+    color: var(--surface);
+  }
+
+  .chat-composer button:hover:not(:disabled) {
+    background: var(--brand-teal-hover);
+  }
+
+  .chat-composer button:disabled {
+    background: var(--border);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+  }
+
+  .chat-panel[hidden] {
+    display: none;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  :global(body[data-chat-widget-open]) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 47.999rem) {
+    .chat-launcher {
+      right: max(1rem, env(safe-area-inset-right));
+      bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+
+    .chat-panel {
+      top: max(0.5rem, env(safe-area-inset-top));
+      right: max(0.5rem, env(safe-area-inset-right));
+      bottom: max(0.5rem, env(safe-area-inset-bottom));
+      left: max(0.5rem, env(safe-area-inset-left));
+      width: auto;
+      height: auto;
+      min-height: 0;
+      border-radius: 0.875rem;
+    }
+
+    .chat-messages {
+      padding: 1rem 0.875rem;
+    }
+
+    .chat-messages :global(.chat-message),
+    .chat-status {
+      max-width: 88%;
+    }
+
+    .chat-composer {
+      padding: 0.75rem max(0.75rem, env(safe-area-inset-right))
+        max(0.75rem, env(safe-area-inset-bottom))
+        max(0.75rem, env(safe-area-inset-left));
+    }
+
+    .chat-composer textarea {
+      resize: none;
+    }
+  }
+</style>

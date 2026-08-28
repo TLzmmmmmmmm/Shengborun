@@ -2,6 +2,7 @@
 import Footer from '../components/layout/Footer.astro';
 import Header from '../components/layout/Header.astro';
 import SeoHead from '../components/layout/SeoHead.astro';
+import ChatWidget from '../components/chat/ChatWidget.astro';
 import type { BreadcrumbItem } from '../lib/breadcrumbs';
 import { resolveFooterBreadcrumbs } from '../lib/breadcrumbs';
 import '../styles/global.css';
@@ -12,6 +13,7 @@ interface Props {
   canonicalPath: string;
   image?: string;
   breadcrumbs?: readonly BreadcrumbItem[];
+  showChatWidget?: boolean;
 }
 
 const {
@@ -20,6 +22,7 @@ const {
   canonicalPath,
   image,
   breadcrumbs = [],
+  showChatWidget = true,
 } = Astro.props;
 const footerBreadcrumbs = resolveFooterBreadcrumbs(breadcrumbs);
 ---
@@ -41,5 +44,6 @@ const footerBreadcrumbs = resolveFooterBreadcrumbs(breadcrumbs);
       <slot />
     </main>
     <Footer breadcrumbs={footerBreadcrumbs} />
+    {showChatWidget && <ChatWidget />}
   </body>
 </html>
