@@ -1,4 +1,30 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+type ChatStreamEvent =
+  | { type: 'delta'; content: string }
+  | { type: 'done' }
+  | {
+      type: 'error';
+      code: string;
+      message: string;
+      request_id: string;
+    };
+
+const encodeStream = (events: ChatStreamEvent[]) =>
+  `${events.map((event) => JSON.stringify(event)).join('\n')}\n`;
+
+const mockChatStream = async (
+  page: Page,
+  events: ChatStreamEvent[],
+) => {
+  await page.route('**/api/chat-stream', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/x-ndjson',
+      body: encodeStream(events),
+    });
+  });
+};
 
 const visibleRoutes = [
   '/',
@@ -67,9 +93,27 @@ test('keeps the current message DOM across close and reopen', async ({
   await expect(messages).toHaveText(['您好，请问有什么可以帮助您？']);
 });
 
-test('sends with Enter and renders loading followed by the local answer', async ({
+test('sends with Enter and renders loading followed by a streamed answer', async ({
   page,
 }) => {
+  let releaseResponse: () => void = () => {};
+  const responseGate = new Promise<void>((resolve) => {
+    releaseResponse = resolve;
+  });
+
+  await page.route('**/api/chat-stream', async (route) => {
+    await responseGate;
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/x-ndjson',
+      body: encodeStream([
+        { type: 'delta', content: '企业版支持' },
+        { type: 'delta', content: '多种通信解决方案。' },
+        { type: 'done' },
+      ]),
+    });
+  });
+
   await page.goto('/');
   await page.getByRole('button', { name: '打开 AI 客服' }).click();
 
@@ -79,18 +123,22 @@ test('sends with Enter and renders loading followed by the local answer', async 
   await input.press('Enter');
 
   await expect(page.locator('[data-chat-message="user"]')).toHaveText('产品咨询');
-  await expect(page.getByText('AI 正在回复...')).toBeVisible();
+  await expect(page.getByText('正在回复...')).toBeVisible();
   await expect(send).toBeDisabled();
-  await expect(
-    page.getByText('前端开发演示回复：已收到“产品咨询”。'),
-  ).toBeVisible();
-  await expect(page.getByText('AI 正在回复...')).toBeHidden();
+  releaseResponse();
+  await expect(page.getByText('企业版支持多种通信解决方案。')).toBeVisible();
+  await expect(page.getByText('正在回复...')).toBeHidden();
   await expect(send).toBeDisabled();
 });
 
 test('styles dynamically appended messages as left and right bubbles', async ({
   page,
 }) => {
+  await mockChatStream(page, [
+    { type: 'delta', content: '气泡' },
+    { type: 'delta', content: '样式正常' },
+    { type: 'done' },
+  ]);
   await page.goto('/');
   await page.getByRole('button', { name: '打开 AI 客服' }).click();
   const input = page.getByRole('textbox', { name: '输入问题' });
@@ -101,7 +149,7 @@ test('styles dynamically appended messages as left and right bubbles', async ({
   const assistantMessage = page.locator('[data-chat-message="assistant"]').last();
   await expect(userMessage).toHaveCSS('align-self', 'flex-end');
   await expect(userMessage).toHaveCSS('background-color', 'rgb(229, 248, 247)');
-  await expect(assistantMessage).toHaveText(/\u524d\u7aef\u5f00\u53d1\u6f14\u793a\u56de\u590d/);
+  await expect(assistantMessage).toHaveText('气泡样式正常');
   await expect(assistantMessage).toHaveCSS('align-self', 'flex-start');
   await expect(assistantMessage).toHaveCSS('background-color', 'rgb(255, 255, 255)');
 });
@@ -129,34 +177,78 @@ test('uses Shift+Enter for a newline and rejects whitespace-only input', async (
 test('prevents duplicate submission and shows a safe controlled error', async ({
   page,
 }) => {
+  let requestCount = 0;
+
+  await page.route('**/api/chat-stream', async (route) => {
+    requestCount += 1;
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/x-ndjson',
+      body: encodeStream([
+        {
+          type: 'error',
+          code: 'connection_error',
+          message: '服务暂时不可用，请稍后再试。',
+          request_id: 'request-stream-error',
+        },
+      ]),
+    });
+  });
+
   await page.goto('/');
   await page.getByRole('button', { name: '打开 AI 客服' }).click();
   const input = page.getByRole('textbox', { name: '输入问题' });
 
-  await input.fill('__mock_error__');
+  await input.fill('测试流式错误');
   await input.press('Enter');
   await input.press('Enter');
   await expect(page.locator('[data-chat-message="user"]')).toHaveCount(1);
-  await expect(
-    page.getByText(
-      '当前 AI 客服暂时无法响应，请稍后重试或通过电话/邮箱联系我们。',
-    ),
-  ).toBeVisible();
+  await expect(page.getByText('服务暂时不可用，请稍后再试。')).toBeVisible();
+  await expect.poll(() => requestCount).toBe(1);
   await expect(input).toBeEnabled();
+});
+
+test('shows a structured HTTP error without exposing internal details', async ({
+  page,
+}) => {
+  await page.route('**/api/chat-stream', async (route) => {
+    await route.fulfill({
+      status: 429,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        error: {
+          code: 'rate_limit',
+          message: '请求过于频繁，请稍后再试。',
+          request_id: 'request-rate-limit',
+        },
+      }),
+    });
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: '打开 AI 客服' }).click();
+  const input = page.getByRole('textbox', { name: '输入问题' });
+  await input.fill('再咨询一次');
+  await input.press('Enter');
+
+  await expect(page.getByText('请求过于频繁，请稍后再试。')).toBeVisible();
+  await expect(page.getByText('request-rate-limit')).toHaveCount(0);
 });
 
 test('preserves submitted messages after close and scrolls new content into view', async ({
   page,
 }) => {
+  await mockChatStream(page, [
+    { type: 'delta', content: '这条 AI 回复也会保留。' },
+    { type: 'done' },
+  ]);
   await page.goto('/');
   const launcher = page.getByRole('button', { name: '打开 AI 客服' });
   await launcher.click();
   const input = page.getByRole('textbox', { name: '输入问题' });
   await input.fill('保留这条消息');
   await input.press('Enter');
-  await expect(
-    page.getByText('前端开发演示回复：已收到“保留这条消息”。'),
-  ).toBeVisible();
+  await expect(page.getByText('这条 AI 回复也会保留。')).toBeVisible();
 
   const list = page.locator('[data-chat-messages]');
   await expect
@@ -170,6 +262,7 @@ test('preserves submitted messages after close and scrolls new content into view
   await page.getByRole('button', { name: '关闭 AI 客服' }).click();
   await launcher.click();
   await expect(page.getByText('保留这条消息', { exact: true })).toBeVisible();
+  await expect(page.getByText('这条 AI 回复也会保留。')).toBeVisible();
 });
 
 test('keeps the desktop panel fluid and inside the viewport', async ({ page }) => {
