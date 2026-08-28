@@ -7,6 +7,39 @@ export type ChatTransport = (message: string) => Promise<ChatAnswer>;
 export const MOCK_FAILURE_INPUT = '__mock_error__';
 export const MOCK_RESPONSE_DELAY_MS = 700;
 
+export class ChatServiceError extends Error {
+  code: string;
+  status: number | null;
+  requestId: string | null;
+
+  constructor(
+    message: string,
+    {
+      code,
+      status = null,
+      requestId = null,
+    }: {
+      code: string;
+      status?: number | null;
+      requestId?: string | null;
+    },
+  ) {
+    super(message);
+
+    this.name = 'ChatServiceError';
+    this.code = code;
+    this.status = status;
+    this.requestId = requestId;
+  }
+}
+
+interface ChatErrorResponse {
+  error?: {
+    code?: string;
+    message?: string;
+    request_id?: string;
+  };
+}
 
 export type ChatMessage = {
   role: 'user' | 'assistant';
@@ -25,6 +58,7 @@ type ChatStreamEvent =
       type: 'error';
       code: string;
       message: string;
+      request_id?: string;
     };
 
 export async function* streamChatAnswer(messages: readonly ChatMessage[]): AsyncGenerator<string> {
@@ -38,12 +72,24 @@ export async function* streamChatAnswer(messages: readonly ChatMessage[]): Async
     }),
   });
 
-  if (response.status === 422) {
-    throw new Error('INVALID_INPUT');
-  }
-
   if (!response.ok) {
-    throw new Error(`Chat request failed: ${response.status}`);
+    let errorBody: ChatErrorResponse | null = null;
+
+    try {
+      errorBody = (await response.json()) as ChatErrorResponse;
+    } catch {
+      // Response body may not be valid JSON.
+    }
+
+    throw new ChatServiceError(
+      errorBody?.error?.message ??
+        '当前 AI 客服暂时无法响应，请稍后再试。',
+      {
+        code: errorBody?.error?.code ?? 'http_error',
+        status: response.status,
+        requestId: errorBody?.error?.request_id ?? null,
+      },
+    );
   }
 
   if (!response.body) {
@@ -89,7 +135,13 @@ export async function* streamChatAnswer(messages: readonly ChatMessage[]): Async
         if (event.type === 'delta') {
           yield event.content;
         } else if (event.type === 'error') {
-          throw new Error(event.message);
+          throw new ChatServiceError(
+            event.message,
+            {
+              code: event.code,
+              requestId: event.request_id ?? null,
+            },
+          );
         } else if (event.type === 'done') {
           return;
         }

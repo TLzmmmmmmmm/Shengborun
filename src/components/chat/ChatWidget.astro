@@ -41,10 +41,8 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
         class="chat-message chat-message--assistant"
         data-chat-message="assistant"
       >您好，请问有什么可以帮助您？</li>
-      <li class="chat-status" data-chat-loading hidden>AI 正在回复...</li>
-      <li class="chat-error" role="status" data-chat-error hidden>
-        当前 AI 客服暂时无法响应，请稍后重试或通过电话/邮箱联系我们。
-      </li>
+      <li class="chat-status" data-chat-loading hidden>正在回复...</li>
+      <li class="chat-error" role="status" data-chat-error hidden></li>
     </ol>
 
     <form class="chat-composer" data-chat-form>
@@ -67,6 +65,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
   import {
     streamChatAnswer,
     type ChatMessage,
+    ChatServiceError,
   } from './chat-transport';
 
   type Message = ChatMessage;
@@ -130,8 +129,17 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
 
   const setError = (message: string | null) => {
     error = message;
+
     if (!errorNode) return;
-    errorNode.hidden = error === null;
+
+    if (message === null) {
+      errorNode.textContent = '';
+      errorNode.hidden = true;
+    } else {
+      errorNode.textContent = message;
+      errorNode.hidden = false;
+    }
+
     scrollMessagesToEnd();
   };
 
@@ -208,16 +216,11 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
         scrollMessagesToEnd();
       }
     } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === 'INVALID_INPUT'
-      ) {
-        setError(
-          '提交内容过长或格式不正确，请调整后重新发送。',
-        );
+      if (error instanceof ChatServiceError) {
+        setError(error.message);
       } else {
         setError(
-          '当前 AI 客服暂时无法响应，请稍后重试。',
+          '当前客服暂时无法响应，请稍后再试。',
         );
       }
     } finally {
