@@ -37,11 +37,24 @@ export type ChatMessage = {
   content: string;
 };
 
-type ChatStreamEvent =
+export type ChatCitation = {
+  title: string;
+  url: string;
+};
+
+export type ChatAnswerEvent =
   | {
       type: 'delta';
       content: string;
     }
+  | {
+      type: 'citations';
+      heading: string;
+      items: ChatCitation[];
+    };
+
+type ChatStreamEvent =
+  | ChatAnswerEvent
   | {
       type: 'done';
     }
@@ -56,7 +69,9 @@ const CHAT_API_URL = import.meta.env.DEV
   ? 'http://127.0.0.1:8000/api/chat-stream'
   : '/api/chat-stream';
 
-export async function* streamChatAnswer(messages: readonly ChatMessage[]): AsyncGenerator<string> {
+export async function* streamChatAnswer(
+  messages: readonly ChatMessage[],
+): AsyncGenerator<ChatAnswerEvent> {
   const response = await fetch(CHAT_API_URL, {
     method: 'POST',
     headers: {
@@ -139,7 +154,9 @@ export async function* streamChatAnswer(messages: readonly ChatMessage[]): Async
         const event = JSON.parse(line) as ChatStreamEvent;
 
         if (event.type === 'delta') {
-          yield event.content;
+          yield event;
+        } else if (event.type === 'citations') {
+          yield event;
         } else if (event.type === 'error') {
           throw new ChatServiceError(
             event.message,

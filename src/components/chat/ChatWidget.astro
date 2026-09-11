@@ -64,6 +64,7 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
 <script>
   import {
     streamChatAnswer,
+    type ChatCitation,
     type ChatMessage,
     ChatServiceError,
   } from './chat-transport';
@@ -111,11 +112,55 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     const item = document.createElement('li');
     item.className = `chat-message chat-message--${message.role}`;
     item.dataset.chatMessage = message.role;
-    item.textContent = message.content;
+    const content = document.createElement('span');
+    content.className = 'chat-message__content';
+    content.dataset.chatMessageContent = '';
+    content.textContent = message.content;
+    item.append(content);
     messageList.insertBefore(item, loadingNode);
     scrollMessagesToEnd();
 
     return item;
+  };
+
+  const setMessageContent = (item: HTMLElement, content: string) => {
+    const contentNode = item.querySelector<HTMLElement>(
+      '[data-chat-message-content]',
+    );
+    if (contentNode) contentNode.textContent = content;
+  };
+
+  const appendCitations = (
+    item: HTMLElement,
+    heading: string,
+    citations: readonly ChatCitation[],
+  ) => {
+    if (citations.length === 0) return;
+
+    const section = document.createElement('div');
+    section.className = 'chat-citations';
+
+    const title = document.createElement('p');
+    title.className = 'chat-citations__heading';
+    title.textContent = heading;
+    section.append(title);
+
+    const list = document.createElement('ul');
+    list.className = 'chat-citations__list';
+
+    for (const citation of citations) {
+      const listItem = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = citation.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = citation.title;
+      listItem.append(link);
+      list.append(listItem);
+    }
+
+    section.append(list);
+    item.append(section);
   };
 
   const setLoading = (loading: boolean) => {
@@ -210,17 +255,21 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
         content: '',
       };
 
-      for await (const chunk of streamChatAnswer(requestMessages)) {
-        assistantMessage.content += chunk;
-
-        if (!assistantNode) {
-          assistantNode = appendMessage(assistantMessage);
+      for await (const event of streamChatAnswer(requestMessages)) {
+        if (event.type === 'delta') {
+          assistantMessage.content += event.content;
 
           if (!assistantNode) {
-            throw new Error('Unable to create assistant message');
+            assistantNode = appendMessage(assistantMessage);
+
+            if (!assistantNode) {
+              throw new Error('Unable to create assistant message');
+            }
+          } else {
+            setMessageContent(assistantNode, assistantMessage.content);
           }
-        } else {
-          assistantNode.textContent = assistantMessage.content;
+        } else if (assistantNode) {
+          appendCitations(assistantNode, event.heading, event.items);
         }
 
         scrollMessagesToEnd();
@@ -464,6 +513,39 @@ import { Bot, MessageCircle, Send, X } from '@lucide/astro';
     border-bottom-right-radius: 0.25rem;
     background: var(--brand-teal-soft);
     color: var(--brand-graphite);
+  }
+
+  .chat-messages :global(.chat-message__content) {
+    display: block;
+  }
+
+  .chat-messages :global(.chat-citations) {
+    margin-top: 0.75rem;
+    padding-top: 0.625rem;
+    border-top: 0.0625rem solid var(--divider);
+    white-space: normal;
+  }
+
+  .chat-messages :global(.chat-citations__heading) {
+    margin: 0 0 0.375rem;
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .chat-messages :global(.chat-citations__list) {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chat-messages :global(.chat-citations a) {
+    color: var(--brand-teal);
+    font-size: 0.875rem;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
 
   .chat-status {

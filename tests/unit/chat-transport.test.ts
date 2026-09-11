@@ -11,9 +11,9 @@ import {
 } from '../../src/components/chat/chat-transport';
 
 async function collectStream(
-  stream: AsyncGenerator<string>,
-): Promise<string[]> {
-  const chunks: string[] = [];
+  stream: AsyncGenerator<unknown>,
+): Promise<unknown[]> {
+  const chunks: unknown[] = [];
 
   for await (const chunk of stream) {
     chunks.push(chunk);
@@ -64,8 +64,8 @@ describe('chat transport', () => {
     );
 
     expect(result).toEqual([
-      '你',
-      '好',
+      { type: 'delta', content: '你' },
+      { type: 'delta', content: '好' },
     ]);
 
     expect(fetchSpy).toHaveBeenCalledTimes(1);
@@ -87,6 +87,58 @@ describe('chat transport', () => {
         },
       ],
     });
+  });
+
+  it('streams trusted citation metadata without folding it into answer text', async () => {
+    const responseBody = [
+      JSON.stringify({
+        type: 'delta',
+        content: 'LY198 的输出功率为 2W。',
+      }),
+      JSON.stringify({
+        type: 'citations',
+        heading: '参考资料：',
+        items: [{
+          title: '润信达 LY198',
+          url: 'https://www.shengborun.com/two-way-radio/ly198/',
+        }],
+      }),
+      JSON.stringify({
+        type: 'done',
+      }),
+      '',
+    ].join('\n');
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(
+      new Response(responseBody, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/x-ndjson',
+        },
+      }),
+    ));
+
+    const result = await collectStream(
+      streamChatAnswer([{
+        role: 'user',
+        content: 'LY198 的功率是多少？',
+      }]),
+    );
+
+    expect(result).toEqual([
+      {
+        type: 'delta',
+        content: 'LY198 的输出功率为 2W。',
+      },
+      {
+        type: 'citations',
+        heading: '参考资料：',
+        items: [{
+          title: '润信达 LY198',
+          url: 'https://www.shengborun.com/two-way-radio/ly198/',
+        }],
+      },
+    ]);
   });
 
   it('throws the backend error message for non-2xx responses', async () => {
