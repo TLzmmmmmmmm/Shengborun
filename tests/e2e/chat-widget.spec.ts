@@ -3,6 +3,11 @@ import type { ChatMessage } from '../../src/components/chat/chat-transport';
 
 type ChatStreamEvent =
   | { type: 'delta'; content: string }
+  | {
+      type: 'citations';
+      heading: string;
+      items: Array<{ title: string; url: string }>;
+    }
   | { type: 'done' }
   | {
       type: 'error';
@@ -130,6 +135,71 @@ test('sends with Enter and renders loading followed by a streamed answer', async
   await expect(page.getByText('企业版支持多种通信解决方案。')).toBeVisible();
   await expect(page.getByText('正在回复...')).toBeHidden();
   await expect(send).toBeDisabled();
+});
+
+test('renders trusted citation titles as links without adding citations to API history', async ({
+  page,
+}) => {
+  const requestBodies: Array<{ messages: ChatMessage[] }> = [];
+
+  await page.route('**/api/chat-stream', async (route) => {
+    requestBodies.push(route.request().postDataJSON() as { messages: ChatMessage[] });
+    const events: ChatStreamEvent[] = requestBodies.length === 1
+      ? [
+          { type: 'delta', content: 'LY198 的输出功率为 2W。' },
+          {
+            type: 'citations',
+            heading: '参考资料：',
+            items: [{
+              title: '润信达 LY198',
+              url: 'https://www.shengborun.com/two-way-radio/ly198/',
+            }],
+          },
+          { type: 'done' },
+        ]
+      : [
+          { type: 'delta', content: '第二轮回答。' },
+          { type: 'done' },
+        ];
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/x-ndjson',
+      body: encodeStream(events),
+    });
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: '打开 AI 客服' }).click();
+  const input = page.getByRole('textbox', { name: '输入问题' });
+
+  await input.fill('LY198 的功率是多少？');
+  await input.press('Enter');
+
+  const citationLink = page.getByRole('link', { name: '润信达 LY198' });
+  await expect(page.getByText('参考资料：')).toBeVisible();
+  await expect(citationLink).toHaveAttribute(
+    'href',
+    'https://www.shengborun.com/two-way-radio/ly198/',
+  );
+  await expect(citationLink).toHaveAttribute('target', '_blank');
+  await expect(citationLink).toHaveAttribute('rel', 'noopener noreferrer');
+  await expect(page.getByText(
+    'https://www.shengborun.com/two-way-radio/ly198/',
+    { exact: true },
+  )).toHaveCount(0);
+
+  await input.fill('继续');
+  await input.press('Enter');
+  await expect(page.getByText('第二轮回答。')).toBeVisible();
+
+  expect(requestBodies[1]).toEqual({
+    messages: [
+      { role: 'user', content: 'LY198 的功率是多少？' },
+      { role: 'assistant', content: 'LY198 的输出功率为 2W。' },
+      { role: 'user', content: '继续' },
+    ],
+  });
 });
 
 test('styles dynamically appended messages as left and right bubbles', async ({
